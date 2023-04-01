@@ -24,5 +24,5 @@ class MockupRepositoryImpl(
     override suspend fun delete(mockup: Mockup) {
         mockupDao.delete(mockup)
     }
-    
+
 }
