@@ -21,6 +21,9 @@ class MockupViewModel @Inject constructor(
             is MockupEvent.GetAll -> {
 
             }
+            is MockupEvent.Test -> {
+
+            }
         }
     }
 }
