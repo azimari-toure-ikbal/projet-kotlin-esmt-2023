@@ -1,7 +1,7 @@
-package com.esmt.projet.victodo.feature_x.domain.use_case
+package com.esmt.projet.victodo.feature_list.domain.use_case
 
-import com.esmt.projet.victodo.feature_x.domain.model.Mockup
-import com.esmt.projet.victodo.feature_x.domain.repository.MockupRepository
+import com.esmt.projet.victodo.feature_list.domain.model.Mockup
+import com.esmt.projet.victodo.feature_list.domain.repository.MockupRepository
 import kotlinx.coroutines.flow.Flow
 
 class MockupGetAllUseCase(

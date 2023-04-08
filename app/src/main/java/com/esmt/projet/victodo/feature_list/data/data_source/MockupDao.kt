@@ -1,7 +1,7 @@
-package com.esmt.projet.victodo.feature_x.data.data_source
+package com.esmt.projet.victodo.feature_list.data.data_source
 
 import androidx.room.*
-import com.esmt.projet.victodo.feature_x.domain.model.Mockup
+import com.esmt.projet.victodo.feature_list.domain.model.Mockup
 import kotlinx.coroutines.flow.Flow
 
 @Dao
