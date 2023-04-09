@@ -1,11 +1,11 @@
 package com.esmt.projet.victodo.feature_task.data.data_source
 
 import androidx.room.*
-import com.esmt.projet.victodo.feature_task.domain.model.Mockup
+import com.esmt.projet.victodo.feature_list.domain.model.Mockup
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MockupDao {
+interface MockupDao3 {
 
     @Query("SELECT * FROM mockup")
     fun getAll(): Flow<List<Mockup>>

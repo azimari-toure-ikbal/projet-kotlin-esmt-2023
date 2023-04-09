@@ -1,9 +1,10 @@
-package com.esmt.projet.victodo.feature_task.domain.model
+package com.esmt.projet.victodo.feature_list.domain.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.esmt.projet.victodo.feature_task.domain.model.Task
 import kotlin.collections.List
 
 @Entity(tableName = "lists")

@@ -2,7 +2,7 @@ package com.esmt.projet.victodo.di
 
 import android.app.Application
 import androidx.room.Room
-import com.esmt.projet.victodo.feature_task.data.data_source.MockupDatabase
+import com.esmt.projet.victodo.core.data.data_source.MockupDatabase
 import com.esmt.projet.victodo.feature_task.data.repository.MockupRepositoryImpl
 import com.esmt.projet.victodo.feature_task.domain.repository.MockupRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.MockupGetAllUseCase
