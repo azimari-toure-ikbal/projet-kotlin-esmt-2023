@@ -1,4 +1,4 @@
-package com.esmt.projet.victodo.feature_task.domain.use_case
+package com.esmt.projet.victodo.feature_task.use_case
 
 import com.esmt.projet.victodo.feature_task.domain.model.Mockup
 import com.esmt.projet.victodo.feature_task.domain.repository.MockupRepository

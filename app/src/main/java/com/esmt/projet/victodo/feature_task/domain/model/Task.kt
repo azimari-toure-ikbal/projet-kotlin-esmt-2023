@@ -2,7 +2,6 @@ package com.esmt.projet.victodo.feature_task.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.collections.List

@@ -3,7 +3,6 @@ package com.esmt.projet.victodo.feature_task.domain.model
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.esmt.projet.victodo.feature_x.domain.model.Task
 import kotlin.collections.List
 
 @Entity
