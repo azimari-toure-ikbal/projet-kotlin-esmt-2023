@@ -1,4 +1,4 @@
-package com.esmt.projet.victodo.feature_list.domain.model
+package com.esmt.projet.victodo.feature_task.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

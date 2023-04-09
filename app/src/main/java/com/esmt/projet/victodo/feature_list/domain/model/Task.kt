@@ -1,13 +1,8 @@
 package com.esmt.projet.victodo.feature_x.domain.model
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.Color.Companion.LightGray
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.collections.List
@@ -21,9 +16,8 @@ data class Task(
     val priority: Int,
     val dueDate: LocalDate,
     val dueTime: LocalTime,
-    val redundancy: Int,//to check
+    val redundancy: Int,//By day
     val tags: List<Tag>,
     private val subtasks: List<SubTask>,
     private val listId: Int,
-    ){
-}
+    ){}
