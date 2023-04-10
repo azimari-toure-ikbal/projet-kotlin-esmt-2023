@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.esmt.projet.victodo.core.util.Converters
+import com.esmt.projet.victodo.feature_list.data.data_source.TaskListDao
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.domain.model.Task
@@ -16,8 +17,7 @@ import com.esmt.projet.victodo.feature_task.domain.model.Task
 @TypeConverters(Converters::class)
 abstract class MockupDatabase: RoomDatabase() {
 
-    // à compléter avec les DAOs
-
+    abstract val taskListDao: TaskListDao
 
     companion object {
         const val DATABASE_NAME = "mockup_database"
