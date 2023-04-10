@@ -5,7 +5,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 
-data class TaskWithTagsSubTasks(
+data class TaskWithTagsAndSubTasks(
     @Embedded
     val task: Task,
     @Relation(

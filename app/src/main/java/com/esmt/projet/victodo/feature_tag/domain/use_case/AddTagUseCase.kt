@@ -4,7 +4,7 @@ import com.esmt.projet.victodo.feature_tag.domain.model.InvalidTagException
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_tag.domain.repository.MockupRepository
 
-class MockupAddTagUseCase(
+class AddTagUseCase(
     private val repository: MockupRepository
 ){
     suspend operator fun invoke(tag: Tag){

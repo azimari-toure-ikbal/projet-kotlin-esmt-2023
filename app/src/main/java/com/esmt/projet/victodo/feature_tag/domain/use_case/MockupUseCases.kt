@@ -1,12 +1,8 @@
-package com.esmt.projet.victodo.feature_task.use_case
-
-import com.esmt.projet.victodo.feature_tag.domain.use_case.MockupAddTagUseCase
-import com.esmt.projet.victodo.feature_tag.domain.use_case.MockupDeleteTagUseCase
-import com.esmt.projet.victodo.feature_tag.domain.use_case.MockupGetTagUseCase
+package com.esmt.projet.victodo.feature_tag.domain.use_case
 
 data class MockupUseCases(
-    val getAllTagUseCase: MockupGetAllTagUseCase,
-    val getTagUseCase: MockupGetTagUseCase,
-    val deleteTagUseCase: MockupDeleteTagUseCase,
-    val addTagUseCase: MockupAddTagUseCase
+    val getAllTagUseCase: GetAllTagUseCase,
+    val getTagUseCase: GetTagUseCase,
+    val deleteTagUseCase: DeleteTagUseCase,
+    val addTagUseCase: AddTagUseCase
 )

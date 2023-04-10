@@ -1,10 +1,9 @@
 package com.esmt.projet.victodo.feature_list.domain.use_case
 
-import com.esmt.projet.victodo.feature_task.domain.repository.MockupRepository
-import kotlinx.coroutines.flow.Flow
+import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 
 class MockupGetAllUseCase(
-    private val mockupRepository: MockupRepository
+    private val taskRepository: TaskRepository
 ) {
 
 //    operator fun invoke(): Flow<List<Mockup>> {

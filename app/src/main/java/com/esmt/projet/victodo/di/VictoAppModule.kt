@@ -6,12 +6,8 @@ import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
-import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
-import com.esmt.projet.victodo.feature_task.domain.repository.MockupRepository
+import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.MockupGetAllUseCase
 import com.esmt.projet.victodo.feature_task.domain.use_case.MockupUseCases
 import dagger.Module
@@ -29,7 +25,7 @@ object  VictoAppModule {
 //DATABASE
     @Provides
     @Singleton
-    fun provideMockupDatabase(app: Application): TaskDatabase {
+    fun provideTaskDatabase(app: Application): TaskDatabase {
         return Room.databaseBuilder(
             app,
             TaskDatabase::class.java,
@@ -58,7 +54,7 @@ object  VictoAppModule {
 //USE CASES
     @Provides
     @Singleton
-    fun provideMockupUseCases(repository: MockupRepository): MockupUseCases {
+    fun provideMockupUseCases(repository: TaskRepository): MockupUseCases {
         return MockupUseCases(
             getAll = MockupGetAllUseCase(repository)
         )
