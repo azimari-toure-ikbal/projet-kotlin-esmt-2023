@@ -11,7 +11,7 @@ import kotlin.collections.List
 
 @Entity(tableName = "task")
 data class Task(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val name: String,
     val note: String,
     val isEnded: Boolean,
@@ -19,5 +19,5 @@ data class Task(
     val dueDate: LocalDate,
     val dueTime: LocalTime,
     val redundancy: Int,//By day
-    val listId: Int,
-){}
+    val listId: Long,
+)

@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SubTask(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val name: String,
     val note: String,
     val isEnded: Boolean,
-    val taskId: Int,
+    val taskId: Long,
 )

@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "tag")
 data class Tag (
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val title: String,
 )
