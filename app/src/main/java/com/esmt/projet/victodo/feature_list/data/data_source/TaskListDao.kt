@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 interface TaskListDao {
 
     @Transaction
-    @Query("SELECT * FROM list")
+    @Query("SELECT * FROM lists")
     fun getLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>>
 
     @Transaction
-    @Query("SELECT * FROM list WHERE id = :id")
+    @Query("SELECT * FROM lists WHERE id = :id")
     suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks?
 
     @Transaction
