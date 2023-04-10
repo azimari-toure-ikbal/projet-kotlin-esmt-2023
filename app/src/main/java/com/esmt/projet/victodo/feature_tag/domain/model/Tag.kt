@@ -8,3 +8,4 @@ data class Tag (
     @PrimaryKey val id: Long,
     val title: String,
 )
+class InvalidTagException(message: String): Exception(message)

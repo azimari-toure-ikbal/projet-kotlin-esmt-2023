@@ -1,14 +1,15 @@
 package com.esmt.projet.victodo.feature_tag.domain.repository
 
+import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import kotlinx.coroutines.flow.Flow
 
 interface MockupRepository {
 
-//    fun getAll(): Flow<List<Mockup>>
-//
-//    suspend fun getById(id: Int): Mockup?
-//
-//    suspend fun insert(mockup: Mockup)
-//
-//    suspend fun delete(mockup: Mockup)
+    fun getTags(): Flow<List<Tag>>
+
+    suspend fun getByTagId(id: Int): Tag?
+
+    suspend fun insertTag(tag: Tag)
+
+    suspend fun deleteTag(tag: Tag)
 }
