@@ -21,7 +21,8 @@ data class Task(
     val redundancy: Int,//By day
     @Relation(
         parentColumn = "id",
-        entityColumn = "taskId",
+        entityColumn = "id",
+        entity = Tag::class,
         associateBy = Junction(value = TagTaskCrossRef::class, parentColumn = "tkId", entityColumn = "tgId")
     )
     val tags: List<Tag>,
