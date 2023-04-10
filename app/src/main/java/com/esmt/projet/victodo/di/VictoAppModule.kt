@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.MockupDatabase
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
-import com.esmt.projet.victodo.feature_task.data.repository.MockupRepositoryImpl
 import com.esmt.projet.victodo.feature_task.domain.repository.MockupRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.MockupGetAllUseCase
 import com.esmt.projet.victodo.feature_task.domain.use_case.MockupUseCases
@@ -30,11 +29,11 @@ object VictoAppModule {
         ).build()
     }
 
-    @Provides
-    @Singleton
-    fun provideMockupRepository(db: MockupDatabase): MockupRepository {
-        return MockupRepositoryImpl(db.mockupDao)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideMockupRepository(db: MockupDatabase): MockupRepository {
+//        return MockupRepositoryImpl(db.mockupDao)
+//    }
 
     @Provides
     @Singleton

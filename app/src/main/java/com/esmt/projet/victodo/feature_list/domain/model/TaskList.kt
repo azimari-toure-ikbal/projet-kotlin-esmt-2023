@@ -3,21 +3,12 @@ package com.esmt.projet.victodo.feature_list.domain.model
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.esmt.projet.victodo.feature_task.domain.model.Task
-import kotlin.collections.List
 
 @Entity(tableName = "lists")
-data class List(
+data class TaskList(
     @PrimaryKey val id: Int,
     val title: String,
     val color: Int,//to check
-    @Relation(
-        parentColumn = "id",
-        entity = Task::class,
-        entityColumn = "listId"
-    )
-    val tasks: List<Task>,
     val isPinned: Boolean,
     val icon: String,
     val isDefault: Boolean,

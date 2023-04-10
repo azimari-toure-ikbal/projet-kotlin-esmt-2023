@@ -19,18 +19,5 @@ data class Task(
     val dueDate: LocalDate,
     val dueTime: LocalTime,
     val redundancy: Int,//By day
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        entity = Tag::class,
-        associateBy = Junction(value = TagTaskCrossRef::class, parentColumn = "tkId", entityColumn = "tgId")
-    )
-    val tags: List<Tag>,
-    @Relation(
-        parentColumn = "id",
-        entity = SubTask::class,
-        entityColumn = "taskId"
-    )
-    private val subtasks: List<SubTask>,
-    private val listId: Int,
+    val listId: Int,
 ){}
