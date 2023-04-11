@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "tag")
-data class Tag (
-    @PrimaryKey val id: Long,
+data class Tag(
+    @PrimaryKey val id: Int?,
     val title: String,
 )
 class InvalidTagException(message: String): Exception(message)
