@@ -2,10 +2,10 @@ package com.esmt.projet.victodo.feature_tag.domain.use_case
 
 import com.esmt.projet.victodo.feature_tag.domain.model.InvalidTagException
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
-import com.esmt.projet.victodo.feature_tag.domain.repository.MockupRepository
+import com.esmt.projet.victodo.feature_tag.domain.repository.TagRepository
 
 class AddTagUseCase(
-    private val repository: MockupRepository
+    private val repository: TagRepository
 ){
     suspend operator fun invoke(tag: Tag){
         if(tag.title.isBlank()){

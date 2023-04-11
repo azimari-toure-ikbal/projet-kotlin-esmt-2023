@@ -2,12 +2,12 @@ package com.esmt.projet.victodo.feature_tag.data.repository
 
 import com.esmt.projet.victodo.feature_tag.data.data_source.TagDao
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
-import com.esmt.projet.victodo.feature_tag.domain.repository.MockupRepository
+import com.esmt.projet.victodo.feature_tag.domain.repository.TagRepository
 import kotlinx.coroutines.flow.Flow
 
-class MockupRepositoryImpl(
+class TagRepositoryImpl(
     private val tagDao: TagDao
-) : MockupRepository {
+) : TagRepository {
     override fun getTags(): Flow<List<Tag>> {
         return tagDao.getTags()
     }
