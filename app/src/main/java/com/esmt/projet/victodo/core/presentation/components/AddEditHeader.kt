@@ -49,7 +49,7 @@ fun AddEditHeader(
             }
             Text(
                 text = title,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 modifier = Modifier
