@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(primaryKeys = ["tkId", "tgId"])
 data class TagTaskCrossRef (
-    val tkId: Long,
+    val tkId: Long?,
     @ColumnInfo(index = true)
-    val tgId: Long
+    val tgId: Long?
 )
