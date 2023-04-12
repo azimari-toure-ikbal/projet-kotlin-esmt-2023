@@ -4,6 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
+import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
+import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
+import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskList
+import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskList
+import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskList
+import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
@@ -42,11 +48,11 @@ object  VictoAppModule {
 
 
 //REPOSITORY
-//    @Provides
-//    @Singleton
-//    fun provideTaskListRepository(db: TaskDatabase): TaskListRepository {
-//        return TaskListRepositoryImpl(db.taskListDao)
-//    }
+    @Provides
+    @Singleton
+    fun provideTaskListRepository(db: TaskDatabase): TaskListRepository {
+        return TaskListRepositoryImpl(db.taskListDao)
+    }
 
 
 
@@ -69,15 +75,18 @@ object  VictoAppModule {
         )
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideTaskListUseCases(repository: TaskListRepository): TaskListUseCases {
-//        return TaskListUseCases(
-//            getTaskList = GetTaskList(repository),
-//            addTaskList = AddTaskList(repository),
-//            deleteTaskList = DeleteTaskList(repository)
-//        )
-//    }
+    @Provides
+    @Singleton
+    fun provideTaskListUseCases(
+        repository: TaskListRepository,
+        taskRepository: TaskRepository
+    ): TaskListUseCases {
+        return TaskListUseCases(
+            getTaskList = GetTaskList(repository),
+            addTaskList = AddTaskList(repository, taskRepository),
+            deleteTaskList = DeleteTaskList(repository, taskRepository)
+        )
+    }
 
 
 
