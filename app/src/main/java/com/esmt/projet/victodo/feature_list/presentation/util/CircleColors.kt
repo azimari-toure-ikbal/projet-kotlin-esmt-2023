@@ -3,7 +3,7 @@ package com.esmt.projet.victodo.feature_list.presentation.util
 import androidx.compose.ui.graphics.Color
 
 sealed class CircleColors(val color: Color) {
-    object firstColor : CircleColors(Color(0xFFE9E9E9))
+    object firstColor : CircleColors(Color(0xFFCB2F2F))
     object secondColor : CircleColors(Color(0xFF006EE9))
     object thirdColor : CircleColors(Color(0xFF35AB4F))
     object fourthColor : CircleColors(Color(0xFF7B61FF))
