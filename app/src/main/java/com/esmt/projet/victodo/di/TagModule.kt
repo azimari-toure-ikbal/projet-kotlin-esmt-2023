@@ -25,11 +25,11 @@ object TagModule {
         ).build()
     }
 
-    @Provides
-    @Singleton
-    fun provideTagRepository(db: TaskDatabase): TagRepository {
-        return TagRepositoryImpl(db.tagDao)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideTagRepository(db: TaskDatabase): TagRepository {
+//        return TagRepositoryImpl(db.tagDao)
+//    }
 
     @Provides
     @Singleton

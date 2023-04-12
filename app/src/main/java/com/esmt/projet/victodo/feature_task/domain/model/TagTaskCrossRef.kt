@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 data class TagTaskCrossRef (
     val tkId: Long,
     @ColumnInfo(index = true)
-    val tgId: Long
+    val tgId: Long?
 )
