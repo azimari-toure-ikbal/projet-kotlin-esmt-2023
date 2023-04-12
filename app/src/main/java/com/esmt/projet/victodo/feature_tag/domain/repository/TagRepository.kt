@@ -7,7 +7,7 @@ interface TagRepository {
 
     fun getTags(): Flow<List<Tag>>
 
-    suspend fun getByTagId(id: Int): Tag?
+    suspend fun getByTagId(id: Long): Tag?
 
     suspend fun insertTag(tag: Tag)
 
