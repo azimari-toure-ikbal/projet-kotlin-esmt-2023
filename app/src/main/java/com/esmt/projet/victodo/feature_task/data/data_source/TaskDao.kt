@@ -32,7 +32,7 @@ interface TaskDao {
     suspend fun insertTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
         val taskId = insertTask(taskWithTagsAndSubTasks.task)
         taskWithTagsAndSubTasks.tags.forEach { tag ->
-            insertTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id, tkId = taskId))
+            insertTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskId))
         }
         taskWithTagsAndSubTasks.subtasks.forEach { subTask ->
             insertSubTask(subTask.copy(taskId = taskId))
@@ -43,7 +43,7 @@ interface TaskDao {
     suspend fun deleteTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
         deleteTask(taskWithTagsAndSubTasks.task)
         taskWithTagsAndSubTasks.tags.forEach { tag ->
-            deleteTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id, tkId = taskWithTagsAndSubTasks.task.id))
+            deleteTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskWithTagsAndSubTasks.task.id!!))
         }
         taskWithTagsAndSubTasks.subtasks.forEach { subTask ->
             deleteSubTask(subTask)

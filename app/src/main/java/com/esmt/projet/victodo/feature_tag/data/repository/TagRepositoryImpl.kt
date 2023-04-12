@@ -11,7 +11,7 @@ class TagRepositoryImpl(
         return tagDao.getTags()
     }
 
-    override suspend fun getByTagId(id: Int): Tag? {
+    override suspend fun getByTagId(id: Long): Tag? {
         return tagDao.getByTagId(id)
     }
 
