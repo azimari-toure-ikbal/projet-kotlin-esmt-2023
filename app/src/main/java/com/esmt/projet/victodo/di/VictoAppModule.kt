@@ -7,9 +7,9 @@ import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
+import com.esmt.projet.victodo.feature_task.data.repository.TaskRepositoryImpl
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
-import com.esmt.projet.victodo.feature_task.domain.use_case.MockupGetAllUseCase
-import com.esmt.projet.victodo.feature_task.domain.use_case.MockupUseCases
+import com.esmt.projet.victodo.feature_task.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,9 +54,18 @@ object  VictoAppModule {
 //USE CASES
     @Provides
     @Singleton
-    fun provideMockupUseCases(repository: TaskRepository): MockupUseCases {
-        return MockupUseCases(
-            getAll = MockupGetAllUseCase(repository)
+    fun provideTaskRepository(db: TaskDatabase): TaskRepository {
+        return TaskRepositoryImpl(db.taskDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskUseCases(repository: TaskRepository): TaskUseCases {
+        return TaskUseCases(
+            addTaskUseCase = AddTaskUseCase(repository),
+            getTasksUseCase = GetTasksUseCase(repository),
+            getTaskUseCase = GetTaskUseCase(repository),
+            deleteTaskUseCase = DeleteTaskUseCase(repository)
         )
     }
 

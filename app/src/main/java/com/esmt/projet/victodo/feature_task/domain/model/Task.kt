@@ -21,3 +21,5 @@ data class Task(
     val redundancy: Int,//By day
     val listId: Long,
 )
+
+class InvalidTaskException(message: String) : Exception(message)

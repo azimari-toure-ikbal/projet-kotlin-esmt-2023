@@ -21,10 +21,10 @@ class TaskRepositoryImpl (
     }
 
     override suspend fun insert(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
-        return taskDao.insertTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks)
+        taskDao.insertTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks)
     }
 
     override suspend fun delete(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
-        return taskDao.deleteTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks)
+        taskDao.deleteTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks)
     }
 }

@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val screen by splashViewModel.startDestination
+                    val loading by splashViewModel.isLoading
                     val navController = rememberNavController()
 
                     NavHost(
