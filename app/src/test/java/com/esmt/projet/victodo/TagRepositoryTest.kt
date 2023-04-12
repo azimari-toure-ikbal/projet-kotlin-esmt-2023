@@ -51,7 +51,7 @@ class TagRepositoryTest {
 
     @Test fun `Should correctly get the tag's list`(){
         val result=tagRepositoryImpl.getTags()
-        assertThat(result, CoreMatchers.equalTo(listOf(Tag(12,"fAire du sport"))))
+        assertThat(result, CoreMatchers.equalTo(listOf(Tag(12,"faire du sport"))))
     }
 
 }

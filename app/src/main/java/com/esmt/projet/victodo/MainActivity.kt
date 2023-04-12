@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             WelcomeScreen(navController = navController)
                         }
                         composable(route = Screen.HomeScreen.route) {
-                            Greeting("Android")
+                            //Greeting("Android")
                         }
                     }
                 }
