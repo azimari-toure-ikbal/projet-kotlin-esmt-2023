@@ -1,10 +1,9 @@
 package com.esmt.projet.victodo.feature_list.domain.model
 
 import androidx.room.Embedded
-import androidx.room.Entity
 import androidx.room.Relation
 import com.esmt.projet.victodo.feature_task.domain.model.Task
-import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagsAndSubTasks
+import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 
 data class TaskListWithTasksAndTagsSubTasks (
     @Embedded
@@ -14,5 +13,5 @@ data class TaskListWithTasksAndTagsSubTasks (
         entity = Task::class,
         entityColumn = "listId"
     )
-    val tasks: List<TaskWithTagsAndSubTasks>
+    val tasks: List<TaskWithTagAndSubTask>
 )

@@ -39,14 +39,6 @@ object  VictoAppModule {
         ).build()
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideMockupRepository(db: MockupDatabase): MockupRepository {
-//        return MockupRepositoryImpl(db.mockupDao)
-//    }
-
-
-
 //REPOSITORY
     @Provides
     @Singleton
@@ -58,22 +50,7 @@ object  VictoAppModule {
 
 
 //USE CASES
-    @Provides
-    @Singleton
-    fun provideTaskRepository(db: TaskDatabase): TaskRepository {
-        return TaskRepositoryImpl(db.taskDao)
-    }
 
-    @Provides
-    @Singleton
-    fun provideTaskUseCases(repository: TaskRepository): TaskUseCases {
-        return TaskUseCases(
-            addTaskUseCase = AddTaskUseCase(repository),
-            getTasksUseCase = GetTasksUseCase(repository),
-            getTaskUseCase = GetTaskUseCase(repository),
-            deleteTaskUseCase = DeleteTaskUseCase(repository)
-        )
-    }
 
     @Provides
     @Singleton

@@ -11,15 +11,15 @@ import kotlin.collections.List
 
 @Entity(tableName = "task")
 data class Task(
-    @PrimaryKey val id: Long?,
+    @PrimaryKey val id: Long?=0,
     val name: String,
-    val note: String,
-    val isEnded: Boolean,
-    val priority: Int,
-    val dueDate: LocalDate,
-    val dueTime: LocalTime,
-    val redundancy: Int,//By day
-    val listId: Long,
+    val note: String?=null,
+    val isEnded: Boolean=false,
+    val priority: Int?=0,
+    val dueDate: LocalDate?=null,
+    val dueTime: LocalTime?=null,
+    val redundancy: Int=0,//By day
+    val listId: Long?=null,
 )
 
 class InvalidTaskException(message: String) : Exception(message)

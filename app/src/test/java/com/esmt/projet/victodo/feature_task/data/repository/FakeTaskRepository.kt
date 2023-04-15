@@ -1,30 +1,42 @@
 package com.esmt.projet.victodo.feature_task.data.repository
 
-import com.esmt.projet.victodo.feature_task.data.data_source.TaskDao
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class TaskRepositoryImpl (
-    private val taskDao: TaskDao,
-): TaskRepository{
+class FakeTaskRepository: TaskRepository {
+
+    private val taskWithTagAndSubTasks = mutableListOf<TaskWithTagAndSubTask>()
+
     override fun getAll(): Flow<List<TaskWithTagAndSubTask>> {
-        return taskDao.getTasksWithTagsAndSubTasks()
+        return flow {
+            emit(taskWithTagAndSubTasks)
+        }
     }
 
     override fun getAllByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>> {
-        return taskDao.getTasksWithTagsAndSubTasksByListId(listId)
+        return flow {
+            emit(
+                taskWithTagAndSubTasks.filter {
+                    it.task.listId == listId
+                }
+            )
+        }
     }
 
     override suspend fun getById(id: Long): TaskWithTagAndSubTask? {
-        return taskDao.getTaskWithTagsAndSubTasksById(id)
+        return taskWithTagAndSubTasks.find {
+            it.task.id == id
+        }
     }
 
     override suspend fun insert(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
-        taskDao.insertTaskWithTagsAndSubTasks(taskWithTagAndSubTask)
+        taskWithTagAndSubTasks.add(taskWithTagAndSubTask)
     }
 
     override suspend fun delete(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
-        taskDao.deleteTaskWithTagsAndSubTasks(taskWithTagAndSubTask)
+        taskWithTagAndSubTasks.remove(taskWithTagAndSubTask)
     }
+
 }
