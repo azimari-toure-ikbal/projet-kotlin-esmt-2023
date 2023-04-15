@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class SubTask(
     @PrimaryKey val id: Long?,
     val name: String,
-    val note: String,
-    val isEnded: Boolean,
-    val taskId: Long,
+    val note: String?=null,
+    val isEnded: Boolean=false,
+    val taskId: Long?=null
 )

@@ -1,11 +1,10 @@
 package com.esmt.projet.victodo.feature_task.data.data_source
 
 import androidx.room.*
-import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.TagTaskCrossRef
 import com.esmt.projet.victodo.feature_task.domain.model.Task
-import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagsAndSubTasks
+import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -29,36 +28,36 @@ interface TaskDao {
     suspend fun deleteTagTaskCrossRef(tagTaskCrossRef: TagTaskCrossRef)
 
     @Transaction
-    suspend fun insertTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
-        val taskId = insertTask(taskWithTagsAndSubTasks.task)
-        taskWithTagsAndSubTasks.tags.forEach { tag ->
+    suspend fun insertTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
+        val taskId = insertTask(taskWithTagAndSubTask.task)
+        taskWithTagAndSubTask.tags?.forEach { tag ->
             insertTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskId))
         }
-        taskWithTagsAndSubTasks.subtasks.forEach { subTask ->
+        taskWithTagAndSubTask.subtasks?.forEach { subTask ->
             insertSubTask(subTask.copy(taskId = taskId))
         }
     }
 
     @Delete
-    suspend fun deleteTaskWithTagsAndSubTasks(taskWithTagsAndSubTasks: TaskWithTagsAndSubTasks) {
-        deleteTask(taskWithTagsAndSubTasks.task)
-        taskWithTagsAndSubTasks.tags.forEach { tag ->
-            deleteTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskWithTagsAndSubTasks.task.id!!))
+    suspend fun deleteTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
+        deleteTask(taskWithTagAndSubTask.task)
+        taskWithTagAndSubTask.tags?.forEach { tag ->
+            deleteTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskWithTagAndSubTask.task.id!!))
         }
-        taskWithTagsAndSubTasks.subtasks.forEach { subTask ->
+        taskWithTagAndSubTask.subtasks?.forEach { subTask ->
             deleteSubTask(subTask)
         }
     }
 
     @Transaction
     @Query("SELECT * FROM task")
-    fun getTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagsAndSubTasks>>
+    fun getTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction
     @Query("SELECT * FROM task WHERE id = :id")
-    suspend fun getTaskWithTagsAndSubTasksById(id: Long): TaskWithTagsAndSubTasks?
+    suspend fun getTaskWithTagsAndSubTasksById(id: Long): TaskWithTagAndSubTask?
 
     @Transaction
     @Query("SELECT * FROM task WHERE listId = :listId")
-    fun getTasksWithTagsAndSubTasksByListId(listId: Long): Flow<List<TaskWithTagsAndSubTasks>>
+    fun getTasksWithTagsAndSubTasksByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>>
 }
