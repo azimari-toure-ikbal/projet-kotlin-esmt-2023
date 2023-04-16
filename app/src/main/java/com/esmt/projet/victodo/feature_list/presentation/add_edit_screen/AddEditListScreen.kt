@@ -1,6 +1,5 @@
 package com.esmt.projet.victodo.feature_list.presentation.add_edit_screen
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -18,8 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
-import com.esmt.projet.victodo.feature_list.presentation.util.CircleColors
+import com.esmt.projet.victodo.feature_list.presentation.components.CircleColorPicker
+import com.esmt.projet.victodo.feature_list.presentation.components.CircleEmoticonPicker
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AddEditListScreen() {
     AddEditHeader(title = "New List") {
@@ -66,36 +67,16 @@ fun AddEditListScreen() {
                     .clip(RoundedCornerShape(10.dp))
                     .background(color = Color(0xFFEEF5FD))
             ) {
-                Column {
-                    Row(
+                Column() {
+                    FlowRow(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        maxItemsInEachRow = 6,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        for (i in 0..5) {
-                            Box (modifier = Modifier
-                                .size(42.dp)
-                                .clip(CircleShape)
-                            ) {
-                                CircleCanvas(color = CircleColors.getArrayOfColors()[i])
-                            }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                    ) {
-                        for (i in 6..11) {
-                            Box (modifier = Modifier
-                                .size(42.dp)
-                                .clip(CircleShape)
-                            ) {
-                                CircleCanvas(color = CircleColors.getArrayOfColors()[i])
-                            }
-                        }
+                        CircleColorPicker()
                     }
                 }
             }
@@ -107,81 +88,19 @@ fun AddEditListScreen() {
                     .background(color = Color(0xFFEEF5FD))
             ) {
                 Column {
-                    Row(
+                    FlowRow(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        maxItemsInEachRow = 6,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        for (i in 0..5) {
-                            Box(
-                                Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
-                                    tint = Color.Blue,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                    ) {
-                        for (i in 0..5) {
-                            Box(
-                                Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
-                                    tint = Color.Blue,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                    ) {
-                        for (i in 0..5) {
-                            Box(
-                                Modifier
-                                    .size(42.dp)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add",
-                                    tint = Color.Blue,
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .align(Alignment.Center)
-                                )
-                            }
-                        }
+                       CircleEmoticonPicker()
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(64.dp))
             Button(
                 onClick = { /*TODO*/ },
                 shape = RoundedCornerShape(10.dp),
@@ -196,20 +115,6 @@ fun AddEditListScreen() {
                 Text(text = "Create List")
             }
         }
-    }
-}
-
-@Composable
-fun CircleCanvas(color: CircleColors) {
-    Canvas(
-        modifier = Modifier
-            .padding(4.dp)
-            .size(50.dp),
-    ) {
-        drawCircle(
-            color = color.color,
-            radius = 62f,
-        )
     }
 }
 
