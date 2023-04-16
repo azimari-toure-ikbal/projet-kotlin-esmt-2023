@@ -60,7 +60,7 @@ object  VictoAppModule {
     ): TaskListUseCases {
         return TaskListUseCases(
             getTaskList = GetTaskList(repository),
-            addTaskList = AddTaskList(repository, taskRepository),
+            addTaskList = AddTaskList(repository),
             deleteTaskList = DeleteTaskList(repository, taskRepository)
         )
     }
