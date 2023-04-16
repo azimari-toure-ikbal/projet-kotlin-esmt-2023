@@ -9,10 +9,10 @@ import androidx.room.PrimaryKey
 data class TaskList(
     @PrimaryKey val id: Long,
     val title: String,
-    val color: Int,//to check
-    val isPinned: Boolean,
-    val icon: String,
-    val isDefault: Boolean,
+    val color: Int = 1,//to check
+    val isPinned: Boolean = false,
+    val icon: String?,
+    val isDefault: Boolean = false,
 ){
     companion object {
         val listColors = listOf(
