@@ -11,7 +11,7 @@ import kotlin.collections.List
 
 @Entity(tableName = "task")
 data class Task(
-    @PrimaryKey val id: Long?=0,
+    @PrimaryKey val id: Long?=null,
     val name: String,
     val note: String?=null,
     val isEnded: Boolean=false,

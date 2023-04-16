@@ -14,7 +14,7 @@ interface TaskListDao {
 
     @Transaction
     @Query("SELECT * FROM lists WHERE id = :id")
-    suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks?
+    fun getListById(id: Long): Flow<TaskListWithTasksAndTagsSubTasks>
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -23,5 +23,12 @@ interface TaskListDao {
     @Transaction
     @Delete
     suspend fun deleteList(list: TaskList)
+
+    //Search list by name
+    @Transaction
+    @Query("SELECT * FROM lists WHERE title LIKE '%' || :title || '%'")
+    fun searchLists(title: String): Flow<List<TaskListWithTasksAndTagsSubTasks>>
+
+
 
 }

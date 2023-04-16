@@ -8,14 +8,14 @@ class AddTaskUseCase (
     val repository: TaskRepository
 ) {
     @Throws(InvalidTaskException::class)
-    suspend operator fun invoke(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
-        if(taskWithTagAndSubTask.task.listId == 0L)
+    suspend operator fun invoke(taskWithTagAndSubTask: TaskWithTagAndSubTask){
+        if(taskWithTagAndSubTask.task.listId == null)
             throw InvalidTaskException("Task must be associated with a list")
         if(taskWithTagAndSubTask.task.name.isBlank())
             throw InvalidTaskException("Task must have a title")
         taskWithTagAndSubTask.tags?.let {tags->
             for(tag in tags) {
-                if(tag.id!! < 1L)
+                if(tag.id == null)
                     throw InvalidTaskException("Tag must have an id")
             }
         }
