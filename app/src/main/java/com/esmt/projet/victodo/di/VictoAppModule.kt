@@ -6,14 +6,13 @@ import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
 import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
-import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskList
+import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskListUseCase
+import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskListUseCase
+import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskListUseCase
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
-import com.esmt.projet.victodo.feature_task.data.repository.TaskRepositoryImpl
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.*
 import dagger.Module
@@ -59,9 +58,9 @@ object  VictoAppModule {
         taskRepository: TaskRepository
     ): TaskListUseCases {
         return TaskListUseCases(
-            getTaskList = GetTaskList(repository),
-            addTaskList = AddTaskList(repository),
-            deleteTaskList = DeleteTaskList(repository, taskRepository)
+            getTaskListUseCase = GetTaskListUseCase(repository),
+            addTaskListUseCase = AddTaskListUseCase(repository),
+            deleteTaskListUseCase = DeleteTaskListUseCase(repository, taskRepository)
         )
     }
 

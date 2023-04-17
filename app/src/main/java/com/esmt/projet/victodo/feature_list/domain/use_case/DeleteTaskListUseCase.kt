@@ -4,7 +4,7 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTag
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 
-class DeleteTaskList(
+class DeleteTaskListUseCase(
     private val repository: TaskListRepository,
     private val taskRepository: TaskRepository
 ) {
