@@ -6,14 +6,13 @@ import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
 import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
-import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskList
-import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskList
+import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskListUseCase
+import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskListUseCase
+import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskListUseCase
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
-import com.esmt.projet.victodo.feature_task.data.repository.TaskRepositoryImpl
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.*
 import dagger.Module
@@ -28,7 +27,6 @@ import javax.inject.Singleton
 object  VictoAppModule {
 
 
-//DATABASE
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
@@ -39,35 +37,7 @@ object  VictoAppModule {
         ).build()
     }
 
-//REPOSITORY
-    @Provides
-    @Singleton
-    fun provideTaskListRepository(db: TaskDatabase): TaskListRepository {
-        return TaskListRepositoryImpl(db.taskListDao)
-    }
 
-
-
-
-//USE CASES
-
-
-    @Provides
-    @Singleton
-    fun provideTaskListUseCases(
-        repository: TaskListRepository,
-        taskRepository: TaskRepository
-    ): TaskListUseCases {
-        return TaskListUseCases(
-            getTaskList = GetTaskList(repository),
-            addTaskList = AddTaskList(repository),
-            deleteTaskList = DeleteTaskList(repository, taskRepository)
-        )
-    }
-
-
-
-//DATA STORE
     @Provides
     @Singleton
     fun provideDataStoreRepository(

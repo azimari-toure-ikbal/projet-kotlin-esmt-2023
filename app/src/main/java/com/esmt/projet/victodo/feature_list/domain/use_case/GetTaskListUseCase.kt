@@ -4,7 +4,7 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTag
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetTaskList(
+class GetTaskListUseCase(
     private val repository: TaskListRepository
 ) {
     operator fun invoke(): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
