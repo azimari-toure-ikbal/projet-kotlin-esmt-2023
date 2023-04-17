@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "lists")
 data class TaskList(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: Long? =null,
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
-    val icon: String?,
+    val icon: String? = null,
     val isDefault: Boolean = false,
 ){
     companion object {

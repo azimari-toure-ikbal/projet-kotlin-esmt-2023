@@ -8,17 +8,16 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class TaskDatabaseCallback(
-    val listDao: TaskListDao
+    private val listDao: TaskListDao
 ): RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
-//        val list = TaskList(
-//            title = "",
-//            color = 0,
-//            isDefault = true
-//        )
-//        GlobalScope.launch {
-//            listDao.insertList()
-//        }
+        val list = TaskList(
+            title = "Par défaut",
+            color = 0
+        )
+        GlobalScope.launch {
+            listDao.insertList(list)
+        }
     }
 }
