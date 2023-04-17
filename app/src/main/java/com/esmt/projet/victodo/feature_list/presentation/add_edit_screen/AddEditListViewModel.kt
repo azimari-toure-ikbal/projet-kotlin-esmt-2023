@@ -41,7 +41,12 @@ class AddEditViewModel @Inject constructor(
         savedStateHandle.get<Long>("listId")?.let { listId ->
             if (listId != -1L) {
                 viewModelScope.launch {
-                    
+                    listUseCases.getTaskListUseCase(listId).let { taskList ->
+                        currentListId = taskList.taskList.id
+                        _listTitle.value = AddEditListsState(taskList.taskList.title)
+                        _listColor.value = taskList.taskList.color
+                        _listIcon.value = taskList.taskList.icon ?: ""
+                    }
                 }
             }
         }
