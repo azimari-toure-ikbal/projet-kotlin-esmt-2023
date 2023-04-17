@@ -25,6 +25,6 @@ class AddTaskUseCase (
                     throw InvalidTaskException("SubTask must have a title")
             }
         }
-        repository.insert(taskWithTagAndSubTask)
+        repository.insertTask(taskWithTagAndSubTask)
     }
 }

@@ -1,8 +1,9 @@
 package com.esmt.projet.victodo.feature_task.domain.use_case
 
+import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.data.repository.FakeTaskRepository
-import com.esmt.projet.victodo.feature_task.domain.model.InvalidTaskException
+
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
@@ -24,7 +25,7 @@ class DeleteTaskUseCaseTest {
         taskRepository = FakeTaskRepository()
         deleteTaskUseCase = DeleteTaskUseCase(repository = taskRepository)
         runBlocking {
-            taskRepository.insert(
+            taskRepository.insertTask(
                 TaskWithTagAndSubTask(
                     task = Task(
                         id = 1,
@@ -69,7 +70,7 @@ class DeleteTaskUseCaseTest {
         )
         runBlocking {
             deleteTaskUseCase(taskToDelete)
-            taskRepository.getAll().collect(){
+            taskRepository.getTasks().collect(){
                 assertThat(it).doesNotContain(taskToDelete)
             }
         }

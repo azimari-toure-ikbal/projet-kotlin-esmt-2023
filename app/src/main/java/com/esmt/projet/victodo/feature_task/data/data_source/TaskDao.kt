@@ -1,13 +1,11 @@
 package com.esmt.projet.victodo.feature_task.data.data_source
 
 import androidx.room.*
-import com.esmt.projet.victodo.core.util.Converters
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.TagTaskCrossRef
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
 
 @Dao
 interface TaskDao {
@@ -63,17 +61,21 @@ interface TaskDao {
     @Query("SELECT * FROM task WHERE listId = :listId")
     fun getTasksWithTagsAndSubTasksByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>>
 
-//    @Transaction
-//    @Query(""
-//    )
-//    fun getTasksWithTagsAndSubTasksScheduled(): Flow<List<TaskWithTagAndSubTask>>
+    @Transaction
+    @Query(
+        "SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate >= date() AND isEnded = 'false'"
+    )
+    fun getScheduledTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction
     @Query("SELECT * FROM task WHERE isEnded = 'true'")
-    fun getTasksWithTagsAndSubTasksCompleted(): Flow<List<TaskWithTagAndSubTask>>
+    fun getCompletedTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction
-    @Query("SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate < strftime('%Y-%m-%d', 'now', 'localtime') AND isEnded = 'false'")
-    fun getTasksWithTagsAndSubTasksLate(): Flow<List<TaskWithTagAndSubTask>>
+    @Query("SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate < date() AND isEnded = 'false'")
+    fun getLateTasksWithTagsAndSubTask(): Flow<List<TaskWithTagAndSubTask>>
 
+    @Transaction
+    @Query("SELECT * FROM task WHERE dueDate = date()")
+    fun getTodayTasksWithTagsAndSubTask(): Flow<List<TaskWithTagAndSubTask>>
 }
