@@ -27,7 +27,6 @@ import javax.inject.Singleton
 object  VictoAppModule {
 
 
-//DATABASE
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
@@ -38,35 +37,7 @@ object  VictoAppModule {
         ).build()
     }
 
-//REPOSITORY
-    @Provides
-    @Singleton
-    fun provideTaskListRepository(db: TaskDatabase): TaskListRepository {
-        return TaskListRepositoryImpl(db.taskListDao)
-    }
 
-
-
-
-//USE CASES
-
-
-    @Provides
-    @Singleton
-    fun provideTaskListUseCases(
-        repository: TaskListRepository,
-        taskRepository: TaskRepository
-    ): TaskListUseCases {
-        return TaskListUseCases(
-            getTaskListUseCase = GetTaskListUseCase(repository),
-            addTaskListUseCase = AddTaskListUseCase(repository),
-            deleteTaskListUseCase = DeleteTaskListUseCase(repository, taskRepository)
-        )
-    }
-
-
-
-//DATA STORE
     @Provides
     @Singleton
     fun provideDataStoreRepository(
