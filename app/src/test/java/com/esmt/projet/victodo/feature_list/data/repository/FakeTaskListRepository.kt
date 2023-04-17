@@ -15,8 +15,8 @@ class FakeTaskListRepository: TaskListRepository{
         return flow { emit(lists) }
     }
 
-    override fun getListById(id: Long): Flow<TaskListWithTasksAndTagsSubTasks>{
-        return flow { lists.find { it.taskList.id == id }?.let { emit(it) } }
+    override suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks{
+        return lists.find { it.taskList.id == id }!!
     }
 
     override suspend fun insertList(list: TaskList) {
