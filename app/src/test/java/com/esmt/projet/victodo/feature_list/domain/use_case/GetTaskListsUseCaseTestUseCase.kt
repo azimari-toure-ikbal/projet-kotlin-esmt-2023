@@ -10,9 +10,9 @@ import org.junit.Before
 
 import org.junit.Test
 
-class GetTaskListUseCaseTest {
+class GetTaskListsUseCaseTestUseCase {
 
-    private lateinit var getTaskListUseCase: GetTaskListUseCase
+    private lateinit var getTaskListsUseCase: GetTaskListsUseCase
     private lateinit var repository: FakeTaskListRepository
     private val startList = listOf<TaskListWithTasksAndTagsSubTasks>(
         TaskListWithTasksAndTagsSubTasks(
@@ -43,7 +43,7 @@ class GetTaskListUseCaseTest {
     @Before
     fun setUp() {
         repository = FakeTaskListRepository()
-        getTaskListUseCase = GetTaskListUseCase(repository)
+        getTaskListsUseCase = GetTaskListsUseCase(repository)
 
         //add some data to the repository
 
@@ -56,7 +56,7 @@ class GetTaskListUseCaseTest {
 
     @Test
     fun `getTaskList should return all the lists`() = runBlocking {
-        val result = getTaskListUseCase().first()
+        val result = getTaskListsUseCase().first()
 
         startList.forEachIndexed() { index, taskList ->
             assertEquals(taskList, result[index])

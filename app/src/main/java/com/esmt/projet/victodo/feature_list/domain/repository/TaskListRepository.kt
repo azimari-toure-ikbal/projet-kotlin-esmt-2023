@@ -8,7 +8,7 @@ interface TaskListRepository {
 
     fun getLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>>
 
-    fun getListById(id: Long): Flow<TaskListWithTasksAndTagsSubTasks>
+    suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks
 
     suspend fun insertList(list: TaskList)
 

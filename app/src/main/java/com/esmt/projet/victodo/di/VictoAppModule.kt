@@ -4,16 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
-import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
-import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
-import com.esmt.projet.victodo.feature_list.domain.use_case.AddTaskListUseCase
-import com.esmt.projet.victodo.feature_list.domain.use_case.DeleteTaskListUseCase
-import com.esmt.projet.victodo.feature_list.domain.use_case.GetTaskListUseCase
-import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
-import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import com.esmt.projet.victodo.feature_task.domain.use_case.*
 import dagger.Module
 import dagger.Provides
