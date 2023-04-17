@@ -11,7 +11,7 @@ data class TaskList(
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
-    val icon: String?,
+    val icon: Int,
     val isDefault: Boolean = false,
 ){
     companion object {

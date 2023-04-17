@@ -5,5 +5,6 @@ data class TaskListUseCases (
     val deleteTaskListUseCase: DeleteTaskListUseCase,
     val getTaskListsUseCase: GetTaskListsUseCase,
     val searchTaskList: SearchTaskListsUseCase,
-    val getTaskListUseCase: GetTaskListUseCase
+    val getTaskListUseCase: GetTaskListUseCase,
+    val getUtilTaskListsUseCase: GetUtilTaskListsUseCase
 )

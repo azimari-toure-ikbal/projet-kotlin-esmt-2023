@@ -20,7 +20,7 @@ class GetTaskListsUseCaseTestUseCase {
                 id = 1,
                 title = "List 1",
                 color = 1,
-                icon = "ic_baseline_list_24",
+                icon = 0,
                 isPinned = false,
                 isDefault = false
             ),
@@ -31,7 +31,7 @@ class GetTaskListsUseCaseTestUseCase {
                 id = 2,
                 title = "List 2",
                 color = 2,
-                icon = "ic_baseline_list_24",
+                icon = 1,
                 isPinned = false,
                 isDefault = false
             ),
