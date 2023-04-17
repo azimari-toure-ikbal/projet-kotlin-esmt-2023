@@ -10,7 +10,7 @@ class GetUtilTaskListsUseCase(
     val repository: TaskListRepository,
     val taskRepository: TaskRepository
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(): List<TaskListWithTasksAndTagsSubTasks> {
         val lists = listOf<TaskListWithTasksAndTagsSubTasks>()
 
         lists.plus(
@@ -68,5 +68,6 @@ class GetUtilTaskListsUseCase(
                 tasks = taskRepository.getCompletedTasks().first()
             )
         )
+        return lists;
     }
 }
