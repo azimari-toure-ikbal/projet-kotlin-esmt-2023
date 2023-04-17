@@ -22,4 +22,3 @@ data class Task(
     val listId: Long?=null,
 )
 
-class InvalidTaskException(message: String) : Exception(message)

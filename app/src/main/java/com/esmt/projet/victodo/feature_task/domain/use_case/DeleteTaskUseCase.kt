@@ -1,6 +1,6 @@
 package com.esmt.projet.victodo.feature_task.domain.use_case
 
-import com.esmt.projet.victodo.feature_task.domain.model.InvalidTaskException
+import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 

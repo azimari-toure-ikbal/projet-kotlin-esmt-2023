@@ -26,7 +26,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object  VictoAppModule {
 
-
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
