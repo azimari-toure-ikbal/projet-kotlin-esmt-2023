@@ -28,5 +28,4 @@ class TaskListRepositoryImpl(
     override fun searchLists(name: String): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
         return taskListDao.searchLists(name)
     }
-
 }

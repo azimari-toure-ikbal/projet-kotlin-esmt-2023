@@ -1,8 +1,9 @@
 package com.esmt.projet.victodo.feature_task.domain.use_case
 
+import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.data.repository.FakeTaskRepository
-import com.esmt.projet.victodo.feature_task.domain.model.InvalidTaskException
+
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
@@ -45,7 +46,7 @@ class AddTaskUseCaseTest {
         )
         runBlocking {
             addTaskUseCase(taskWithTagAndSubTask)
-            taskRepository.getAll().collect { tasks ->
+            taskRepository.getTasks().collect { tasks ->
                 assertThat(tasks).contains(taskWithTagAndSubTask)
             }
         }
@@ -59,7 +60,8 @@ class AddTaskUseCaseTest {
                 listId = 1
             )
         )
-        val e= assertThrows(InvalidTaskException::class.java
+        val e= assertThrows(
+            InvalidTaskException::class.java
         ) {
             runBlocking {
                 addTaskUseCase(taskWithTagAndSubTask)

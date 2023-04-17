@@ -10,7 +10,7 @@ class DeleteTaskListUseCase(
 ) {
     suspend operator fun invoke(list: TaskListWithTasksAndTagsSubTasks) {
         list.tasks.forEach { task ->
-            taskRepository.delete(task)
+            taskRepository.deleteTask(task)
         }
         repository.deleteList(list.taskList)
     }

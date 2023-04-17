@@ -9,13 +9,13 @@ class FakeTaskRepository: TaskRepository {
 
     private val taskWithTagAndSubTasks = mutableListOf<TaskWithTagAndSubTask>()
 
-    override fun getAll(): Flow<List<TaskWithTagAndSubTask>> {
+    override fun getTasks(): Flow<List<TaskWithTagAndSubTask>> {
         return flow {
             emit(taskWithTagAndSubTasks)
         }
     }
 
-    override fun getAllByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>> {
+    override fun getTasksByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>> {
         return flow {
             emit(
                 taskWithTagAndSubTasks.filter {
@@ -25,18 +25,34 @@ class FakeTaskRepository: TaskRepository {
         }
     }
 
-    override suspend fun getById(id: Long): TaskWithTagAndSubTask? {
+    override suspend fun getTaskById(id: Long): TaskWithTagAndSubTask? {
         return taskWithTagAndSubTasks.find {
             it.task.id == id
         }
     }
 
-    override suspend fun insert(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
+    override suspend fun insertTask(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
         taskWithTagAndSubTasks.add(taskWithTagAndSubTask)
     }
 
-    override suspend fun delete(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
+    override suspend fun deleteTask(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
         taskWithTagAndSubTasks.remove(taskWithTagAndSubTask)
+    }
+
+    override fun getScheduledTasks(): Flow<List<TaskWithTagAndSubTask>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getTodayTasks(): Flow<List<TaskWithTagAndSubTask>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLateTasks(): Flow<List<TaskWithTagAndSubTask>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getCompletedTasks(): Flow<List<TaskWithTagAndSubTask>> {
+        TODO("Not yet implemented")
     }
 
 }

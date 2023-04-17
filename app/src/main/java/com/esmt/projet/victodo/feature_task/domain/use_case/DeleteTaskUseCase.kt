@@ -11,6 +11,6 @@ class DeleteTaskUseCase(
     suspend operator fun invoke(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
         if(taskWithTagAndSubTask.task.id ==null || taskWithTagAndSubTask.task.id <= 0)
             throw InvalidTaskException("Task to delete must have id")
-        repository.delete(taskWithTagAndSubTask)
+        repository.deleteTask(taskWithTagAndSubTask)
     }
 }
