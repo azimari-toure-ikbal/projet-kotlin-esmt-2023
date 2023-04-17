@@ -4,5 +4,9 @@ data class TaskUseCases (
     val addTaskUseCase: AddTaskUseCase,
     val deleteTaskUseCase: DeleteTaskUseCase,
     val getTaskUseCase: GetTaskUseCase,
-    val getTasksUseCase: GetTasksUseCase
+    val getTasksUseCase: GetTasksUseCase,
+    val getCompletedTasksUseCase: GetCompletedTasksUseCase,
+    val getScheduledTasksUseCase: GetScheduledTasksUseCase,
+    val getLateTasksUseCase: GetLateTasksUseCase,
+    val getTodayTasksUseCase: GetTodayTasksUseCase
 )
