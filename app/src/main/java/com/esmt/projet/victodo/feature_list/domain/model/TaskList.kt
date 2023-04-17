@@ -2,8 +2,8 @@ package com.esmt.projet.victodo.feature_list.domain.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.esmt.projet.victodo.R
 
 @Entity(tableName = "lists")
 data class TaskList(
@@ -11,10 +11,16 @@ data class TaskList(
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
-    val icon: String? = null,
+    val icon: Int = 0,
     val isDefault: Boolean = false,
 ){
     companion object {
+
+        val listIcons = listOf(
+            R.drawable.ic_launcher_foreground,
+            R.drawable.ic_launcher_foreground,
+        )
+
         val listColors = listOf(
             Color(0xFFCB2F2F),
             Color(0xFF006EE9),

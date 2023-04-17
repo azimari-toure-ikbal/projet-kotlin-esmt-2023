@@ -1,6 +1,7 @@
 package com.esmt.projet.victodo.feature_list.presentation.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,9 @@ fun CircleColorPicker() {
             modifier = Modifier
                 .size(42.dp)
                 .clip(CircleShape)
+                .clickable {
+
+                }
         ) {
             CircleCanvas(color = CircleColors.getArrayOfColors()[i])
         }
