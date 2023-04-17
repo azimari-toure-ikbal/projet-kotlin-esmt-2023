@@ -16,12 +16,18 @@ data class TaskList(
 ){
     companion object {
         val listColors = listOf(
-            Color.Red,
-            Color.LightGray,
-            Color.Green,
-            Color.Blue,
-            Color.Magenta,
-            Color.Yellow
+            Color(0xFFCB2F2F),
+            Color(0xFF006EE9),
+            Color(0xFF35AB4F),
+            Color(0xFF7B61FF),
+            Color(0xFFF24E1E),
+            Color(0xFFFF7262),
+            Color(0xFF362075),
+            Color(0xFF434343),
+            Color(0xFF97C8FF),
+            Color(0xFFEBDBCF),
+            Color(0xFFFFE7AA),
+            Color(0xFFB66200)
         )
     }
 }

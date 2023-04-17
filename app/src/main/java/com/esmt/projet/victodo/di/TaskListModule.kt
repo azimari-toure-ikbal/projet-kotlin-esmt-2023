@@ -21,7 +21,6 @@ class TaskListModule {
         return TaskListRepositoryImpl(db.taskListDao)
     }
 
-
     @Provides
     @Singleton
     fun provideTaskListUseCases(
