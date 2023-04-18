@@ -13,7 +13,7 @@ class TaskListRepositoryImpl(
         return taskListDao.getLists()
     }
 
-    override fun getListById(id: Long): Flow<TaskListWithTasksAndTagsSubTasks> {
+    override suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks {
         return taskListDao.getListById(id)
     }
 
@@ -28,5 +28,4 @@ class TaskListRepositoryImpl(
     override fun searchLists(name: String): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
         return taskListDao.searchLists(name)
     }
-
 }

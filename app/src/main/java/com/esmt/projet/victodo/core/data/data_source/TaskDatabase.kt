@@ -1,6 +1,8 @@
 package com.esmt.projet.victodo.core.data.data_source
 
+import android.app.Application
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.esmt.projet.victodo.core.util.Converters
@@ -27,5 +29,23 @@ abstract class TaskDatabase: RoomDatabase() {
 
     companion object {
         const val DATABASE_NAME = "mockup_database"
+
+        @Volatile
+        private var instance: TaskDatabase? = null
+
+        fun getInstance(app: Application): TaskDatabase {
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(app).also { instance = it }
+            }
+        }
+
+        fun buildDatabase(app: Application): TaskDatabase{
+            return Room.databaseBuilder(
+                app,
+                TaskDatabase::class.java,
+                DATABASE_NAME
+            ).addCallback(TaskDatabaseCallback(getInstance(app).taskListDao))
+                .build()
+        }
     }
 }

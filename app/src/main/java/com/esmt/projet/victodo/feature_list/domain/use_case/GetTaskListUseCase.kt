@@ -2,9 +2,8 @@ package com.esmt.projet.victodo.feature_list.domain.use_case
 
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 
-class SearchLists(
+class GetTaskListUseCase (
     private val repository: TaskListRepository
-) {
-    operator fun invoke(searchQuery: String) = repository.searchLists(searchQuery)
-
+        ){
+    suspend operator fun invoke(id: Long) = repository.getListById(id)
 }

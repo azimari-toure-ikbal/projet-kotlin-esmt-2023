@@ -60,4 +60,22 @@ interface TaskDao {
     @Transaction
     @Query("SELECT * FROM task WHERE listId = :listId")
     fun getTasksWithTagsAndSubTasksByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>>
+
+    @Transaction
+    @Query(
+        "SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate >= date() AND isEnded = 'false'"
+    )
+    fun getScheduledTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
+
+    @Transaction
+    @Query("SELECT * FROM task WHERE isEnded = 'true'")
+    fun getCompletedTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
+
+    @Transaction
+    @Query("SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate < date() AND isEnded = 'false'")
+    fun getLateTasksWithTagsAndSubTask(): Flow<List<TaskWithTagAndSubTask>>
+
+    @Transaction
+    @Query("SELECT * FROM task WHERE dueDate = date()")
+    fun getTodayTasksWithTagsAndSubTask(): Flow<List<TaskWithTagAndSubTask>>
 }

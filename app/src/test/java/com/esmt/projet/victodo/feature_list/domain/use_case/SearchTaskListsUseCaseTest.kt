@@ -10,9 +10,9 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class SearchListsTest {
+class SearchTaskListsUseCaseTest {
 
-    private lateinit var searchLists: SearchLists
+    private lateinit var searchTaskListsUseCase: SearchTaskListsUseCase
     private lateinit var repository: FakeTaskListRepository
     private val startList = listOf<TaskListWithTasksAndTagsSubTasks>(
         TaskListWithTasksAndTagsSubTasks(
@@ -55,7 +55,7 @@ class SearchListsTest {
     @Before
     fun setUp() {
         repository = FakeTaskListRepository()
-        searchLists = SearchLists(repository)
+        searchTaskListsUseCase = SearchTaskListsUseCase(repository)
 
         //add some data to the repository
 
@@ -68,7 +68,7 @@ class SearchListsTest {
 
     @Test
     fun `searchLists should return all the lists`() = runBlocking {
-        val result = searchLists("prim").first()
+        val result = searchTaskListsUseCase("prim").first()
         assertEquals(1, result.toList().size)
     }
 

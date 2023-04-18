@@ -4,13 +4,13 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTag
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 
-class DeleteTaskList(
+class DeleteTaskListUseCase(
     private val repository: TaskListRepository,
     private val taskRepository: TaskRepository
 ) {
     suspend operator fun invoke(list: TaskListWithTasksAndTagsSubTasks) {
         list.tasks.forEach { task ->
-            taskRepository.delete(task)
+            taskRepository.deleteTask(task)
         }
         repository.deleteList(list.taskList)
     }

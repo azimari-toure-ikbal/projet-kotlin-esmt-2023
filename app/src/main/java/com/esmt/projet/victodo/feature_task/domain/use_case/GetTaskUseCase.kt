@@ -6,5 +6,5 @@ import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 class GetTaskUseCase (
     val repository: TaskRepository
 ) {
-    suspend operator fun invoke(id: Long): TaskWithTagAndSubTask? = repository.getById(id)
+    suspend operator fun invoke(id: Long): TaskWithTagAndSubTask? = repository.getTaskById(id)
 }

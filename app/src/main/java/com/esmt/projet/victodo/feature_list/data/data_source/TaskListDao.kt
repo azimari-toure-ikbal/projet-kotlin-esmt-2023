@@ -14,7 +14,7 @@ interface TaskListDao {
 
     @Transaction
     @Query("SELECT * FROM lists WHERE id = :id")
-    fun getListById(id: Long): Flow<TaskListWithTasksAndTagsSubTasks>
+    suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)

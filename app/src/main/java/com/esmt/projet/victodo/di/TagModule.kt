@@ -15,17 +15,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object TagModule {
-    @Provides
-    @Singleton
-    fun provideTagDatabase(app: Application): TaskDatabase {
-        return Room.databaseBuilder(
-            app,
-            TaskDatabase::class.java,
-            TaskDatabase.DATABASE_NAME
-        ).build()
-    }
-
-
 
     @Provides
     @Singleton

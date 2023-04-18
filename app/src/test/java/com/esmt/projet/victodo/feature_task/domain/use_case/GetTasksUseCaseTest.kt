@@ -50,7 +50,7 @@ class GetTasksUseCaseTest {
 
         runBlocking {
             for (task in tasks){
-                taskRepository.insert(task)
+                taskRepository.insertTask(task)
             }
         }
     }

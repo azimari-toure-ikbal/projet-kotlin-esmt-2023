@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetTasksUseCase (
     val repository: TaskRepository
 ) {
-    operator fun invoke(): Flow<List<TaskWithTagAndSubTask>> = repository.getAll()
+    operator fun invoke(): Flow<List<TaskWithTagAndSubTask>> = repository.getTasks()
 }

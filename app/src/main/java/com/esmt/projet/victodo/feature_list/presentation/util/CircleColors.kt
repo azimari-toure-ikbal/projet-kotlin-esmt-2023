@@ -33,5 +33,9 @@ sealed class CircleColors(val color: Color) {
                 twelfthColor,
             )
         }
+
+        fun size(): Int {
+            return getArrayOfColors().size
+        }
     }
 }

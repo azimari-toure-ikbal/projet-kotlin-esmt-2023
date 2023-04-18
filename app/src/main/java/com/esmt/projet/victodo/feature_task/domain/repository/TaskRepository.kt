@@ -4,13 +4,21 @@ import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
-    fun getAll(): Flow<List<TaskWithTagAndSubTask>>
+    fun getTasks(): Flow<List<TaskWithTagAndSubTask>>
 
-    fun getAllByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>>
+    fun getTasksByListId(listId: Long): Flow<List<TaskWithTagAndSubTask>>
 
-    suspend fun getById(id: Long): TaskWithTagAndSubTask?
+    suspend fun getTaskById(id: Long): TaskWithTagAndSubTask?
 
-    suspend fun insert(taskWithTagAndSubTask: TaskWithTagAndSubTask)
+    suspend fun insertTask(taskWithTagAndSubTask: TaskWithTagAndSubTask)
 
-    suspend fun delete(taskWithTagAndSubTask: TaskWithTagAndSubTask)
+    suspend fun deleteTask(taskWithTagAndSubTask: TaskWithTagAndSubTask)
+
+    fun getScheduledTasks(): Flow<List<TaskWithTagAndSubTask>>
+
+    fun getTodayTasks(): Flow<List<TaskWithTagAndSubTask>>
+
+    fun getLateTasks(): Flow<List<TaskWithTagAndSubTask>>
+
+    fun getCompletedTasks(): Flow<List<TaskWithTagAndSubTask>>
 }
