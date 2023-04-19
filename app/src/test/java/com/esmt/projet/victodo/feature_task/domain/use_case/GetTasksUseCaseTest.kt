@@ -44,6 +44,7 @@ class GetTasksUseCaseTest {
 
     @Before
     fun setUp() {
+
         taskRepository = FakeTaskRepository()
         getTasksUseCase = GetTasksUseCase(repository = taskRepository)
 

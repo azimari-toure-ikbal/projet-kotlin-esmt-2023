@@ -27,6 +27,10 @@ class TaskModule {
             getTasksUseCase = GetTasksUseCase(repository),
             getTaskUseCase = GetTaskUseCase(repository),
             deleteTaskUseCase = DeleteTaskUseCase(repository),
+            getCompletedTasksUseCase = GetCompletedTasksUseCase(repository),
+            getScheduledTasksUseCase = GetScheduledTasksUseCase(repository),
+            getLateTasksUseCase = GetLateTasksUseCase(repository),
+            getTodayTasksUseCase = GetTodayTasksUseCase(repository)
         )
     }
 }
