@@ -45,7 +45,7 @@ class AddEditViewModel @Inject constructor(
                         currentListId = taskList.taskList.id
                         _listTitle.value = AddEditListsState(taskList.taskList.title)
                         _listColor.value = taskList.taskList.color
-                        _listIcon.value = taskList.taskList.icon ?: ""
+                        _listIcon.value = (taskList.taskList.icon ?: "") as String
                     }
                 }
             }
