@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class TaskModule {
+object TaskModule {
     @Provides
     @Singleton
     fun provideTaskRepository(db: TaskDatabase): TaskRepository {
