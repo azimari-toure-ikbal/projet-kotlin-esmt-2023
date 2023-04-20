@@ -178,7 +178,7 @@ fun AddEditListScreen(
                                 id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
                                 title = titleState.listTitle,
                                 color = colorState,
-                                icon = iconState.toString(),
+                                icon = iconState,
                             )
                         )
                     )
