@@ -1,5 +1,9 @@
 package com.esmt.projet.victodo
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,7 +46,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition {
             !splashViewModel.isLoading.value
         }
-
         setContent {
             VictoDoTheme {
                 // A surface container using the 'background' color from the theme

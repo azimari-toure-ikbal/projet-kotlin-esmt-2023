@@ -23,15 +23,14 @@ object  VictoAppModule {
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
-//        return Room.databaseBuilder(
-//            app,
-//            TaskDatabase::class.java,
-//            TaskDatabase.DATABASE_NAME
-//        )
-//            .build()
         return TaskDatabase.getInstance(app)
     }
 
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 
     @Provides
     @Singleton

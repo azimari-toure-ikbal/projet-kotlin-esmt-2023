@@ -28,7 +28,7 @@ interface TaskDao {
     suspend fun deleteTagTaskCrossRef(tagTaskCrossRef: TagTaskCrossRef)
 
     @Transaction
-    suspend fun insertTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
+    suspend fun insertTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask): Long {
         val taskId = insertTask(taskWithTagAndSubTask.task)
         taskWithTagAndSubTask.tags?.forEach { tag ->
             insertTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskId))
@@ -36,6 +36,7 @@ interface TaskDao {
         taskWithTagAndSubTask.subtasks?.forEach { subTask ->
             insertSubTask(subTask.copy(taskId = taskId))
         }
+        return taskId
     }
 
     @Delete
