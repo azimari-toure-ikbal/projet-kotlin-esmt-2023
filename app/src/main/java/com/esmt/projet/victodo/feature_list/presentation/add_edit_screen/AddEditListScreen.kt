@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.presentation.components.CircleColorPicker
 import com.esmt.projet.victodo.feature_list.presentation.components.CircleEmoticonPicker
 import kotlinx.coroutines.launch
+import java.util.*
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -68,12 +70,10 @@ fun AddEditListScreen(
                     .size(72.dp)
                     .clip(CircleShape)
                     .background(listBackgroundColorAnimatable.value)
-//                    .background(Color(0xFFCB2F2F))
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add",
-                    tint = Color.White,
+                Image(
+                    painter = painterResource(id = iconState) ,
+                    contentDescription = null,
                     modifier = Modifier
                         .size(42.dp)
                         .align(Alignment.Center)
@@ -81,9 +81,15 @@ fun AddEditListScreen(
             }
             Spacer(modifier = Modifier.height(32.dp))
             TextField(
-                value = "List Name",
+                value = titleState.listTitle,
                 onValueChange = {
                     viewModel.onEvent(AddEditListsEvent.EnteredTitle(it))
+                },
+                placeholder = {
+                    Text(
+                        text = "List Title",
+                        textAlign = TextAlign.Center,
+                    )
                 },
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(
@@ -146,35 +152,37 @@ fun AddEditListScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         maxItemsInEachRow = 6,
                     ) {
-                        TaskList.listIcons.forEach {color ->
+                        TaskList.listIcons.forEach {icon ->
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .size(42.dp)
                                     .clip(CircleShape)
+                                    .background(Color.White)
                                     .clickable {
-                                        viewModel.onEvent(AddEditListsEvent.SelectedIcon(iconState))
+                                        viewModel.onEvent(AddEditListsEvent.SelectedIcon(icon))
                                     }
                             ) {
-                                Image(painter = painterResource(id = iconState.toInt()), contentDescription = null )
+                                Image(painter = painterResource(id = icon), contentDescription = null )
                             }
                         }
-                    }
-
-                    FlowRow(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        maxItemsInEachRow = 6,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp),
-                    ) {
-                       CircleEmoticonPicker()
                     }
                 }
             }
             Spacer(modifier = Modifier.height(64.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    println("Pressed")
+                    viewModel.onEvent(AddEditListsEvent.CreateList(
+                        TaskList
+                            (
+                                id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
+                                title = titleState.listTitle,
+                                color = colorState,
+                                icon = iconState.toString(),
+                            )
+                        )
+                    )
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF006EE9),

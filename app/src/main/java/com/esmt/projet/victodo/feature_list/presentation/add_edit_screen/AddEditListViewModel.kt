@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class AddEditViewModel @Inject constructor(
@@ -30,8 +31,8 @@ class AddEditViewModel @Inject constructor(
     private val _listColor = mutableStateOf<Int>(TaskList.listColors.random().toArgb())
     val listColor : State<Int> = _listColor
 
-    private val _listIcon = mutableStateOf<String>(TaskList.listIcons.random().toString())
-    val listIcon : State<String> = _listIcon
+    private val _listIcon = mutableStateOf<Int>(TaskList.listIcons[0])
+    val listIcon : State<Int> = _listIcon
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
 
@@ -45,7 +46,7 @@ class AddEditViewModel @Inject constructor(
                         currentListId = taskList.taskList.id
                         _listTitle.value = AddEditListsState(taskList.taskList.title)
                         _listColor.value = taskList.taskList.color
-                        _listIcon.value = taskList.taskList.icon ?: ""
+                        _listIcon.value = (taskList.taskList.icon ?: TaskList.listIcons[0]) as Int
                     }
                 }
             }
@@ -56,8 +57,10 @@ class AddEditViewModel @Inject constructor(
         when (event) {
             is AddEditListsEvent.EnteredTitle -> {
                 _listTitle.value = listTitle.value.copy(listTitle = event.title)
+                print(_listTitle.value)
             }
             is AddEditListsEvent.CreateList -> {
+                print("Creating list...")
                 viewModelScope.launch {
                     try {
                         listUseCases.addTaskListUseCase(
@@ -70,17 +73,21 @@ class AddEditViewModel @Inject constructor(
                                 isDefault = false
                             )
                         )
+                        print("List created successfully")
                         _eventFlow.emit(UiEvent.NavigateBackWithResult(Result.OK.ordinal))
                     } catch (e: InvalidListException) {
+                        print("Couldn't create list")
                         _eventFlow.emit(UiEvent.ShowInvalidInputMessage(e.message ?: "Couldn't create list"))
                     }
                 }
             }
             is AddEditListsEvent.SelectedColor -> {
                 _listColor.value = event.color
+                print(_listColor.value)
             }
             is AddEditListsEvent.SelectedIcon -> {
                 _listIcon.value = event.icon
+                print(_listIcon.value)
             }
         }
     }

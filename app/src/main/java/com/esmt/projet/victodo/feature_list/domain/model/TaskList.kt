@@ -18,7 +18,9 @@ data class TaskList(
         
         val listIcons = listOf(
             R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground,
+            R.drawable.ic_launcher_foreground2,
+            R.drawable.drop_down,
+            R.drawable.drop_up,
         )
                 
         val listColors = listOf(

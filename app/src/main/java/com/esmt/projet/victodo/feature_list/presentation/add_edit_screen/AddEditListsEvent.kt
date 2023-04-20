@@ -5,6 +5,6 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 sealed class AddEditListsEvent {
     data class EnteredTitle(val title: String) : AddEditListsEvent()
     data class SelectedColor(val color: Int) : AddEditListsEvent()
-    data class SelectedIcon(val icon: String) : AddEditListsEvent()
+    data class SelectedIcon(val icon: Int) : AddEditListsEvent()
     data class CreateList(val taskList: TaskList) : AddEditListsEvent()
 }
