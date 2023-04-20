@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.esmt.projet.victodo.core.presentation.HomeScreen
 import com.esmt.projet.victodo.core.presentation.util.Screen
+import com.esmt.projet.victodo.di.VictoAppModule
 import com.esmt.projet.victodo.feature_list.presentation.add_edit_screen.AddEditListScreen
 import com.esmt.projet.victodo.feature_onboarding.presentation.welcome_screen.SplashViewModel
 import com.esmt.projet.victodo.feature_onboarding.presentation.welcome_screen.WelcomeScreen

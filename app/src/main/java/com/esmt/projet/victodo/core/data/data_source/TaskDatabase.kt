@@ -1,6 +1,7 @@
 package com.esmt.projet.victodo.core.data.data_source
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -29,18 +30,19 @@ abstract class TaskDatabase: RoomDatabase() {
     abstract val taskDao: TaskDao
 
     companion object {
-        const val DATABASE_NAME = "mockup_database"
+        const val DATABASE_NAME = "task_database"
 
         @Volatile
         private var instance: TaskDatabase? = null
 
         fun getInstance(app: Application): TaskDatabase {
+            Log.i("infoDataR", "getinstance")
             return instance ?: synchronized(this) {
                 instance ?: buildDatabase(app).also { instance = it }
             }
         }
 
-        fun buildDatabase(@ApplicationContext app: Application): TaskDatabase{
+        fun buildDatabase(app: Application): TaskDatabase{
             return Room.databaseBuilder(
                 app,
                 TaskDatabase::class.java,

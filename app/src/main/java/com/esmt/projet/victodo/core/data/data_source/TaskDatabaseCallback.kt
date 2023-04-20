@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.core.data.data_source
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.esmt.projet.victodo.feature_list.data.data_source.TaskListDao
@@ -15,6 +16,7 @@ class TaskDatabaseCallback(
 ): RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         super.onCreate(db)
+        Log.i("infoDataR", "appel de la callback")
 //        CoroutineScope(Dispatchers.IO).launch {
 //            val list = TaskList(
 //                title = "Par défaut",
@@ -25,12 +27,13 @@ class TaskDatabaseCallback(
 //        }
         val executor = Executors.newSingleThreadExecutor()
         executor.execute {
-            runBlocking(Dispatchers.IO) {
+            runBlocking {
                 val list = TaskList(
                     title = "Par défaut",
                     color = 0
                 )
                 val database = TaskDatabase.getInstance(application)
+                Log.i("infoDataR", "ajout de la liste")
                 database.taskListDao.insertList(list)
             }
         }

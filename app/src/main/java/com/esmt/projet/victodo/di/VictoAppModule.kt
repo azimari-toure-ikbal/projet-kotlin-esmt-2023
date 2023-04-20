@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.di
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabaseCallback
@@ -23,7 +24,13 @@ object  VictoAppModule {
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
-        return TaskDatabase.getInstance(app)
+//        return TaskDatabase.getInstance(app)
+        Log.i("infoDataR", "build de la db")
+        return Room.databaseBuilder(
+            app,
+            TaskDatabase::class.java,
+            TaskDatabase.DATABASE_NAME
+        ).build()
     }
 
     @Provides
