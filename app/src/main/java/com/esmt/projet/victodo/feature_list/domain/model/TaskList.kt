@@ -7,22 +7,22 @@ import com.esmt.projet.victodo.R
 
 @Entity(tableName = "lists")
 data class TaskList(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: Long? =null,
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
-    val icon: String?,
+    val icon: Int = 0,
     val isDefault: Boolean = false,
 ){
     companion object {
-        
+
         val listIcons = listOf(
             R.drawable.ic_launcher_foreground,
             R.drawable.ic_launcher_foreground2,
             R.drawable.drop_down,
             R.drawable.drop_up,
         )
-                
+
         val listColors = listOf(
             Color(0xFFCB2F2F),
             Color(0xFF006EE9),
@@ -37,7 +37,5 @@ data class TaskList(
             Color(0xFFFFE7AA),
             Color(0xFFB66200)
         )
-        
-        
     }
 }

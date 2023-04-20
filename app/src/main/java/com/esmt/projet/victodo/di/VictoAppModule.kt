@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.esmt.projet.victodo.core.data.data_source.TaskDatabase
+import com.esmt.projet.victodo.core.data.data_source.TaskDatabaseCallback
 //import com.esmt.projet.victodo.feature_list.data.repository.TaskListRepositoryImpl
 //import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_onboarding.data.repository.DataStoreRepository
@@ -22,11 +23,13 @@ object  VictoAppModule {
     @Provides
     @Singleton
     fun provideTaskDatabase(app: Application): TaskDatabase {
-        return Room.databaseBuilder(
-            app,
-            TaskDatabase::class.java,
-            TaskDatabase.DATABASE_NAME
-        ).build()
+//        return Room.databaseBuilder(
+//            app,
+//            TaskDatabase::class.java,
+//            TaskDatabase.DATABASE_NAME
+//        )
+//            .build()
+        return TaskDatabase.getInstance(app)
     }
 
 

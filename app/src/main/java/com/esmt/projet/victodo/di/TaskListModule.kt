@@ -32,7 +32,8 @@ class TaskListModule {
             getTaskListsUseCase = GetTaskListsUseCase(repository),
             deleteTaskListUseCase = DeleteTaskListUseCase(repository, taskRepository),
             searchTaskList = SearchTaskListsUseCase(repository),
-            getTaskListUseCase = GetTaskListUseCase(repository)
+            getTaskListUseCase = GetTaskListUseCase(repository),
+            getUtilTaskListsUseCase = GetUtilTaskListsUseCase(repository, taskRepository)
         )
     }
 
