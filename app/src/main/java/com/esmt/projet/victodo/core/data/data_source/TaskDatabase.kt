@@ -14,6 +14,7 @@ import com.esmt.projet.victodo.feature_task.data.data_source.TaskDao
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.TagTaskCrossRef
 import com.esmt.projet.victodo.feature_task.domain.model.Task
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
     entities = [Tag::class, Task::class, TaskList::class, SubTask::class, TagTaskCrossRef::class],
@@ -39,12 +40,12 @@ abstract class TaskDatabase: RoomDatabase() {
             }
         }
 
-        fun buildDatabase(app: Application): TaskDatabase{
+        fun buildDatabase(@ApplicationContext app: Application): TaskDatabase{
             return Room.databaseBuilder(
                 app,
                 TaskDatabase::class.java,
                 DATABASE_NAME
-            ).addCallback(TaskDatabaseCallback(getInstance(app).taskListDao))
+            ).addCallback(TaskDatabaseCallback(app))
                 .build()
         }
     }

@@ -10,7 +10,7 @@ interface TaskRepository {
 
     suspend fun getTaskById(id: Long): TaskWithTagAndSubTask?
 
-    suspend fun insertTask(taskWithTagAndSubTask: TaskWithTagAndSubTask)
+    suspend fun insertTask(taskWithTagAndSubTask: TaskWithTagAndSubTask): Long
 
     suspend fun deleteTask(taskWithTagAndSubTask: TaskWithTagAndSubTask)
 
