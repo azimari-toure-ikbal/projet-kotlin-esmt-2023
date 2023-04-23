@@ -24,7 +24,7 @@ class AddTaskUseCase (
     suspend operator fun invoke(
         taskWithTagAndSubTask: TaskWithTagAndSubTask,
         @ApplicationContext context: Context
-    ){
+    ): Long{
         if(taskWithTagAndSubTask.task.listId == null)
             throw InvalidTaskException("Task must be associated with a list")
         if(taskWithTagAndSubTask.task.name.isBlank())
@@ -54,5 +54,7 @@ class AddTaskUseCase (
             ExistingWorkPolicy.REPLACE,
             notifierWorkerRequest
         ).enqueue()
+
+        return id
     }
 }
