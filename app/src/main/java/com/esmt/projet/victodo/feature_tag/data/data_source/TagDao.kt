@@ -10,7 +10,7 @@ interface TagDao {
     fun getTags(): Flow<List<Tag>>
 
     @Query("SELECT * FROM tag WHERE id= :id")
-    suspend fun getTagById(id: Int): Tag?
+    suspend fun getTagById(id: Long): Tag?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTag(tag: Tag)
