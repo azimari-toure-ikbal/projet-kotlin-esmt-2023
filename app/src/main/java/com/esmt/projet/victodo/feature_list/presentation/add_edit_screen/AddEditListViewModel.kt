@@ -11,6 +11,7 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -26,13 +27,14 @@ class AddEditViewModel @Inject constructor(
     ))
     val listTitle : State<AddEditListsState> = _listTitle
     
-    private val _listColor = mutableStateOf<Int>(TaskList.listColors.random().toArgb())
+    private val _listColor = mutableStateOf(TaskList.listColors.random().toArgb())
     val listColor : State<Int> = _listColor
 
-    private val _listIcon = mutableStateOf<Int>(TaskList.listIcons[0])
+    private val _listIcon = mutableStateOf(TaskList.listIcons[0])
     val listIcon : State<Int> = _listIcon
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private var currentListId : Long? = null
 
@@ -63,7 +65,7 @@ class AddEditViewModel @Inject constructor(
                     try {
                         listUseCases.addTaskListUseCase(
                             TaskList(
-                                id = currentListId ?: generateUUID(),
+                                id = currentListId,
                                 title = event.taskList.title,
                                 color = event.taskList.color,
                                 isPinned = false,
@@ -96,9 +98,9 @@ sealed class UiEvent {
     data class NavigateBackWithResult(val result: Int) : UiEvent()
 }
 
-private fun generateUUID(): Long {
-    return UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE
-}
+//private fun generateUUID(): Long {
+//    return UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE
+//}
 
 private enum class Result {
     OK, CANCELED

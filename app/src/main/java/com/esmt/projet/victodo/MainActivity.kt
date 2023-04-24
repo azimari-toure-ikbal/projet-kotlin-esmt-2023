@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -20,9 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.esmt.projet.victodo.core.presentation.HomeScreen
 import com.esmt.projet.victodo.core.presentation.util.Screen
 import com.esmt.projet.victodo.di.VictoAppModule
@@ -66,7 +69,26 @@ class MainActivity : ComponentActivity() {
                             WelcomeScreen(navController = navController)
                         }
                         composable(route = Screen.HomeScreen.route) {
-//                            HomeScreen()
+                            HomeScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.AddEditListScreen.route +
+                                    "?listId={listId}&listColor={listColor}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "listId"
+                                ) {
+                                   type = NavType.LongType
+                                   defaultValue = -1L
+                                },
+                                navArgument(
+                                    name = "listColor"
+                                ) {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                }
+                            )
+                        ) {
                             val color = it.arguments?.getInt("listColor") ?: -1
                             AddEditListScreen(
                                 navController = navController,

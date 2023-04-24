@@ -1,24 +1,21 @@
 package com.esmt.projet.victodo.feature_list.presentation.add_edit_screen
 
+import android.util.Log
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +28,7 @@ import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.presentation.components.CircleColorPicker
 import com.esmt.projet.victodo.feature_list.presentation.components.CircleEmoticonPicker
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -57,6 +55,27 @@ fun AddEditListScreen(
 
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when(event) {
+                is UiEvent.NavigateBackWithResult -> {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "add_edit_result",
+                        event.result
+                    )
+                    navController.popBackStack()
+                }
+                is UiEvent.ShowInvalidInputMessage -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = "Close",
+                        duration = SnackbarDuration.Long
+                    )
+                }
+            }
+        }
+    }
+
     AddEditHeader(title = "New List") {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,6 +83,7 @@ fun AddEditListScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Box(
                 Modifier
@@ -76,8 +96,9 @@ fun AddEditListScreen(
                     contentDescription = null,
                     modifier = Modifier
                         .size(42.dp)
-                        .align(Alignment.Center)
-                )
+                        .align(Alignment.Center),
+                    colorFilter = ColorFilter.tint(color = Color.White),
+                    )
             }
             Spacer(modifier = Modifier.height(32.dp))
             TextField(
@@ -162,7 +183,13 @@ fun AddEditListScreen(
                                         viewModel.onEvent(AddEditListsEvent.SelectedIcon(icon))
                                     }
                             ) {
-                                Image(painter = painterResource(id = icon), contentDescription = null )
+                                Image(
+                                    painter = painterResource(id = icon),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .align(Alignment.Center)
+                                )
                             }
                         }
                     }
@@ -175,7 +202,7 @@ fun AddEditListScreen(
                     viewModel.onEvent(AddEditListsEvent.CreateList(
                         TaskList
                             (
-                                id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
+//                                id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
                                 title = titleState.listTitle,
                                 color = colorState,
                                 icon = iconState,

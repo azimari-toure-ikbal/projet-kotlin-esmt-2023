@@ -17,10 +17,24 @@ data class TaskList(
     companion object {
 
         val listIcons = listOf(
-            R.drawable.ic_launcher_foreground,
-            R.drawable.ic_launcher_foreground2,
-            R.drawable.drop_down,
-            R.drawable.drop_up,
+            R.drawable.list_icon1_24px,
+            R.drawable.list_icon2_24px,
+            R.drawable.list_icon3_24px,
+            R.drawable.list_icon4_24px,
+            R.drawable.list_icon5_24px,
+            R.drawable.list_icon6_24px,
+            R.drawable.list_icon7_24px,
+            R.drawable.list_icon8_24px,
+            R.drawable.list_icon9_24px,
+            R.drawable.list_icon10_24px,
+            R.drawable.list_icon11_24px,
+            R.drawable.list_icon12_24px,
+            R.drawable.list_icon13_24px,
+            R.drawable.list_icon14_24px,
+            R.drawable.list_icon15_24px,
+            R.drawable.list_icon16_24px,
+            R.drawable.list_icon17_24px,
+            R.drawable.list_icon18_24px,
         )
 
         val listColors = listOf(
