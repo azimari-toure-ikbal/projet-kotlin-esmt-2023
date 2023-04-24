@@ -18,6 +18,11 @@ object TagModule {
 
     @Provides
     @Singleton
+    fun provideTagRepository(db:TaskDatabase): TagRepository{
+        return TagRepositoryImpl(db.tagDao)
+    }
+    @Provides
+    @Singleton
     fun provideTagUseCases(repository: TagRepository): TagUseCases {
         return TagUseCases(
             getAllTagUseCase = GetAllTagUseCase(repository),
