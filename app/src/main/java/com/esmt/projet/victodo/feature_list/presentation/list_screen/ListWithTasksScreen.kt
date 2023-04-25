@@ -24,7 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.feature_list.presentation.components.TaskItem
+import com.esmt.projet.victodo.feature_task.domain.model.Task
 
 @Composable
 fun ListWithTasksScreen() {
@@ -82,7 +84,17 @@ fun ListWithTasksScreen() {
                 .padding(top = 32.dp)
         ) {
             items(10) {
-                TaskItem()
+                TaskItem(
+                    dropDownItems = listOf(
+                        DropDownItem(1, "Edit"),
+                        DropDownItem(2, "Delete")
+                    ),
+                    onItemClick = {},
+                    task = Task(
+                        id = 1,
+                        name = "Task 1",
+                    )
+                )
             }
         }
     }

@@ -1,25 +1,74 @@
 package com.esmt.projet.victodo.feature_task.presentation.add_edit_screen
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
+import com.esmt.projet.victodo.core.presentation.components.DropDownItem
+import com.esmt.projet.victodo.feature_list.domain.model.TaskList
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalLayoutApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddEditTaskScreen() {
+
+    var pickedDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+
+    var pickedTime by remember {
+        mutableStateOf(LocalTime.now())
+    }
+
+    var repeatFrequency by remember {
+        mutableStateOf("Repeat")
+    }
+
+    var priority by remember {
+        mutableStateOf("Priority")
+    }
+
+    var tags by remember {
+        mutableStateOf("Tags")
+    }
+
+    var showDeadlineOptions by remember {
+        mutableStateOf(false)
+    }
+
     AddEditHeader(title = "New Task") {
         Column(
             modifier = Modifier
@@ -45,8 +94,19 @@ fun AddEditTaskScreen() {
             )
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "List")
-            // Dropdown menu
-            Drop()
+            DropDownMenuCustom(
+                dropDownTitle = "Select a list",
+                dropDownIcon = R.drawable.drop_down_menu_list_24px,
+                dropDownItems = listOf(
+                    DropDownItem(0, "Every day"),
+                    DropDownItem(1, "Every week"),
+                    DropDownItem(2, "Every month"),
+                    DropDownItem(3, "Every year"),
+                ),
+                onItemClick = {
+                }
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Description")
             OutlinedTextField(
@@ -72,94 +132,153 @@ fun AddEditTaskScreen() {
                     .fillMaxWidth()
             ) {
                 Title(title = "Deadline")
-                Title(title = "Priority")
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = null,
-                    tint = Color.Blue,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.CenterVertically)
+                Switch(
+                    checked = showDeadlineOptions,
+                    onCheckedChange = {
+                        showDeadlineOptions = it
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = Color(0xFF006EE9),
+                    ),
                 )
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        text = "Date",
-                        color = Color.DarkGray,
-                        fontSize = 12.sp,
-                    )
-                    Text(
-                        text = "Sunday, 9 March 2023",
-                        color = Color(0xFF006EE9),
-                        fontSize = 10.sp,
-                    )
-                }
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = null,
-                    tint = Color.Blue,
+
+            if (showDeadlineOptions) {
+                Spacer(modifier = Modifier.height(24.dp))
+
+                val dateDialogState = rememberMaterialDialogState()
+                val timeDialogState = rememberMaterialDialogState()
+                Row(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .align(Alignment.CenterVertically)
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
+                        .clickable {
+                            dateDialogState.show()
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.add_task_screen_calendar_24px),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = "Date",
+                            color = Color.DarkGray,
+                            fontSize = 12.sp,
+                        )
+                        Text(
+                            text = pickedDate.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+                                .toString(),
+                            color = Color(0xFF006EE9),
+                            fontSize = 10.sp,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
+                        .clickable {
+                            timeDialogState.show()
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.add_task_screen_time_24px),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            text = "Time",
+                            color = Color.DarkGray,
+                            fontSize = 12.sp,
+                        )
+                        Text(
+                            text = pickedTime.format(DateTimeFormatter.ofPattern("hh:mm"))
+                                .toString(),
+                            color = Color(0xFF006EE9),
+                            fontSize = 10.sp,
+                        )
+                    }
+                }
+
+                MaterialDialog(
+                    dialogState = dateDialogState,
+                    buttons = {
+                        positiveButton("OK")
+                        negativeButton("Cancel")
+                    },
+                ) {
+                    datepicker(
+                        initialDate = LocalDate.now(),
+                        title = "Pick a date",
+                        allowedDateValidator = {
+                            it.isAfter(LocalDate.now().minusDays(1))
+                        }
+                    ) {
+                        pickedDate = it
+                        Log.d("AddEditTaskScreen", "Date: $it")
+                    }
+                }
+
+                MaterialDialog(
+                    dialogState = timeDialogState,
+                    buttons = {
+                        positiveButton("OK")
+                        negativeButton("Cancel")
+                    },
+                ) {
+                    timepicker(
+                        initialTime = LocalTime.now(),
+                        title = "Pick a time",
+                    ) {
+                        pickedTime = it
+                        Log.d("AddEditTaskScreen", "Time: $it")
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                DropDownMenuCustom(
+                    dropDownTitle = repeatFrequency,
+                    dropDownIcon = R.drawable.drop_down_menu_repeat_24px,
+                    dropDownItems = listOf(
+                        DropDownItem(0, "Every day"),
+                        DropDownItem(1, "Every week"),
+                        DropDownItem(2, "Every month"),
+                        DropDownItem(3, "Every year"),
+                    ),
+                    onItemClick = {
+                        repeatFrequency = it.text
+                    }
                 )
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Text(
-                        text = "Date",
-                        color = Color.DarkGray,
-                        fontSize = 12.sp,
-                    )
-                    Text(
-                        text = "Sunday, 9 March 2023",
-                        color = Color(0xFF006EE9),
-                        fontSize = 10.sp,
-                    )
-                }
             }
-            Spacer(modifier = Modifier.height(24.dp))
-            DropRepeat()
 
             Spacer(modifier = Modifier.height(24.dp))
-            EndRepeat()
 
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Tags")
             Spacer(modifier = Modifier.height(8.dp))
-            EndRepeat()
-
-            Spacer(modifier = Modifier.height(24.dp))
-            Title(title = "Priority")
-            Spacer(modifier = Modifier.height(8.dp))
-            EndRepeat()
-
-            Spacer(modifier = Modifier.height(24.dp))
-            Title(title = "Tags")
             OutlinedTextField(
-                value = "0",
+                value = "",
                 onValueChange = {},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,61 +293,149 @@ fun AddEditTaskScreen() {
                 shape = RoundedCornerShape(10.dp),
             )
 
-        }
-    }
-}
-
-@Composable
-fun Drop() {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Option 1") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
-//    val triangleIcon: ImageVector = if (expanded) vectorResource(id = R.drawable.drop_up) else vectorResource(id = R.drawable.drop_down)
-    val triangleIcon: ImageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(Color.Transparent)
-            .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
-            .clickable(onClick = { expanded = !expanded })
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = selectedItem,
-            color = Color.DarkGray,
-            modifier = Modifier.weight(1f)
-        )
-        Icon(
-            imageVector = triangleIcon,
-            contentDescription = "Dropdown icon",
-            tint = Color.Blue
-        )
-    }
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        options.forEach { option ->
-            DropdownMenuItem(onClick = {
-                selectedItem = option
-                expanded = false
-            }) {
-                Text(text = option)
+            var tagColor = remember {
+                mutableStateOf(
+                    Color(0xFF006EE9)
+                )
             }
+
+            var tagList = remember {
+                mutableStateListOf(
+                    TagItem(
+                        tagColor = tagColor,
+                        tagTitle = "Tag 1"
+                    ),
+                    TagItem(
+                        tagColor = tagColor,
+                        tagTitle = "Tag 2"
+                    ),
+                    TagItem(
+                        tagColor = tagColor,
+                        tagTitle = "Tag 3"
+                    ),
+                )
+            }
+
+            val selectedTag = remember {
+                mutableStateListOf<TagItem>()
+            }
+
+            LazyRow(
+                userScrollEnabled = false,
+            ) {
+                items(tagList.size) { tag ->
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(
+                                if (selectedTag.contains(tagList[tag])) {
+                                    Color(0xFF006EE9)
+                                } else {
+                                    Color(0xFFedf4fe)
+                                }
+                            )
+                            .border(
+                                1.dp,
+                                color = Color(0xFFedf4fe),
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .clickable {
+                                if (selectedTag.contains(tagList[tag])) {
+                                    selectedTag.remove(tagList[tag])
+                                } else {
+                                    selectedTag.add(tagList[tag])
+                                }
+                            }
+                    ) {
+                        Text(
+                            text = tagList[tag].tagTitle,
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .padding(4.dp)
+                        )
+                    }
+
+                }
+            }
+
+            FlowRow(
+                maxItemsInEachRow = 4,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                for (i in 0..6) {
+                    TagItem(
+                        tagColor = tagColor,
+                        tagTitle = "Tag $i"
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Title(title = "Priority")
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenuCustom(
+                dropDownTitle = priority,
+                dropDownIcon = R.drawable.drop_down_menu_priority_24px,
+                dropDownItems = listOf(
+                    DropDownItem(0, "❗"),
+                    DropDownItem(1, "❗❗"),
+                    DropDownItem(2, "❗❗❗"),
+                ),
+                onItemClick = {
+                    priority = it.text
+                }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+//            Title(title = "Subtasks")
+//            OutlinedTextField(
+//                value = "0",
+//                onValueChange = {},
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 8.dp),
+//                singleLine = true,
+//                colors = TextFieldDefaults.outlinedTextFieldColors(
+//                    focusedBorderColor = Color(0xFFedf4fe),
+//                    unfocusedBorderColor = Color(0xFFedf4fe),
+//                    cursorColor = Color(0xFFedf4fe),
+//                    textColor = Color.DarkGray,
+//                ),
+//                shape = RoundedCornerShape(10.dp),
+//            )
         }
     }
 }
 
+data class TagItem(
+    val tagColor: MutableState<Color>,
+    val tagTitle: String,
+)
+
 @Composable
-fun DropRepeat() {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Option 1") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
-//    val triangleIcon: ImageVector = if (expanded) vectorResource(id = R.drawable.drop_up) else vectorResource(id = R.drawable.drop_down)
-    val triangleIcon: ImageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
+fun DropDownMenuCustom(
+    dropDownTitle: String,
+    dropDownIcon: Int,
+    dropDownItems: List<DropDownItem>,
+    onItemClick: (DropDownItem) -> Unit
+) {
+    var isContextMenuVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var pressOffset by remember {
+        mutableStateOf(DpOffset.Zero)
+    }
+
+    var itemHeight by remember {
+        mutableStateOf(0.dp)
+    }
+
+    val density = LocalDensity.current
+
+    val triangleIcon: ImageVector = if (isContextMenuVisible) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,14 +443,21 @@ fun DropRepeat() {
             .clip(MaterialTheme.shapes.medium)
             .background(Color.Transparent)
             .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
-            .clickable(onClick = { expanded = !expanded })
-            .padding(8.dp),
+            .padding(8.dp)
+            .onSizeChanged {
+                itemHeight = with(density) { it.height.toDp() }
+            }
+            .pointerInput(key1 = true) {
+                detectTapGestures {
+                    isContextMenuVisible = true
+                    pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                }
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = null,
-            tint = Color.Blue
+        Image(
+            painter = painterResource(id = dropDownIcon),
+            contentDescription = null
         )
         Column(
             modifier = Modifier
@@ -252,7 +466,7 @@ fun DropRepeat() {
                 .align(Alignment.CenterVertically)
         ) {
             Text(
-                text = "Repeat",
+                text = dropDownTitle,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
             )
@@ -264,61 +478,22 @@ fun DropRepeat() {
         )
     }
     DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        options.forEach { option ->
-            DropdownMenuItem(onClick = {
-                selectedItem = option
-                expanded = false
-            }) {
-                Text(text = option)
-            }
-        }
-    }
-}
-
-@Composable
-fun EndRepeat() {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Option 1") }
-    val options = listOf("Option 1", "Option 2", "Option 3")
-//    val triangleIcon: ImageVector = if (expanded) vectorResource(id = R.drawable.drop_up) else vectorResource(id = R.drawable.drop_down)
-    val triangleIcon: ImageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(55.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .background(Color.Transparent)
-            .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
-            .clickable(onClick = { expanded = !expanded })
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "End Repeat",
-            color = Color.DarkGray,
-            modifier = Modifier.weight(1f)
+        expanded = isContextMenuVisible,
+        onDismissRequest = { isContextMenuVisible = false },
+        offset = pressOffset.copy(
+            y = pressOffset.y - itemHeight
         )
-        Icon(
-            imageVector = triangleIcon,
-            contentDescription = "Dropdown icon",
-            tint = Color.Blue
-        )
-    }
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier.fillMaxWidth()
     ) {
-        options.forEach { option ->
-            DropdownMenuItem(onClick = {
-                selectedItem = option
-                expanded = false
-            }) {
-                Text(text = option)
+        dropDownItems.forEach { item ->
+            DropdownMenuItem(
+                onClick = {
+                    onItemClick(item)
+                    isContextMenuVisible = false
+                }
+            ) {
+                Text(
+                    text = item.text
+                )
             }
         }
     }
@@ -337,6 +512,7 @@ fun Title(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun Preview() {
