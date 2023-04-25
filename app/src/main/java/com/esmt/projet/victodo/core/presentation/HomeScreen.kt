@@ -1,19 +1,23 @@
 package com.esmt.projet.victodo.core.presentation
 
-import android.widget.Toast
+import android.app.AlertDialog
+import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -21,18 +25,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
-import com.esmt.projet.victodo.feature_tag.domain.model.Tag
+import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
+    val state = viewModel.state.value
+    val searchFieldState = viewModel.searchFieldState.value
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,10 +57,16 @@ fun HomeScreen(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = "Search...",
-                onValueChange = {},
+                value = if (searchFieldState.isHintVisible) searchFieldState.hint
+                else searchFieldState.searchQuery,
+                onValueChange = {
+                    viewModel.onEvent(HomeScreenEvent.onSearch(it))
+                },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onFocusChanged {
+                        viewModel.onEvent(HomeScreenEvent.onSearchFocusChanged(it))
+                    },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color(0xFFEEF5FD),
@@ -67,7 +85,7 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(start = 12.dp)
         ) {
-            for (i in 0..4) {
+            for (taskList in state.listOfPinnedList) {
                 Box(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp, bottom = 12.dp)
@@ -97,13 +115,13 @@ fun HomeScreen(
                                     .background(Color.White)
                             ) {
                                 Text(
-                                    text = "20",
+                                    text = taskList.tasks.size.toString(),
                                     fontSize = 10.sp,
                                 )
                             }
                         }
                         Text(
-                            text = "Completedasdasda",
+                            text = taskList.taskList.title,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 16.sp,
@@ -128,14 +146,31 @@ fun HomeScreen(
                 modifier = Modifier
                     .padding(bottom = 12.dp)
             )
-            for (i in 0..2) {
+            for (taskList in state.listOfTaskList) {
                 TaskListItem(
-                    taskList = getTaskListItems()[i],
+                    taskList = taskList,
                     dropDownItems = listOf(
                     DropDownItem(1, "Edit"),
                     DropDownItem(2, "Delete")
                     ),
                     onItemClick = {
+                        when(it.id){
+                            1-> {
+                                navController.navigate(
+                                    route = Screen.AddEditListScreen.route
+                                            +"?listId=${taskList.taskList.id}"
+                                            +"&listColor=${taskList.taskList.color}"
+                                            +"&listTitle=${taskList.taskList.title}"
+                                )
+                            }
+                            2-> {
+                                confirmDeleteList(
+                                    context = context,
+                                    taskList = taskList,
+                                    viewModel = viewModel
+                                )
+                            }
+                        }
                     }
                 )
             }
@@ -158,33 +193,50 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(bottom = 12.dp)
                 )
-                Text(text = ">")
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(HomeScreenEvent.onTagRevealClicked)
+                    },
+                ) {
+                    Icon(
+                        imageVector = if (state.isTagRevealed) Icons.Default.KeyboardArrowUp
+                        else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Reveal Tags",
+                        tint = Color(0xFF3F3F3F)
+                    )
+                }
             }
-            FlowRow(
-                maxItemsInEachRow = 4,
-                modifier = Modifier
-                    .fillMaxWidth()
+            AnimatedVisibility(
+                visible = state.isTagRevealed,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
-                for (i in 0..6) {
-                    Box(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFFEEF5FD))
-                            .border(
-                                1.dp,
-                                color = Color(0xFFedf4fe),
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                    ) {
-                        Text(
-                            text = "# All tags",
-                            fontSize = 14.sp,
+                FlowRow(
+                    maxItemsInEachRow = 4,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    for (tag in state.listOfTags) {
+                        Box(
                             modifier = Modifier
-                                .padding(4.dp)
-                        )
-                    }
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFFEEF5FD))
+                                .border(
+                                    1.dp,
+                                    color = Color(0xFFedf4fe),
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = tag.title,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            )
+                        }
 
+                    }
                 }
             }
         }
@@ -256,22 +308,36 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-//    HomeScreen()
+    HomeScreen(navController = rememberNavController())
 }
 
-fun getTaskListItems(): List<TaskList> {
-    return listOf(
-        TaskList(
-            id = 1,
-            title = "Work out",
-        ),
-        TaskList(
-            id = 2,
-            title = "Work out2",
-        ),
-        TaskList(
-            id = 3,
-            title = "Work out3",
-        ),
-    )
+//fun getTaskListItems(): List<TaskList> {
+//    return listOf(
+//        TaskList(
+//            id = 1,
+//            title = "Work out",
+//        ),
+//        TaskList(
+//            id = 2,
+//            title = "Work out2",
+//        ),
+//        TaskList(
+//            id = 3,
+//            title = "Work out3",
+//        ),
+//    )
+//}
+
+fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTasks, viewModel: HomeScreenViewModel){
+    val builder = AlertDialog.Builder(context)
+    builder.apply {
+        setTitle("Supprimer la liste")
+        setMessage("Voulez-vous vraiment supprimer la liste ${taskList.taskList.title} ?")
+        setPositiveButton("Oui"){ _, _ ->
+            viewModel.onEvent(HomeScreenEvent.onSupprimerClicked(taskList))
+        }
+        setNegativeButton("Non"){ _, _ ->
+
+        }
+    }
 }
