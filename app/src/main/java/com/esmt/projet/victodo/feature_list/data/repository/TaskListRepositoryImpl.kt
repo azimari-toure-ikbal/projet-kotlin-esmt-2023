@@ -9,7 +9,11 @@ import kotlinx.coroutines.flow.Flow
 class TaskListRepositoryImpl(
     private val taskListDao: TaskListDao
 ): TaskListRepository{
-    override fun getLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
+    override fun getTaskLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
+        return taskListDao.getTaskLists()
+    }
+
+    override fun getLists(): Flow<List<TaskList>> {
         return taskListDao.getLists()
     }
 

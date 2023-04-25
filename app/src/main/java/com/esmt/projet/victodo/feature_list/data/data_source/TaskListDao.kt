@@ -10,7 +10,10 @@ interface TaskListDao {
 
     @Transaction
     @Query("SELECT * FROM lists")
-    fun getLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>>
+    fun getTaskLists(): Flow<List<TaskListWithTasksAndTagsSubTasks>>
+
+    @Query("SELECT * FROM lists")
+    fun getLists(): Flow<List<TaskList>>
 
     @Transaction
     @Query("SELECT * FROM lists WHERE id = :id")
