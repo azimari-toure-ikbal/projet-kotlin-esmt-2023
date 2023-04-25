@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -26,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
+import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 
 data class DropDownItem(
     val id: Int,
@@ -35,7 +34,7 @@ data class DropDownItem(
 
 @Composable
 fun TaskListItem(
-    taskList: TaskList,
+    taskList: TaskListWithTasksAndTagsSubTasks,
     dropDownItems: List<DropDownItem>,
     onItemClick: (DropDownItem) -> Unit
 ) {
@@ -93,14 +92,14 @@ fun TaskListItem(
                 )
         ) {
             Text(
-                text = taskList.title,
+                text = taskList.taskList.title,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .padding(start = 15.dp)
             )
             Text(
-                text = "3 tasks",
+                text = taskList.tasks.size.toString(),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier

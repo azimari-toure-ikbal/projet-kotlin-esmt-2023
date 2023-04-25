@@ -1,6 +1,7 @@
 package com.esmt.projet.victodo.core.presentation
 
-import android.widget.Toast
+import android.app.AlertDialog
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -21,18 +23,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
-import com.esmt.projet.victodo.feature_tag.domain.model.Tag
+import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
+    val state = viewModel.state.value
+    val searchFieldState = viewModel.searchFieldState.value
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,10 +53,15 @@ fun HomeScreen(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = "Search...",
-                onValueChange = {},
+                value = searchFieldState.hint,
+                onValueChange = {
+                    viewModel.onEvent(HomeScreenEvent.onSearch(it))
+                },
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onFocusChanged {
+                        viewModel.onEvent(HomeScreenEvent.onSearchFocusChanged(it))
+                    },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color(0xFFEEF5FD),
@@ -67,7 +80,7 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .padding(start = 12.dp)
         ) {
-            for (i in 0..4) {
+            for (taskList in state.listOfPinnedList) {
                 Box(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp, bottom = 12.dp)
@@ -97,13 +110,13 @@ fun HomeScreen(
                                     .background(Color.White)
                             ) {
                                 Text(
-                                    text = "20",
+                                    text = taskList.tasks.size.toString(),
                                     fontSize = 10.sp,
                                 )
                             }
                         }
                         Text(
-                            text = "Completedasdasda",
+                            text = taskList.taskList.title,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 16.sp,
@@ -128,14 +141,26 @@ fun HomeScreen(
                 modifier = Modifier
                     .padding(bottom = 12.dp)
             )
-            for (i in 0..2) {
+            for (taskList in state.listOfTaskList) {
                 TaskListItem(
-                    taskList = getTaskListItems()[i],
+                    taskList = taskList,
                     dropDownItems = listOf(
                     DropDownItem(1, "Edit"),
                     DropDownItem(2, "Delete")
                     ),
                     onItemClick = {
+                        when(it.id){
+                            1-> {
+                                navController.navigate(Screen.AddEditListScreen.route + "/${taskList.taskList.id}")
+                            }
+                            2-> {
+                                confirmDeleteList(
+                                    context = context,
+                                    taskList = taskList,
+                                    viewModel = viewModel
+                                )
+                            }
+                        }
                     }
                 )
             }
@@ -256,7 +281,7 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-//    HomeScreen()
+    HomeScreen(navController = rememberNavController())
 }
 
 fun getTaskListItems(): List<TaskList> {
@@ -274,4 +299,18 @@ fun getTaskListItems(): List<TaskList> {
             title = "Work out3",
         ),
     )
+}
+
+fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTasks, viewModel: HomeScreenViewModel){
+    val builder = AlertDialog.Builder(context)
+    builder.apply {
+        setTitle("Supprimer la liste")
+        setMessage("Voulez-vous vraiment supprimer la liste ${taskList.taskList.title} ?")
+        setPositiveButton("Oui"){ _, _ ->
+            viewModel.onEvent(HomeScreenEvent.onSupprimerClicked(taskList))
+        }
+        setNegativeButton("Non"){ _, _ ->
+
+        }
+    }
 }
