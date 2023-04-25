@@ -40,7 +40,7 @@ class AddEditViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Long>("listId")?.let { listId ->
-            if (listId != -1L) {
+            if (listId != 0L) {
                 viewModelScope.launch {
                     listUseCases.getTaskListUseCase(listId).let { taskList ->
                         currentListId = taskList.taskList.id

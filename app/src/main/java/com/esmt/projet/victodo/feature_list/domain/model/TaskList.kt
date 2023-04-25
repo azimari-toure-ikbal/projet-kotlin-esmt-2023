@@ -7,7 +7,7 @@ import com.esmt.projet.victodo.R
 
 @Entity(tableName = "lists")
 data class TaskList(
-    @PrimaryKey val id: Long? =null,
+    @PrimaryKey val id: Long? =0,
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
