@@ -73,19 +73,25 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             route = Screen.AddEditListScreen.route +
-                                    "?listId={listId}&listColor={listColor}",
+                                    "?listId={listId}&listColor={listColor}&listTitle={listTitle}",
                             arguments = listOf(
                                 navArgument(
                                     name = "listId"
                                 ) {
                                    type = NavType.LongType
-                                   defaultValue = -1L
+                                   defaultValue = 0L
                                 },
                                 navArgument(
                                     name = "listColor"
                                 ) {
                                     type = NavType.IntType
                                     defaultValue = -1
+                                },
+                                navArgument(
+                                    name = "listTitle"
+                                ) {
+                                    type = NavType.StringType
+                                    defaultValue = ""
                                 }
                             )
                         ) {

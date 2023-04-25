@@ -25,9 +25,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
@@ -153,7 +156,12 @@ fun HomeScreen(
                     onItemClick = {
                         when(it.id){
                             1-> {
-                                navController.navigate(Screen.AddEditListScreen.route + "/${taskList.taskList.id}")
+                                navController.navigate(
+                                    route = Screen.AddEditListScreen.route
+                                            +"?listId=${taskList.taskList.id}"
+                                            +"&listColor=${taskList.taskList.color}"
+                                            +"&listTitle=${taskList.taskList.title}"
+                                )
                             }
                             2-> {
                                 confirmDeleteList(
