@@ -31,12 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.feature_task.domain.model.Task
+import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TaskItem(
     dropDownItems: List<DropDownItem>,
     onItemClick: (DropDownItem) -> Unit,
-    task: Task
+    task: TaskWithTagAndSubTask
 ) {
     var isContextMenuVisible by rememberSaveable {
         mutableStateOf(false)
@@ -109,7 +111,7 @@ fun TaskItem(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = task.name,
+                    text = task.task.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color(0xFF006EE9)
@@ -123,18 +125,37 @@ fun TaskItem(
                 )
             }
             Text(
-                text = task.note?:"",
+                text = task.task.note?:"",
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Normal,
             )
             Text(
-                text = "${task.dueDate} - ${task.dueTime}",
+                text = "${task.task.dueDate} - ${task.task.dueTime}",
                 fontSize = 10.sp,
                 color = Color(0xFF0668E5),
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .align(Alignment.End)
             )
+
+            FlowRow(
+                maxItemsInEachRow = 3,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                task.tags?.forEach { tag ->
+                    Text(
+                        text = "# ${tag.title}",
+                        fontSize = 10.sp,
+                        color = Color(0xFF0668E5),
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                    )
+                }
+            }
+
         }
     }
 

@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.feature_list.presentation.components.TaskItem
+import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.domain.model.Task
+import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 
 @Composable
 fun ListWithTasksScreen() {
@@ -90,9 +92,26 @@ fun ListWithTasksScreen() {
                         DropDownItem(2, "Delete")
                     ),
                     onItemClick = {},
-                    task = Task(
-                        id = 1,
-                        name = "Task 1",
+                    task = TaskWithTagAndSubTask(
+                        task = Task(
+                            id = 1,
+                            name = "Task 1",
+                            note = "asldhjlakdalsjdklajldjaljdlakjsd;kas;djk;asda;on jjf djf;ajf;jf sd;fj sdjf ;ajf;ldj a"
+                        ),
+                        tags = listOf(
+                            Tag(
+                                id = 1,
+                                title = "Workout",
+                            ),
+                            Tag(
+                                id = 2,
+                                title = "Programming",
+                            ),
+                            Tag(
+                                id = 3,
+                                title = "Chess",
+                            ),
+                        ),
                     )
                 )
             }
