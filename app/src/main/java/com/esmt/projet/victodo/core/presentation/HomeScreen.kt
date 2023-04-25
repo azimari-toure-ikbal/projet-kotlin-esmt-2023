@@ -2,15 +2,17 @@ package com.esmt.projet.victodo.core.presentation
 
 import android.app.AlertDialog
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +31,6 @@ import androidx.navigation.compose.rememberNavController
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -53,7 +54,8 @@ fun HomeScreen(
                 .fillMaxWidth()
         ) {
             TextField(
-                value = searchFieldState.hint,
+                value = if (searchFieldState.isHintVisible) searchFieldState.hint
+                else searchFieldState.searchQuery,
                 onValueChange = {
                     viewModel.onEvent(HomeScreenEvent.onSearch(it))
                 },
@@ -183,33 +185,50 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(bottom = 12.dp)
                 )
-                Text(text = ">")
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(HomeScreenEvent.onTagRevealClicked)
+                    },
+                ) {
+                    Icon(
+                        imageVector = if (state.isTagRevealed) Icons.Default.KeyboardArrowUp
+                        else Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Reveal Tags",
+                        tint = Color(0xFF3F3F3F)
+                    )
+                }
             }
-            FlowRow(
-                maxItemsInEachRow = 4,
-                modifier = Modifier
-                    .fillMaxWidth()
+            AnimatedVisibility(
+                visible = state.isTagRevealed,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
-                for (i in 0..6) {
-                    Box(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color(0xFFEEF5FD))
-                            .border(
-                                1.dp,
-                                color = Color(0xFFedf4fe),
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                    ) {
-                        Text(
-                            text = "# All tags",
-                            fontSize = 14.sp,
+                FlowRow(
+                    maxItemsInEachRow = 4,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    for (tag in state.listOfTags) {
+                        Box(
                             modifier = Modifier
-                                .padding(4.dp)
-                        )
-                    }
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color(0xFFEEF5FD))
+                                .border(
+                                    1.dp,
+                                    color = Color(0xFFedf4fe),
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = tag.title,
+                                fontSize = 14.sp,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            )
+                        }
 
+                    }
                 }
             }
         }
@@ -284,22 +303,22 @@ fun Preview() {
     HomeScreen(navController = rememberNavController())
 }
 
-fun getTaskListItems(): List<TaskList> {
-    return listOf(
-        TaskList(
-            id = 1,
-            title = "Work out",
-        ),
-        TaskList(
-            id = 2,
-            title = "Work out2",
-        ),
-        TaskList(
-            id = 3,
-            title = "Work out3",
-        ),
-    )
-}
+//fun getTaskListItems(): List<TaskList> {
+//    return listOf(
+//        TaskList(
+//            id = 1,
+//            title = "Work out",
+//        ),
+//        TaskList(
+//            id = 2,
+//            title = "Work out2",
+//        ),
+//        TaskList(
+//            id = 3,
+//            title = "Work out3",
+//        ),
+//    )
+//}
 
 fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTasks, viewModel: HomeScreenViewModel){
     val builder = AlertDialog.Builder(context)

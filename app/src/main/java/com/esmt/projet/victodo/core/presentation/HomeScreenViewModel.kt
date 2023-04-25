@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
+import com.esmt.projet.victodo.feature_tag.domain.use_case.TagUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val listUseCases: TaskListUseCases
+    private val listUseCases: TaskListUseCases,
+    private val tagUseCases: TagUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf(HomeScreenState())
@@ -25,20 +27,24 @@ class HomeScreenViewModel @Inject constructor(
 
     private var getPinnedListJob: Job? = null
     private var getTaskListJob: Job? = null
+    private var getTagListJob: Job? = null
 
     init {
         getPinnedList()
         getTaskList()
+        getTagList()
     }
     fun onEvent(event: HomeScreenEvent){
         when(event){
-            is HomeScreenEvent.onEditClicked -> {
-                // TODO: 12/07/2021
-            }
             is HomeScreenEvent.onSearch -> {
-                _searchFieldState.value = _searchFieldState.value.copy(
-                    searchQuery = event.query
-                )
+                if(event.query.isNotBlank()){
+                    getTaskListJob?.cancel()
+                    getTaskListJob = listUseCases.searchTaskList(event.query).onEach {
+                        _state.value = _state.value.copy(
+                            listOfTaskList = it
+                        )
+                    }.launchIn(viewModelScope)
+                }
             }
             is HomeScreenEvent.onSupprimerClicked -> {
                 viewModelScope.launch {
@@ -73,6 +79,15 @@ class HomeScreenViewModel @Inject constructor(
         getTaskListJob = listUseCases.getTaskListsUseCase().onEach {
             _state.value = _state.value.copy(
                 listOfTaskList = it
+            )
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getTagList(){
+        getTagListJob?.cancel()
+        getTagListJob = tagUseCases.getAllTagUseCase().onEach {
+            _state.value = _state.value.copy(
+                listOfTags = it
             )
         }.launchIn(viewModelScope)
     }
