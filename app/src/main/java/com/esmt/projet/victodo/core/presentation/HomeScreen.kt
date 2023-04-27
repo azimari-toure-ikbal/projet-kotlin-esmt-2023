@@ -152,7 +152,7 @@ fun HomeScreen(
                     ),
                     onItemClick = {
                         when(it.id){
-                            1-> {
+                            1L-> {
                                 navController.navigate(
                                     route = Screen.AddEditListScreen.route
                                             +"?listId=${taskList.taskList.id}"
@@ -160,7 +160,7 @@ fun HomeScreen(
                                             +"&listTitle=${taskList.taskList.title}"
                                 )
                             }
-                            2-> {
+                            2L-> {
                                 confirmDeleteList(
                                     context = context,
                                     taskList = taskList,

@@ -30,7 +30,8 @@ object TaskModule {
             getCompletedTasksUseCase = GetCompletedTasksUseCase(repository),
             getScheduledTasksUseCase = GetScheduledTasksUseCase(repository),
             getLateTasksUseCase = GetLateTasksUseCase(repository),
-            getTodayTasksUseCase = GetTodayTasksUseCase(repository)
+            getTodayTasksUseCase = GetTodayTasksUseCase(repository),
+            getTasksByListIdUseCase = GetTasksByListIdUseCase(repository),
         )
     }
 }

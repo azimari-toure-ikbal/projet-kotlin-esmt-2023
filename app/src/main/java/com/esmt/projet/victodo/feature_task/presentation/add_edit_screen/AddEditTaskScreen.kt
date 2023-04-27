@@ -318,7 +318,7 @@ fun AddEditTaskScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 DropDownMenuCustom(
-                    dropDownTitle = if(repeatFrequency.equals(Task.Companion.RepeatFrequency.NEVER.value)) "Repeat" else repeatFrequency,
+                    dropDownTitle = if(repeatFrequency == Task.Companion.RepeatFrequency.NEVER.value) "Repeat" else repeatFrequency,
                     dropDownIcon = R.drawable.drop_down_menu_repeat_24px,
                     dropDownItems = listOf(
                         DropDownItem(0, Task.Companion.RepeatFrequency.DAILY.value),
@@ -365,7 +365,9 @@ fun AddEditTaskScreen(
             )
             Button(
                 onClick = {
-                    if(tags.filter { tag -> tag.title.lowercase().contains(taskTagState.text.lowercase()) }.isEmpty()) {
+                    if(tags.none { tag ->
+                            tag.title.lowercase().contains(taskTagState.text.lowercase())
+                        }) {
                         viewModel.onEvent(AddEditTaskEvent.CreateTag)
                     }
                 }
