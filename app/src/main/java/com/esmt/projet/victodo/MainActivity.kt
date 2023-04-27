@@ -151,7 +151,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ){
-                            AddEditTaskScreen()
+                            AddEditTaskScreen(navController = navController)
                             /*
                                 navController = navController,
                                 taskId = it.arguments?.getLong("taskId") ?: 0L

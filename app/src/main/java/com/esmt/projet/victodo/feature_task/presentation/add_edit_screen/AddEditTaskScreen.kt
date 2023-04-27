@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
@@ -56,6 +57,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddEditTaskScreen(
+    navController: NavController,
     viewModel: AddEditTaskViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -94,7 +96,10 @@ fun AddEditTaskScreen(
         }
 
 
-    AddEditHeader(title = "New Task") {
+    AddEditHeader(
+        title = "New Task",
+        navController = navController
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -580,5 +585,5 @@ fun Title(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    AddEditTaskScreen()
+//    AddEditTaskScreen()
 }

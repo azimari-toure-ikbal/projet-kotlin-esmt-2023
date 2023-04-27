@@ -53,6 +53,15 @@ fun AddEditListScreen(
         )
     }
 
+    val navBackStackEntry = navController.previousBackStackEntry
+    val arguments = navBackStackEntry?.arguments
+    val listId = arguments?.getLong("listId")
+
+    Log.d("AddEditListScreen", "navBackStackEntry: $navBackStackEntry")
+    Log.d("AddEditListScreen", "arguments: $arguments")
+    Log.d("AddEditListScreen", "listId: $listId")
+
+
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
@@ -76,7 +85,10 @@ fun AddEditListScreen(
         }
     }
 
-    AddEditHeader(title = "New List") {
+    AddEditHeader(
+        title = "New List",
+        navController = navController,
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -219,7 +231,12 @@ fun AddEditListScreen(
                     .fillMaxWidth()
                     .height(48.dp)
             ) {
-                Text(text = "Create List")
+                // Check if there's a parameter passed to the screen listId
+                if (listId != null) {
+                    Text(text = "Edit List")
+                } else {
+                    Text(text = "Create List")
+                }
             }
         }
     }

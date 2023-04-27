@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -196,7 +197,7 @@ fun HomeScreen(
                     },
                 ) {
                     Icon(
-                        imageVector = if (state.isTagRevealed) Icons.Default.KeyboardArrowUp
+                        imageVector = if (state.isTagRevealed) Icons.Default.KeyboardArrowRight
                         else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Reveal Tags",
                         tint = Color(0xFF3F3F3F)
@@ -249,6 +250,9 @@ fun HomeScreen(
                     .width(90.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(Color(0xFF006EE9))
+                    .clickable {
+                        navController.navigate(Screen.AddEditTaskScreen.route)
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -262,7 +266,7 @@ fun HomeScreen(
                         tint = Color.White,
                     )
                     Text(
-                        text = "New List",
+                        text = "New Task",
                         fontSize = 12.sp,
                         color = Color.White,
                     )

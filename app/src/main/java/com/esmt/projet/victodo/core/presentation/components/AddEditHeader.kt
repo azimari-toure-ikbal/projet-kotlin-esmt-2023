@@ -1,6 +1,7 @@
 package com.esmt.projet.victodo.core.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -15,11 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
 fun AddEditHeader(
     title: String,
-    content: @Composable () -> Unit,
+    navController: NavController,
+    content: @Composable () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -37,6 +40,9 @@ fun AddEditHeader(
                     .size(42.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.White)
+                    .clickable {
+                        navController.popBackStack()
+                    }
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
