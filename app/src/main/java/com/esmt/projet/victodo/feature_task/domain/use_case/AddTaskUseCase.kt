@@ -1,6 +1,5 @@
 package com.esmt.projet.victodo.feature_task.domain.use_case
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -11,10 +10,10 @@ import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import com.esmt.projet.victodo.feature_task.workers.TaskNotifierWorker
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class AddTaskUseCase (
     val repository: TaskRepository
@@ -23,7 +22,7 @@ class AddTaskUseCase (
     @Throws(InvalidTaskException::class)
     suspend operator fun invoke(
         taskWithTagAndSubTask: TaskWithTagAndSubTask,
-        @ApplicationContext context: Context
+        context: Context
     ): Long{
         if(taskWithTagAndSubTask.task.listId == null)
             throw InvalidTaskException("Task must be associated with a list")

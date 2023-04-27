@@ -1,37 +1,49 @@
 package com.esmt.projet.victodo.feature_list.presentation.list_screen
 
+import android.app.AlertDialog
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
+import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.presentation.components.TaskItem
-import com.esmt.projet.victodo.feature_tag.domain.model.Tag
-import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
+import com.esmt.projet.victodo.R
+import com.esmt.projet.victodo.core.presentation.util.Screen
 
 @Composable
-fun ListWithTasksScreen() {
+fun ListWithTasksScreen(
+    navController: NavController,
+    taskList: TaskList,
+    viewModel: ListWithTasksViewModel = hiltViewModel()
+) {
+    val isTaskLoading = viewModel.state.value.isTaskLoading
+//    val taskList = viewModel.state.value.taskList
+    val tasksWithTagAndSubTaskList = viewModel.state.value.listOfTasks
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +56,7 @@ fun ListWithTasksScreen() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                imageVector = Icons.Default.Build,
+                imageVector = TaskList.listIcons[taskList.icon] as ImageVector,
                 contentDescription = null,
                 tint = Color.Blue
             )
@@ -56,7 +68,7 @@ fun ListWithTasksScreen() {
                     .padding(start = 16.dp)
             ) {
                 Text(
-                    text = "Workout",
+                    text = taskList.title,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -67,6 +79,9 @@ fun ListWithTasksScreen() {
                         .clip(RoundedCornerShape(10.dp))
                         .background(Color.Blue)
                         .padding(8.dp)
+                        .clickable {
+                            navController.navigate(Screen.AddEditTaskScreen.route)
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -85,42 +100,65 @@ fun ListWithTasksScreen() {
                 .fillMaxSize()
                 .padding(top = 32.dp)
         ) {
-            items(10) {
-                TaskItem(
-                    dropDownItems = listOf(
-                        DropDownItem(1, "Edit"),
-                        DropDownItem(2, "Delete")
-                    ),
-                    onItemClick = {},
-                    task = TaskWithTagAndSubTask(
-                        task = Task(
-                            id = 1,
-                            name = "Task 1",
-                            note = "asldhjlakdalsjdklajldjaljdlakjsd;kas;djk;asda;on jjf djf;ajf;jf sd;fj sdjf ;ajf;ldj a"
-                        ),
-                        tags = listOf(
-                            Tag(
-                                id = 1,
-                                title = "Workout",
+            if(isTaskLoading){
+                item {
+                    CircularProgressIndicator()
+                }
+            } else{
+                if(tasksWithTagAndSubTaskList.isNotEmpty()){
+                    items(tasksWithTagAndSubTaskList) { taskWithTagAndSubTask ->
+                        TaskItem(
+                            dropDownItems = listOf(
+                                DropDownItem(1, "Edit"),
+                                DropDownItem(2, "Delete"),
+                                DropDownItem(3, "Mark as Completed")
                             ),
-                            Tag(
-                                id = 2,
-                                title = "Programming",
-                            ),
-                            Tag(
-                                id = 3,
-                                title = "Chess",
-                            ),
-                        ),
-                    )
-                )
+                            onItemClick = {
+                                when (it.id) {
+                                    1L -> {
+                                        navController.navigate(
+                                            Screen.AddEditTaskScreen.route +
+                                                    "?taskId=${taskWithTagAndSubTask.task.id}"
+                                        )
+                                    }
+                                    2L -> {
+                                        confirmDeleteTask(context, taskWithTagAndSubTask, viewModel)
+                                    }
+                                    3L -> {
+                                        viewModel.onEvent(ListWithTasksEvent.OnCompletedClick(taskWithTagAndSubTask))
+                                    }
+                                }
+                            },
+                            task = taskWithTagAndSubTask
+                        )
+                    }
+                } else {
+                    item {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_data),
+                            contentDescription = "No Data"
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun Preview() {
-    ListWithTasksScreen()
+fun confirmDeleteTask(context: Context, taskWithTagAndSubTask: TaskWithTagAndSubTask, viewModel: ListWithTasksViewModel) {
+    val builder = AlertDialog.Builder(context)
+    builder.apply {
+        setTitle("Delete Task")
+        setMessage("Are you sure you want to delete this task?")
+        setPositiveButton("Yes") { _, _ ->
+            viewModel.onEvent(ListWithTasksEvent.OnDeleteClick(taskWithTagAndSubTask))
+        }
+        setNegativeButton("No") { _, _ -> }
+    }
 }
+
+//@Preview
+//@Composable
+//fun Preview() {
+//    ListWithTasksScreen()
+//}

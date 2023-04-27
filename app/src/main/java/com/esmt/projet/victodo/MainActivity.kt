@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -29,9 +30,13 @@ import androidx.navigation.navArgument
 import com.esmt.projet.victodo.core.presentation.HomeScreen
 import com.esmt.projet.victodo.core.presentation.util.Screen
 import com.esmt.projet.victodo.di.VictoAppModule
+import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.presentation.add_edit_screen.AddEditListScreen
+import com.esmt.projet.victodo.feature_list.presentation.list_screen.ListWithTasksScreen
+import com.esmt.projet.victodo.feature_list.util.ALL_TASKS_LIST
 import com.esmt.projet.victodo.feature_onboarding.presentation.welcome_screen.SplashViewModel
 import com.esmt.projet.victodo.feature_onboarding.presentation.welcome_screen.WelcomeScreen
+import com.esmt.projet.victodo.feature_task.presentation.add_edit_screen.AddEditTaskScreen
 import com.esmt.projet.victodo.ui.theme.VictoDoTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,6 +50,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var splashViewModel: SplashViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
@@ -100,6 +106,56 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 listColor = color
                             )
+                        }
+
+                        composable(
+                            route = Screen.ListWithTasksScreen.route+
+                                    "/{listId}/{listTitle}/{listIcon}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "listId"
+                                ) {
+                                    type = NavType.LongType
+                                },
+                                navArgument(
+                                    name = "listTitle"
+                                ) {
+                                    type = NavType.StringType
+                                },
+                                navArgument(
+                                    name = "listIcon"
+                                ) {
+                                    type = NavType.IntType
+                                }
+                            )
+                        ){
+                            ListWithTasksScreen(
+                                navController = navController,
+                                taskList = TaskList(
+                                    id = it.arguments?.getLong("listId") ?: ALL_TASKS_LIST.id,
+                                    title = it.arguments?.getString("listTitle") ?: ALL_TASKS_LIST.title,
+                                    icon = it.arguments?.getInt("listIcon") ?: ALL_TASKS_LIST.icon
+                                )
+                            )
+                        }
+
+                        composable(
+                            route = Screen.AddEditTaskScreen.route +
+                                    "?taskId={taskId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "taskId"
+                                ) {
+                                    type = NavType.LongType
+                                    defaultValue = 0L
+                                }
+                            )
+                        ){
+                            AddEditTaskScreen()
+                            /*
+                                navController = navController,
+                                taskId = it.arguments?.getLong("taskId") ?: 0L
+                             */
                         }
                     }
                 }

@@ -14,11 +14,11 @@ data class TaskWithTagAndSubTask(
         entity = Tag::class,
         associateBy = Junction(value = TagTaskCrossRef::class, parentColumn = "tkId", entityColumn = "tgId")
     )
-    val tags: List<Tag>?=null,
+    val tags: List<Tag> = emptyList(),
     @Relation(
         parentColumn = "id",
         entity = SubTask::class,
         entityColumn = "taskId"
     )
-    val subtasks: List<SubTask>?=null
+    val subtasks: List<SubTask> = emptyList()
 )

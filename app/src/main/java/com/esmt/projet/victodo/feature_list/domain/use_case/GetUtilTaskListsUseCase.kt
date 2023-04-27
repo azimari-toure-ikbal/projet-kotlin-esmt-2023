@@ -3,6 +3,10 @@ package com.esmt.projet.victodo.feature_list.domain.use_case
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
+import com.esmt.projet.victodo.feature_list.util.ALL_TASKS_LIST
+import com.esmt.projet.victodo.feature_list.util.COMPLETED_TASKS_LIST
+import com.esmt.projet.victodo.feature_list.util.LATE_TASKS_LIST
+import com.esmt.projet.victodo.feature_list.util.SCHEDULED_TASKS_LIST
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.*
 
@@ -23,47 +27,19 @@ class GetUtilTaskListsUseCase(
                     tasks, scheduledTasks, lateTasks, completedTasks, todayTasks ->
                 listOf(
                     TaskListWithTasksAndTagsSubTasks(
-                        taskList = TaskList(
-                            id = -1,
-                            title = "All",
-                            color = 7,
-                            isPinned = true,
-                            isDefault = true,
-                            icon = 0
-                        ),
+                        taskList = ALL_TASKS_LIST,
                         tasks = tasks
                     ),
                     TaskListWithTasksAndTagsSubTasks(
-                        taskList = TaskList(
-                            id = -2,
-                            title = "Scheduled",
-                            color = 1,
-                            isPinned = true,
-                            isDefault = true,
-                            icon = 0
-                        ),
+                        taskList = SCHEDULED_TASKS_LIST,
                         tasks = scheduledTasks
                     ),
                     TaskListWithTasksAndTagsSubTasks(
-                        taskList = TaskList(
-                            id = -3,
-                            title = "Late",
-                            color = 0,
-                            isPinned = true,
-                            isDefault = true,
-                            icon = 0
-                        ),
+                        taskList = LATE_TASKS_LIST,
                         tasks = lateTasks
                     ),
                     TaskListWithTasksAndTagsSubTasks(
-                        taskList = TaskList(
-                            id = -4,
-                            title = "Completed",
-                            color = 0,
-                            isPinned = true,
-                            isDefault = true,
-                            icon = 0
-                        ),
+                        taskList = COMPLETED_TASKS_LIST,
                         tasks = completedTasks
                     )
                 )

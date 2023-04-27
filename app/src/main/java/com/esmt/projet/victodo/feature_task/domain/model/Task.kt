@@ -9,12 +9,28 @@ import java.time.LocalTime
 data class Task(
     @PrimaryKey val id: Long?=null,
     val name: String,
-    val note: String?=null,
+    val note: String="",
     val isEnded: Boolean=false,
-    val priority: Int?=0,
+    val priority: String=Priority.LOW.value,
     val dueDate: LocalDate?=null,
     val dueTime: LocalTime?=null,
-    val redundancy: Int=0,//By day
+    val redundancy: String=RepeatFrequency.NEVER.value,
     val listId: Long?=null,
-)
+){
+    companion object {
+        sealed class RepeatFrequency(val value: String) {
+            object NEVER : RepeatFrequency("")
+            object DAILY : RepeatFrequency("Every day")
+            object WEEKLY : RepeatFrequency("Every week")
+            object MONTHLY : RepeatFrequency("Every month")
+            object YEARLY : RepeatFrequency("Every year")
+        }
+
+        sealed class Priority(val value: String) {
+            object HIGH : Priority("❗❗❗")
+            object MEDIUM : Priority("❗❗")
+            object LOW : Priority("❗")
+        }
+    }
+}
 

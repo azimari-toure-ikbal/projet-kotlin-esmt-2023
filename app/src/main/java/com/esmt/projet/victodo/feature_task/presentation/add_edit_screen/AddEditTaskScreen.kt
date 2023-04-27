@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -24,18 +25,21 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
+import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -43,31 +47,27 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AddEditTaskScreen() {
+fun AddEditTaskScreen(
+    viewModel: AddEditTaskViewModel = hiltViewModel()
+) {
+    val state = viewModel.state.value
+    val pickedDate = state.dueDate
+    val pickedTime = state.dueTime
+    val repeatFrequency = state.repeatFrequency
+    val priority = state.priority
+    val tags = state.tags
 
-    var pickedDate by remember {
-        mutableStateOf(LocalDate.now())
+    val taskNameState = viewModel.nameTextFieldState.value
+    val taskNoteState = viewModel.noteTextFieldState.value
+    val taskTagState = viewModel.tagTextField.value
+
+    val showDeadlineOptions = state.showDeadlineOptions
+
+    var tagList = tags.map {
+        TagItem(tagColor = viewModel.tagColor.value, tagTitle = it.title)
     }
 
-    var pickedTime by remember {
-        mutableStateOf(LocalTime.now())
-    }
-
-    var repeatFrequency by remember {
-        mutableStateOf("Repeat")
-    }
-
-    var priority by remember {
-        mutableStateOf("Priority")
-    }
-
-    var tags by remember {
-        mutableStateOf("Tags")
-    }
-
-    var showDeadlineOptions by remember {
-        mutableStateOf(false)
-    }
+    val selectedTag = state.selectedTags as ArrayList<TagItem>
 
     AddEditHeader(title = "New Task") {
         Column(
@@ -78,8 +78,10 @@ fun AddEditTaskScreen() {
         ) {
             Title(title = "Title")
             OutlinedTextField(
-                value = "Test",
-                onValueChange = {},
+                value = taskNameState.text,
+                onValueChange = {
+                    viewModel.onEvent(AddEditTaskEvent.EnteredName(it))
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -97,21 +99,21 @@ fun AddEditTaskScreen() {
             DropDownMenuCustom(
                 dropDownTitle = "Select a list",
                 dropDownIcon = R.drawable.drop_down_menu_list_24px,
-                dropDownItems = listOf(
-                    DropDownItem(0, "Every day"),
-                    DropDownItem(1, "Every week"),
-                    DropDownItem(2, "Every month"),
-                    DropDownItem(3, "Every year"),
-                ),
+                dropDownItems = state.tasklists.map {
+                    DropDownItem(it.id!!, it.title)
+                },
                 onItemClick = {
+                    viewModel.onEvent(AddEditTaskEvent.EnteredListId(it.id))
                 }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Description")
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = taskNoteState.text,
+                onValueChange = {
+                    viewModel.onEvent(AddEditTaskEvent.EnteredNote(it))
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
@@ -135,7 +137,7 @@ fun AddEditTaskScreen() {
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
-                        showDeadlineOptions = it
+                        viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -177,7 +179,7 @@ fun AddEditTaskScreen() {
                             fontSize = 12.sp,
                         )
                         Text(
-                            text = pickedDate.format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
+                            text = (pickedDate ?: LocalDate.now()).format(DateTimeFormatter.ofPattern("MM-dd-yyyy"))
                                 .toString(),
                             color = Color(0xFF006EE9),
                             fontSize = 10.sp,
@@ -213,7 +215,7 @@ fun AddEditTaskScreen() {
                             fontSize = 12.sp,
                         )
                         Text(
-                            text = pickedTime.format(DateTimeFormatter.ofPattern("hh:mm"))
+                            text = (pickedTime ?: LocalTime.now()).format(DateTimeFormatter.ofPattern("hh:mm"))
                                 .toString(),
                             color = Color(0xFF006EE9),
                             fontSize = 10.sp,
@@ -235,7 +237,7 @@ fun AddEditTaskScreen() {
                             it.isAfter(LocalDate.now().minusDays(1))
                         }
                     ) {
-                        pickedDate = it
+                        viewModel.onEvent(AddEditTaskEvent.EnteredDueDate(it))
                         Log.d("AddEditTaskScreen", "Date: $it")
                     }
                 }
@@ -251,23 +253,23 @@ fun AddEditTaskScreen() {
                         initialTime = LocalTime.now(),
                         title = "Pick a time",
                     ) {
-                        pickedTime = it
+                        viewModel.onEvent(AddEditTaskEvent.EnteredDueTime(it))
                         Log.d("AddEditTaskScreen", "Time: $it")
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 
                 DropDownMenuCustom(
-                    dropDownTitle = repeatFrequency,
+                    dropDownTitle = "Repeat",
                     dropDownIcon = R.drawable.drop_down_menu_repeat_24px,
                     dropDownItems = listOf(
-                        DropDownItem(0, "Every day"),
-                        DropDownItem(1, "Every week"),
-                        DropDownItem(2, "Every month"),
-                        DropDownItem(3, "Every year"),
+                        DropDownItem(0, Task.Companion.RepeatFrequency.DAILY.value),
+                        DropDownItem(1, Task.Companion.RepeatFrequency.WEEKLY.value),
+                        DropDownItem(2, Task.Companion.RepeatFrequency.MONTHLY.value),
+                        DropDownItem(3, Task.Companion.RepeatFrequency.YEARLY.value),
                     ),
                     onItemClick = {
-                        repeatFrequency = it.text
+                        viewModel.onEvent(AddEditTaskEvent.EnteredRedundancy(it.text))
                     }
                 )
             }
@@ -278,11 +280,22 @@ fun AddEditTaskScreen() {
             Title(title = "Tags")
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = if(taskTagState.isHintVisible) taskTagState.hint else taskTagState.text ,
+                onValueChange = {
+                    viewModel.onEvent(AddEditTaskEvent.EnteredTagText(it))
+                    tagList = tags.filter { tag -> tag.title.lowercase().contains(it.lowercase()) }.map { tagFinal->
+                        TagItem(
+                            tagColor = viewModel.tagColor.value,
+                            tagTitle = tagFinal.title
+                        )
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = 8.dp)
+                    .onFocusChanged {
+                        viewModel.onEvent(AddEditTaskEvent.TagTextFieldFocused(it))
+                    },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(0xFFedf4fe),
@@ -292,44 +305,26 @@ fun AddEditTaskScreen() {
                 ),
                 shape = RoundedCornerShape(10.dp),
             )
-
-            var tagColor = remember {
-                mutableStateOf(
-                    Color(0xFF006EE9)
-                )
-            }
-
-            var tagList = remember {
-                mutableStateListOf(
-                    TagItem(
-                        tagColor = tagColor,
-                        tagTitle = "Tag 1"
-                    ),
-                    TagItem(
-                        tagColor = tagColor,
-                        tagTitle = "Tag 2"
-                    ),
-                    TagItem(
-                        tagColor = tagColor,
-                        tagTitle = "Tag 3"
-                    ),
-                )
-            }
-
-            val selectedTag = remember {
-                mutableStateListOf<TagItem>()
+            Button(
+                onClick = {
+                    if(tags.filter { tag -> tag.title.lowercase().contains(taskTagState.text.lowercase()) }.isEmpty()) {
+                        viewModel.onEvent(AddEditTaskEvent.CreateTag)
+                    }
+                }
+            ) {
+                Text(text = "+")
             }
 
             LazyRow(
                 userScrollEnabled = false,
             ) {
-                items(tagList.size) { tag ->
+                items(tagList) { tag ->
                     Box(
                         modifier = Modifier
                             .padding(8.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(
-                                if (selectedTag.contains(tagList[tag])) {
+                                if (selectedTag.contains(tag)) {
                                     Color(0xFF006EE9)
                                 } else {
                                     Color(0xFFedf4fe)
@@ -341,15 +336,15 @@ fun AddEditTaskScreen() {
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .clickable {
-                                if (selectedTag.contains(tagList[tag])) {
-                                    selectedTag.remove(tagList[tag])
+                                if (selectedTag.contains(tag)) {
+                                    selectedTag.remove(tag)
                                 } else {
-                                    selectedTag.add(tagList[tag])
+                                    selectedTag.add(tag)
                                 }
                             }
                     ) {
                         Text(
-                            text = tagList[tag].tagTitle,
+                            text = tag.tagTitle,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .padding(4.dp)
@@ -359,32 +354,32 @@ fun AddEditTaskScreen() {
                 }
             }
 
-            FlowRow(
-                maxItemsInEachRow = 4,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                for (i in 0..6) {
-                    TagItem(
-                        tagColor = tagColor,
-                        tagTitle = "Tag $i"
-                    )
-                }
-            }
+//            FlowRow(
+//                maxItemsInEachRow = 4,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                for (i in 0..6) {
+//                    TagItem(
+//                        tagColor = viewModel.tagColor.value,
+//                        tagTitle = "Tag $i c"
+//                    )
+//                }
+//            }
 
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Priority")
             Spacer(modifier = Modifier.height(8.dp))
             DropDownMenuCustom(
-                dropDownTitle = priority,
+                dropDownTitle = Task.Companion.Priority.LOW.value,
                 dropDownIcon = R.drawable.drop_down_menu_priority_24px,
                 dropDownItems = listOf(
-                    DropDownItem(0, "❗"),
-                    DropDownItem(1, "❗❗"),
-                    DropDownItem(2, "❗❗❗"),
+                    DropDownItem(0, Task.Companion.Priority.LOW.value),
+                    DropDownItem(1, Task.Companion.Priority.MEDIUM.value),
+                    DropDownItem(2, Task.Companion.Priority.HIGH.value),
                 ),
                 onItemClick = {
-                    priority = it.text
+                    viewModel.onEvent(AddEditTaskEvent.EnteredPriority(it.text))
                 }
             )
 
@@ -410,7 +405,7 @@ fun AddEditTaskScreen() {
 }
 
 data class TagItem(
-    val tagColor: MutableState<Color>,
+    val tagColor: Color,
     val tagTitle: String,
 )
 
@@ -509,11 +504,10 @@ fun Title(
         fontWeight = FontWeight.SemiBold,
         color = Color.Blue
     )
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun Preview() {
     AddEditTaskScreen()

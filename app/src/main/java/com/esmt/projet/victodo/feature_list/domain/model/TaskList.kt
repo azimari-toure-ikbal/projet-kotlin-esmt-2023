@@ -13,7 +13,6 @@ data class TaskList(
     val isPinned: Boolean = false,
     val icon: Int = 0,
     val isDefault: Boolean = false,
-    val count: Long = 0
 ){
     companion object {
 
