@@ -12,19 +12,48 @@ import kotlinx.coroutines.flow.*
 
 class GetUtilTaskListsUseCase(
     val repository: TaskListRepository,
-    val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository
 ) {
     operator fun invoke(): Flow<List<TaskListWithTasksAndTagsSubTasks>> {
-        val lists = flow(){
-
+//        val lists = flow(){
+//
+//            combine(
+//                taskRepository.getTasks(),
+//                taskRepository.getScheduledTasks(),
+//                taskRepository.getLateTasks(),
+//                taskRepository.getCompletedTasks()
+//            ){
+//                    tasks, scheduledTasks, lateTasks, completedTasks ->
+//                listOf(
+//                    TaskListWithTasksAndTagsSubTasks(
+//                        taskList = ALL_TASKS_LIST,
+//                        tasks = tasks
+//                    ),
+//                    TaskListWithTasksAndTagsSubTasks(
+//                        taskList = SCHEDULED_TASKS_LIST,
+//                        tasks = scheduledTasks
+//                    ),
+//                    TaskListWithTasksAndTagsSubTasks(
+//                        taskList = LATE_TASKS_LIST,
+//                        tasks = lateTasks
+//                    ),
+//                    TaskListWithTasksAndTagsSubTasks(
+//                        taskList = COMPLETED_TASKS_LIST,
+//                        tasks = completedTasks
+//                    )
+//                )
+//            }.collectLatest {
+//                emit(it)
+//            }
+//        }
+        val lists = channelFlow<List<TaskListWithTasksAndTagsSubTasks>> {
             combine(
                 taskRepository.getTasks(),
                 taskRepository.getScheduledTasks(),
                 taskRepository.getLateTasks(),
-                taskRepository.getCompletedTasks(),
-                taskRepository.getTodayTasks()
+                taskRepository.getCompletedTasks()
             ){
-                    tasks, scheduledTasks, lateTasks, completedTasks, todayTasks ->
+                    tasks, scheduledTasks, lateTasks, completedTasks ->
                 listOf(
                     TaskListWithTasksAndTagsSubTasks(
                         taskList = ALL_TASKS_LIST,
@@ -44,7 +73,7 @@ class GetUtilTaskListsUseCase(
                     )
                 )
             }.collectLatest {
-                emit(it)
+                send(it)
             }
         }
         return lists

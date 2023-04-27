@@ -19,7 +19,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
     entities = [Tag::class, Task::class, TaskList::class, SubTask::class, TagTaskCrossRef::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
