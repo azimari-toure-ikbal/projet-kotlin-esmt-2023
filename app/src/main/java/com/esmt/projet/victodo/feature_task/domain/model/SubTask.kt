@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class SubTask(
-    @PrimaryKey val id: Long?=null,
+    @PrimaryKey(autoGenerate = true) val id: Long?=null,
     val name: String,
     val note: String?=null,
     val isEnded: Boolean=false,

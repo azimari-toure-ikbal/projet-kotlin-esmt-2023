@@ -16,7 +16,7 @@ class TagRepositoryImpl(
         return tagDao.getTagById(id)
     }
 
-    override suspend fun insertTag(tag: Tag) {
+    override suspend fun insertTag(tag: Tag): Long {
         return tagDao.insertTag(tag)
     }
 

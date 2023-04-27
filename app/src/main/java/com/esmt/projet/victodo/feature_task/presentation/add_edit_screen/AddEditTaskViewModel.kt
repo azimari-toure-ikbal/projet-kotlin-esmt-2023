@@ -1,11 +1,14 @@
 package com.esmt.projet.victodo.feature_task.presentation.add_edit_screen
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,7 +53,7 @@ class AddEditTaskViewModel @Inject constructor(
     ))
     val tagTextField : State<TextFieldState> = _tagTextField
 
-    private val currentTaskId : Long? = null
+    private var currentTaskId : Long? = null
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -66,6 +69,7 @@ class AddEditTaskViewModel @Inject constructor(
         getLists()
         savedStateHandle.get<Long>("taskId")?.let { taskId ->
             if (taskId != -1L){
+                currentTaskId = taskId
                 viewModelScope.launch {
                     taskUseCases.getTaskUseCase(taskId)?.let { taskWithTagAndSubTask ->
                         _nameTextFieldState.value = _nameTextFieldState.value.copy(
@@ -79,7 +83,7 @@ class AddEditTaskViewModel @Inject constructor(
                             dueDate = taskWithTagAndSubTask.task.dueDate,
                             dueTime = taskWithTagAndSubTask.task.dueTime,
                             listId = taskWithTagAndSubTask.task.listId,
-                            selectedTags = ,
+                            selectedTags = taskWithTagAndSubTask.tags.toMutableList(),
                             repeatFrequency = taskWithTagAndSubTask.task.redundancy
                         )
                     }
@@ -121,8 +125,11 @@ class AddEditTaskViewModel @Inject constructor(
                     listId = event.value
                 )
             }
-            is AddEditTaskEvent.EnteredTags -> {
+            is AddEditTaskEvent.EnteredTag -> {
                 _state.value.selectedTags.add(event.value)
+            }
+            is AddEditTaskEvent.RemovedTag -> {
+                _state.value.selectedTags.remove(event.value)
             }
             is AddEditTaskEvent.EnteredRedundancy -> {
                 _state.value = _state.value.copy(
@@ -135,13 +142,14 @@ class AddEditTaskViewModel @Inject constructor(
                         taskUseCases.addTaskUseCase(
                             TaskWithTagAndSubTask(
                                 task = Task(
+                                    id = if(currentTaskId != null) currentTaskId else null,
                                     name = nameTextFieldState.value.text,
                                     note = noteTextFieldState.value.text,
                                     priority = state.value.priority,
-                                    dueDate = state.value.dueDate,
-                                    dueTime = state.value.dueTime,
+                                    dueDate = if(state.value.showDeadlineOptions) state.value.dueDate else null,
+                                    dueTime = if(state.value.showDeadlineOptions) state.value.dueTime else null,
                                     listId = state.value.listId,
-                                    redundancy = state.value.repeatFrequency,
+                                    redundancy = if (state.value.showDeadlineOptions) state.value.repeatFrequency else Task.Companion.RepeatFrequency.NEVER.value,
                                 ),
                                 tags = state.value.selectedTags,
                             ),
@@ -161,16 +169,20 @@ class AddEditTaskViewModel @Inject constructor(
             is AddEditTaskEvent.CreateTag -> {
                 viewModelScope.launch {
                     try {
-                        tagUseCases.addTagUseCase(
+                        val id = tagUseCases.addTagUseCase(
                             Tag(
                                 title = _tagTextField.value.text
                             )
                         )
-                        _state.value = with(_state.value){
-                            copy(
-                                selectedTags =
+                        _state.value.selectedTags.add(
+                            Tag(
+                                id = id,
+                                title = _tagTextField.value.text
                             )
-                        }
+                        )
+                        _tagTextField.value = _tagTextField.value.copy(
+                            text = ""
+                        )
                     }catch (e: InvalidTagException){
                         _eventFlow.emit(UiEvent.ShowSnackBar(e.message ?: "An error occurred"))
                     }

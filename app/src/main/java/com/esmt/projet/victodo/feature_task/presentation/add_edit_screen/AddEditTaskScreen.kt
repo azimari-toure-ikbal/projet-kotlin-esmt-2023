@@ -1,7 +1,13 @@
 package com.esmt.projet.victodo.feature_task.presentation.add_edit_screen
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,18 +28,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
+import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -44,12 +53,12 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddEditTaskScreen(
     viewModel: AddEditTaskViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.value
     val pickedDate = state.dueDate
     val pickedTime = state.dueTime
@@ -64,10 +73,26 @@ fun AddEditTaskScreen(
     val showDeadlineOptions = state.showDeadlineOptions
 
     var tagList = tags.map {
-        TagItem(tagColor = viewModel.tagColor.value, tagTitle = it.title)
+        TagItem(tagColor = viewModel.tagColor.value, tag = it)
     }
 
-    val selectedTag = state.selectedTags as ArrayList<TagItem>
+    val selectedTag = state.selectedTags.map {
+        TagItem(tagColor = viewModel.tagColor.value, tag = it)
+    }
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (!isGranted) {
+                AlertDialog.Builder(context)
+                    .setTitle("Permission needed")
+                    .setMessage("You have denied this permission. Please allow it in the settings")
+                    .setNeutralButton("ok") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create().show()
+            }
+        }
+
 
     AddEditHeader(title = "New Task") {
         Column(
@@ -137,7 +162,40 @@ fun AddEditTaskScreen(
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                if (shouldShowRequestPermissionRationale(
+                                        context as Activity,
+                                        Manifest.permission.POST_NOTIFICATIONS
+                                    )
+                                ) {
+                                    AlertDialog.Builder(context)
+                                        .setTitle("Notification Permission needed")
+                                        .setMessage("This permission is needed to set a reminder")
+                                        .setPositiveButton("ok") { dialog, _ ->
+                                            dialog.dismiss()
+                                            permissionLauncher.launch(
+                                                Manifest.permission.POST_NOTIFICATIONS
+                                            )
+                                        }
+                                        .setNegativeButton("cancel") { dialog, _ ->
+                                            dialog.dismiss()
+                                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
+                                        }
+                                        .create().show()
+                                } else {
+                                    permissionLauncher.launch(
+                                        Manifest.permission.POST_NOTIFICATIONS
+                                    )
+                                }
+                            }
+                        }
                         viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
+
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -260,7 +318,7 @@ fun AddEditTaskScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 DropDownMenuCustom(
-                    dropDownTitle = "Repeat",
+                    dropDownTitle = if(repeatFrequency.equals(Task.Companion.RepeatFrequency.NEVER.value)) "Repeat" else repeatFrequency,
                     dropDownIcon = R.drawable.drop_down_menu_repeat_24px,
                     dropDownItems = listOf(
                         DropDownItem(0, Task.Companion.RepeatFrequency.DAILY.value),
@@ -286,7 +344,7 @@ fun AddEditTaskScreen(
                     tagList = tags.filter { tag -> tag.title.lowercase().contains(it.lowercase()) }.map { tagFinal->
                         TagItem(
                             tagColor = viewModel.tagColor.value,
-                            tagTitle = tagFinal.title
+                            tag = tagFinal
                         )
                     }
                 },
@@ -313,18 +371,19 @@ fun AddEditTaskScreen(
                 }
             ) {
                 Text(text = "+")
+                // TODO(handle button )
             }
 
             LazyRow(
                 userScrollEnabled = false,
             ) {
-                items(tagList) { tag ->
+                items(tagList) { tagItem ->
                     Box(
                         modifier = Modifier
                             .padding(8.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(
-                                if (selectedTag.contains(tag)) {
+                                if (selectedTag.contains(tagItem)) {
                                     Color(0xFF006EE9)
                                 } else {
                                     Color(0xFFedf4fe)
@@ -336,15 +395,15 @@ fun AddEditTaskScreen(
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .clickable {
-                                if (selectedTag.contains(tag)) {
-                                    selectedTag.remove(tag)
+                                if (selectedTag.contains(tagItem)) {
+                                    viewModel.onEvent(AddEditTaskEvent.RemovedTag(tagItem.tag))
                                 } else {
-                                    selectedTag.add(tag)
+                                    viewModel.onEvent(AddEditTaskEvent.EnteredTag(tagItem.tag))
                                 }
                             }
                     ) {
                         Text(
-                            text = tag.tagTitle,
+                            text = tagItem.tag.title,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .padding(4.dp)
@@ -371,7 +430,7 @@ fun AddEditTaskScreen(
             Title(title = "Priority")
             Spacer(modifier = Modifier.height(8.dp))
             DropDownMenuCustom(
-                dropDownTitle = Task.Companion.Priority.LOW.value,
+                dropDownTitle = priority,
                 dropDownIcon = R.drawable.drop_down_menu_priority_24px,
                 dropDownItems = listOf(
                     DropDownItem(0, Task.Companion.Priority.LOW.value),
@@ -400,13 +459,22 @@ fun AddEditTaskScreen(
 //                ),
 //                shape = RoundedCornerShape(10.dp),
 //            )
+
+            Button(
+                onClick = {
+                    viewModel.onEvent(AddEditTaskEvent.SaveTask)
+                }
+            ) {
+                Text(text = "Save")
+                // TODO(handle button )
+            }
         }
     }
 }
 
 data class TagItem(
     val tagColor: Color,
-    val tagTitle: String,
+    val tag: Tag,
 )
 
 @Composable

@@ -13,7 +13,6 @@ import com.esmt.projet.victodo.feature_task.workers.TaskNotifierWorker
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class AddTaskUseCase (
     val repository: TaskRepository
@@ -28,17 +27,27 @@ class AddTaskUseCase (
             throw InvalidTaskException("Task must be associated with a list")
         if(taskWithTagAndSubTask.task.name.isBlank())
             throw InvalidTaskException("Task must have a title")
-        taskWithTagAndSubTask.tags?.let {tags->
+        taskWithTagAndSubTask.tags.let {tags->
             for(tag in tags) {
                 if(tag.id == null)
                     throw InvalidTaskException("Tag must have an id")
             }
         }
-        taskWithTagAndSubTask.subtasks?.let{subtasks->
+        taskWithTagAndSubTask.subtasks.let{subtasks->
             for(subTask in subtasks) {
                 if(subTask.name.isBlank())
                     throw InvalidTaskException("SubTask must have a title")
             }
+        }
+        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime == null)
+            throw InvalidTaskException("Task must have a due time")
+        if(taskWithTagAndSubTask.task.dueDate == null && taskWithTagAndSubTask.task.dueTime != null)
+            throw InvalidTaskException("Task must have a due date")
+        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null) {
+            if(taskWithTagAndSubTask.task.dueDate.isBefore(LocalDateTime.now().toLocalDate()))
+                throw InvalidTaskException("Task due date must be in the future")
+            if(taskWithTagAndSubTask.task.dueDate.isEqual(LocalDateTime.now().toLocalDate()) && taskWithTagAndSubTask.task.dueTime.isBefore(LocalDateTime.now().toLocalTime()))
+                throw InvalidTaskException("Task due time must be in the future")
         }
         val id = repository.insertTask(taskWithTagAndSubTask)
         val dueDateTime = LocalDateTime.of(taskWithTagAndSubTask.task.dueDate, taskWithTagAndSubTask.task.dueTime).atZone(

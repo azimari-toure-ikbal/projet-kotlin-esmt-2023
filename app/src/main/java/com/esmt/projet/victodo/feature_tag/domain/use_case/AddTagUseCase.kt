@@ -7,10 +7,10 @@ import com.esmt.projet.victodo.feature_tag.domain.repository.TagRepository
 class AddTagUseCase(
     private val repository: TagRepository
 ){
-    suspend operator fun invoke(tag: Tag){
+    suspend operator fun invoke(tag: Tag): Long{
         if(tag.title.isBlank()){
             throw InvalidTagException("Veuillez renseigner le nom du tag svp :)")
         }
-        repository.insertTag(tag)
+        return repository.insertTag(tag)
     }
 }

@@ -7,7 +7,7 @@ import java.time.LocalTime
 
 @Entity(tableName = "task")
 data class Task(
-    @PrimaryKey val id: Long?=null,
+    @PrimaryKey(autoGenerate = true) val id: Long?=null,
     val name: String,
     val note: String="",
     val isEnded: Boolean=false,

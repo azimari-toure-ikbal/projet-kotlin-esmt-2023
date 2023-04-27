@@ -1,29 +1,32 @@
 package com.esmt.projet.victodo.feature_list.presentation.list_screen
 
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 import com.esmt.projet.victodo.feature_list.util.ALL_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.COMPLETED_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.LATE_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.SCHEDULED_TASKS_LIST
+import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.use_case.TaskUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import javax.inject.Inject
 
 @HiltViewModel
 class ListWithTasksViewModel @Inject constructor(
-    private val listUseCases: TaskListUseCases,
     private val taskuseCases: TaskUseCases,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    @ApplicationContext private val context: Context
 ): ViewModel() {
 
     private val _state = mutableStateOf(ListWithTasksState())
@@ -44,6 +47,7 @@ class ListWithTasksViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onEvent(event: ListWithTasksEvent){
         when(event) {
             is ListWithTasksEvent.OnDeleteClick -> {
@@ -59,7 +63,52 @@ class ListWithTasksViewModel @Inject constructor(
             }
             is ListWithTasksEvent.OnCompletedClick -> {
                 viewModelScope.launch {
-                    // TODO()
+                    val task = event.taskWithTagAndSubTask.copy(
+                        task = event.taskWithTagAndSubTask.task.copy(
+                            isEnded = !event.taskWithTagAndSubTask.task.isEnded
+                        )
+                    )
+                    taskuseCases.addTaskUseCase(task, context)
+                    if(task.task.redundancy != Task.Companion.RepeatFrequency.NEVER.value){
+                        when(task.task.redundancy){
+                            Task.Companion.RepeatFrequency.DAILY.value -> {
+                                taskuseCases.addTaskUseCase(task.copy(
+                                    task = task.task.copy(
+                                        id=0,
+                                        dueDate = task.task.dueDate?.plusDays(1),
+                                        isEnded = false
+                                    )
+                                ), context)
+                            }
+                            Task.Companion.RepeatFrequency.WEEKLY.value -> {
+                                taskuseCases.addTaskUseCase(task.copy(
+                                    task = task.task.copy(
+                                        id=0,
+                                        dueDate = task.task.dueDate?.plusWeeks(1),
+                                        isEnded = false
+                                    )
+                                ), context)
+                            }
+                            Task.Companion.RepeatFrequency.MONTHLY.value -> {
+                                taskuseCases.addTaskUseCase(task.copy(
+                                    task = task.task.copy(
+                                        id=0,
+                                        dueDate = task.task.dueDate?.plusMonths(1),
+                                        isEnded = false
+                                    )
+                                ), context)
+                            }
+                            Task.Companion.RepeatFrequency.YEARLY.value -> {
+                                taskuseCases.addTaskUseCase(task.copy(
+                                    task = task.task.copy(
+                                        id=0,
+                                        dueDate = task.task.dueDate?.plusYears(1),
+                                        isEnded = false
+                                    )
+                                ), context)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -101,13 +150,12 @@ class ListWithTasksViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
             else -> {
-                viewModelScope.launch {
-                    val taskListWithTasksAndTagsSubTasks = listUseCases.getTaskListUseCase(currentListId)
+                taskListJob = taskuseCases.getTasksByListIdUseCase(currentListId).onEach {
                     _state.value = ListWithTasksState(
-                        listOfTasks = taskListWithTasksAndTagsSubTasks.tasks,
+                        listOfTasks = it,
                         isTaskLoading = false
                     )
-                }
+                }.launchIn(viewModelScope)
             }
         }
     }

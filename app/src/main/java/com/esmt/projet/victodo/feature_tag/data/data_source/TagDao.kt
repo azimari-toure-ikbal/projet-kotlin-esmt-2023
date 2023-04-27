@@ -13,7 +13,7 @@ interface TagDao {
     suspend fun getTagById(id: Long): Tag?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTag(tag: Tag)
+    suspend fun insertTag(tag: Tag): Long
 
     @Delete
     suspend fun deleteTag(tag: Tag)

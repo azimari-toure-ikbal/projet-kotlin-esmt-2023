@@ -8,5 +8,6 @@ data class TaskUseCases (
     val getCompletedTasksUseCase: GetCompletedTasksUseCase,
     val getScheduledTasksUseCase: GetScheduledTasksUseCase,
     val getLateTasksUseCase: GetLateTasksUseCase,
-    val getTodayTasksUseCase: GetTodayTasksUseCase
+    val getTodayTasksUseCase: GetTodayTasksUseCase,
+    val getTasksByListIdUseCase: GetTasksByListIdUseCase
 )
