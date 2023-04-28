@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <application
         android:name=".VictoDoApp"
         android:allowBackup="true"
@@ -13,6 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VictoDo"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.gms.vision"
+            android:value="@integer/google_play_services_version"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/API_KEY"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
