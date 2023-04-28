@@ -79,6 +79,9 @@ fun TaskListItem(
                             interactionSource.emit(press)
                             tryAwaitRelease()
                             interactionSource.emit(PressInteraction.Release(press))
+                        },
+                        onTap = {
+                            onListClick()
                         }
                     )
                 }
@@ -89,9 +92,9 @@ fun TaskListItem(
                     color = Color(0xFFedf4fe),
                     shape = RoundedCornerShape(10.dp)
                 )
-                .clickable {
-                    onListClick()
-                }
+//                .clickable {
+//                    onListClick()
+//                }
         ) {
             Text(
                 text = taskList.taskList.title,

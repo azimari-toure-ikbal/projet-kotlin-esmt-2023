@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +54,31 @@ fun ListWithTasksScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp, start = 16.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color(0xFF006EE9),
+                modifier = Modifier
+                    .size(22.dp)
+                    .padding(end = 4.dp)
+            )
+            Text(
+                text = "Back",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF006EE9),
+                modifier = Modifier
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -140,7 +166,10 @@ fun ListWithTasksScreen(
                     item {
                         Image(
                             painter = painterResource(id = R.drawable.no_data),
-                            contentDescription = "No Data"
+                            contentDescription = "No Data",
+                            alignment = Alignment.Center,
+                            modifier = Modifier
+                                .padding(top = 48.dp)
                         )
                     }
                 }
