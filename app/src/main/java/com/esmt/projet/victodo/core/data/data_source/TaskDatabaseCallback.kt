@@ -29,8 +29,7 @@ class TaskDatabaseCallback(
         executor.execute {
             runBlocking {
                 val list = TaskList(
-                    title = "Par défaut",
-                    color = 0
+                    title = "Par défaut"
                 )
                 val database = TaskDatabase.getInstance(application)
                 Log.i("infoDataR", "ajout de la liste")

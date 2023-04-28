@@ -53,7 +53,7 @@ fun AddEditListScreen(
         )
     }
 
-    val navBackStackEntry = navController.previousBackStackEntry
+    val navBackStackEntry = navController.currentBackStackEntry
     val arguments = navBackStackEntry?.arguments
     val listId = arguments?.getLong("listId")
 
@@ -104,7 +104,7 @@ fun AddEditListScreen(
                     .background(listBackgroundColorAnimatable.value)
             ) {
                 Image(
-                    painter = painterResource(id = iconState) ,
+                    painter = painterResource(id = iconState),
                     contentDescription = null,
                     modifier = Modifier
                         .size(42.dp)
@@ -114,7 +114,7 @@ fun AddEditListScreen(
             }
             Spacer(modifier = Modifier.height(32.dp))
             TextField(
-                value = titleState.listTitle,
+                value = titleState,
                 onValueChange = {
                     viewModel.onEvent(AddEditListsEvent.EnteredTitle(it))
                 },
@@ -211,15 +211,15 @@ fun AddEditListScreen(
             Button(
                 onClick = {
                     println("Pressed")
-                    viewModel.onEvent(AddEditListsEvent.CreateList(
-                        TaskList
-                            (
-//                                id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
-                                title = titleState.listTitle,
-                                color = colorState,
-                                icon = iconState,
-                            )
-                        )
+                    viewModel.onEvent(AddEditListsEvent.CreateList
+//                        TaskList
+//                            (
+////                                id = UUID.randomUUID().mostSignificantBits and Long.MAX_VALUE,
+//                                title = titleState.listTitle,
+//                                color = colorState,
+//                                icon = iconState,
+//                            )
+
                     )
                 },
                 shape = RoundedCornerShape(10.dp),

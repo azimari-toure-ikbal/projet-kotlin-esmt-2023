@@ -2,6 +2,8 @@ package com.esmt.projet.victodo.feature_list.presentation.list_screen
 
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +37,7 @@ import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.util.Screen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ListWithTasksScreen(
     navController: NavController,
@@ -56,7 +60,7 @@ fun ListWithTasksScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                imageVector = TaskList.listIcons[taskList.icon] as ImageVector,
+                imageVector = ImageVector.vectorResource(id = taskList.icon),
                 contentDescription = null,
                 tint = Color.Blue
             )
@@ -145,6 +149,7 @@ fun ListWithTasksScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun confirmDeleteTask(context: Context, taskWithTagAndSubTask: TaskWithTagAndSubTask, viewModel: ListWithTasksViewModel) {
     val builder = AlertDialog.Builder(context)
     builder.apply {

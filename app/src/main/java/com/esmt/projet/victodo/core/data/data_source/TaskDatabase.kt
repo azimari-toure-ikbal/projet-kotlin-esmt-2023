@@ -19,7 +19,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 @Database(
     entities = [Tag::class, Task::class, TaskList::class, SubTask::class, TagTaskCrossRef::class],
-    version = 2,
+    version = 1,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
@@ -42,7 +42,7 @@ abstract class TaskDatabase: RoomDatabase() {
             }
         }
 
-        fun buildDatabase(app: Application): TaskDatabase{
+        private fun buildDatabase(app: Application): TaskDatabase{
             return Room.databaseBuilder(
                 app,
                 TaskDatabase::class.java,

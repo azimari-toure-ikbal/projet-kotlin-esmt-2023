@@ -107,7 +107,6 @@ class MainActivity : ComponentActivity() {
                                 listColor = color
                             )
                         }
-
                         composable(
                             route = Screen.ListWithTasksScreen.route+
                                     "/{listId}/{listTitle}/{listIcon}",

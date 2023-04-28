@@ -126,10 +126,20 @@ class AddEditTaskViewModel @Inject constructor(
                 )
             }
             is AddEditTaskEvent.EnteredTag -> {
-                _state.value.selectedTags.add(event.value)
+                _state.value = with(_state.value){
+                    selectedTags.add(event.value)
+                    copy(
+                        selectedTags = selectedTags
+                    )
+                }
             }
             is AddEditTaskEvent.RemovedTag -> {
-                _state.value.selectedTags.remove(event.value)
+                _state.value = with(_state.value){
+                    selectedTags.remove(event.value)
+                    copy(
+                        selectedTags = selectedTags
+                    )
+                }
             }
             is AddEditTaskEvent.EnteredRedundancy -> {
                 _state.value = _state.value.copy(

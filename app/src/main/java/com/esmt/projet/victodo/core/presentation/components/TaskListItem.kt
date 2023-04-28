@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.core.presentation.components
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,7 +34,8 @@ import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTag
 fun TaskListItem(
     taskList: TaskListWithTasksAndTagsSubTasks,
     dropDownItems: List<DropDownItem>,
-    onItemClick: (DropDownItem) -> Unit
+    onItemClick: (DropDownItem) -> Unit,
+    onListClick: () -> Unit,
 ) {
 
     var isContextMenuVisible by rememberSaveable {
@@ -87,6 +89,9 @@ fun TaskListItem(
                     color = Color(0xFFedf4fe),
                     shape = RoundedCornerShape(10.dp)
                 )
+                .clickable {
+                    onListClick()
+                }
         ) {
             Text(
                 text = taskList.taskList.title,

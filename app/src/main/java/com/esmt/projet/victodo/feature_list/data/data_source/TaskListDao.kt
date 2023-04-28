@@ -19,7 +19,6 @@ interface TaskListDao {
     @Query("SELECT * FROM lists WHERE id = :id")
     suspend fun getListById(id: Long): TaskListWithTasksAndTagsSubTasks
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertList(list: TaskList)
 

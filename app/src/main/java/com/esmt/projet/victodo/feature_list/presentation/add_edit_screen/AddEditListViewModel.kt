@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,10 +21,8 @@ class AddEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _listTitle = mutableStateOf(AddEditListsState(
-        listTitle = ""
-    ))
-    val listTitle : State<AddEditListsState> = _listTitle
+    private val _listTitle = mutableStateOf("")
+    val listTitle : State<String> = _listTitle
     
     private val _listColor = mutableStateOf(TaskList.listColors.random().toArgb())
     val listColor : State<Int> = _listColor
@@ -44,9 +41,9 @@ class AddEditViewModel @Inject constructor(
                 viewModelScope.launch {
                     listUseCases.getTaskListUseCase(listId).let { taskList ->
                         currentListId = taskList.taskList.id
-                        _listTitle.value = AddEditListsState(taskList.taskList.title)
+                        _listTitle.value = taskList.taskList.title
                         _listColor.value = taskList.taskList.color
-                        _listIcon.value = (taskList.taskList.icon ?: TaskList.listIcons[0]) as Int
+                        _listIcon.value = taskList.taskList.icon
                     }
                 }
             }
@@ -56,7 +53,7 @@ class AddEditViewModel @Inject constructor(
     fun onEvent(event: AddEditListsEvent) {
         when (event) {
             is AddEditListsEvent.EnteredTitle -> {
-                _listTitle.value = listTitle.value.copy(listTitle = event.title)
+                _listTitle.value = event.title
                 print(_listTitle.value)
             }
             is AddEditListsEvent.CreateList -> {
@@ -66,10 +63,10 @@ class AddEditViewModel @Inject constructor(
                         listUseCases.addTaskListUseCase(
                             TaskList(
                                 id = currentListId,
-                                title = event.taskList.title,
-                                color = event.taskList.color,
+                                title = _listTitle.value,
+                                color = _listColor.value,
                                 isPinned = false,
-                                icon = event.taskList.icon,
+                                icon = _listIcon.value,
                                 isDefault = false
                             )
                         )

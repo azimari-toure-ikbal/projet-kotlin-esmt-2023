@@ -49,6 +49,7 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.flow.collectLatest
 
 import java.time.LocalDate
 import java.time.LocalTime
@@ -95,6 +96,18 @@ fun AddEditTaskScreen(
             }
         }
 
+    LaunchedEffect(key1 = true){
+        viewModel.eventFlow.collectLatest {
+            when(it){
+                AddEditTaskViewModel.UiEvent.SaveTask -> {
+                    navController.navigateUp()
+                }
+                is AddEditTaskViewModel.UiEvent.ShowSnackBar -> {
+                    // TODO()
+                }
+            }
+        }
+    }
 
     AddEditHeader(
         title = "New Task",

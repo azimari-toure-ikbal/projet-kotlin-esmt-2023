@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -91,6 +90,14 @@ fun HomeScreen(
                         .width(100.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.Blue)
+                        .clickable {
+                            navController.navigate(
+                                route = Screen.ListWithTasksScreen.route
+                                        +"/${taskList.taskList.id}"
+                                        +"/${taskList.taskList.title}"
+                                        +"/${taskList.taskList.icon}"
+                            )
+                        }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,7 +176,15 @@ fun HomeScreen(
                                 )
                             }
                         }
-                    }
+                    },
+                    onListClick = {
+                        navController.navigate(
+                            route = Screen.ListWithTasksScreen.route
+                                    +"/${taskList.taskList.id}"
+                                    +"/${taskList.taskList.title}"
+                                    +"/${taskList.taskList.icon}"
+                        )
+                    },
                 )
             }
         }
@@ -250,15 +265,15 @@ fun HomeScreen(
                     .width(90.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(Color(0xFF006EE9))
-                    .clickable {
-                        navController.navigate(Screen.AddEditTaskScreen.route)
-                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(start = 8.dp)
+                        .clickable {
+                            navController.navigate(Screen.AddEditTaskScreen.route)
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -279,15 +294,15 @@ fun HomeScreen(
                     .width(90.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(Color(0xFFEEF5FD))
-                    .clickable {
-                        navController.navigate(Screen.AddEditListScreen.route)
-                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(start = 8.dp)
+                        .clickable {
+                            navController.navigate(Screen.AddEditListScreen.route)
+                        }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -312,23 +327,6 @@ fun Preview() {
     HomeScreen(navController = rememberNavController())
 }
 
-//fun getTaskListItems(): List<TaskList> {
-//    return listOf(
-//        TaskList(
-//            id = 1,
-//            title = "Work out",
-//        ),
-//        TaskList(
-//            id = 2,
-//            title = "Work out2",
-//        ),
-//        TaskList(
-//            id = 3,
-//            title = "Work out3",
-//        ),
-//    )
-//}
-
 fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTasks, viewModel: HomeScreenViewModel){
     val builder = AlertDialog.Builder(context)
     builder.apply {
@@ -337,8 +335,9 @@ fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTas
         setPositiveButton("Oui"){ _, _ ->
             viewModel.onEvent(HomeScreenEvent.onSupprimerClicked(taskList))
         }
-        setNegativeButton("Non"){ _, _ ->
-
+        setNegativeButton("Non"){ dialog, _ ->
+            dialog.dismiss()
         }
     }
+    builder.create().show()
 }

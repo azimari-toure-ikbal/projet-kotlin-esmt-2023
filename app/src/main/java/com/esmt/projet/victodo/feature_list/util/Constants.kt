@@ -8,7 +8,6 @@ val ALL_TASKS_LIST = TaskList(
     color = 7,
     isPinned = true,
     isDefault = true,
-    icon = 0
 )
 
 val SCHEDULED_TASKS_LIST = TaskList(
@@ -17,7 +16,6 @@ val SCHEDULED_TASKS_LIST = TaskList(
     color = 1,
     isPinned = true,
     isDefault = true,
-    icon = 0
 )
 
 val LATE_TASKS_LIST = TaskList(
@@ -26,7 +24,6 @@ val LATE_TASKS_LIST = TaskList(
     color = 0,
     isPinned = true,
     isDefault = true,
-    icon = 0
 )
 
 val COMPLETED_TASKS_LIST = TaskList(
@@ -34,6 +31,5 @@ val COMPLETED_TASKS_LIST = TaskList(
     title = "Completed",
     color = 0,
     isPinned = true,
-    isDefault = true,
-    icon = 0
+    isDefault = true
 )

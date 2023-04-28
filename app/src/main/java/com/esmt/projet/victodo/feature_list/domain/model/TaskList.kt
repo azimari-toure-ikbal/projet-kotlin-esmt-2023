@@ -7,11 +7,11 @@ import com.esmt.projet.victodo.R
 
 @Entity(tableName = "lists")
 data class TaskList(
-    @PrimaryKey(autoGenerate = true) val id: Long? =0,
+    @PrimaryKey(autoGenerate = true) val id: Long?=null,
     val title: String,
     val color: Int = 1,//to check
     val isPinned: Boolean = false,
-    val icon: Int = 0,
+    val icon: Int = listIcons[0],
     val isDefault: Boolean = false,
 ){
     companion object {
