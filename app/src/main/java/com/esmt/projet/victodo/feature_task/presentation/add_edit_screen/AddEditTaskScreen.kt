@@ -123,6 +123,7 @@ fun AddEditTaskScreen(
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 singleLine = true,
+                maxLines = 1,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(0xFFedf4fe),
                     unfocusedBorderColor = Color(0xFFedf4fe),
@@ -174,7 +175,7 @@ fun AddEditTaskScreen(
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.POST_NOTIFICATIONS
@@ -466,6 +467,7 @@ fun AddEditTaskScreen(
             val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
             Button(
                 onClick = {
+                    Log.d("AddEditTaskScreen", "Save button clicked")
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
                 }
             ) {

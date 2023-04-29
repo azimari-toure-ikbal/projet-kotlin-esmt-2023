@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
+import java.time.LocalDate
+import java.time.LocalTime
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -85,12 +87,23 @@ fun TaskItem(
             }
             .clip(RoundedCornerShape(10.dp))
             .background(Color.Transparent)
-            .border(1.5.dp, Color(0xFFedf4fe), RoundedCornerShape(10.dp))
+            .border(1.5.dp,
+                if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
+                Color.Red
+            } else {
+                Color(0xFFedf4fe)
+            },
+            RoundedCornerShape(10.dp))
             .padding(16.dp)
             .drawBehind {
                 clipRect {
                     drawLine(
-                        color = Color.Blue,
+                        color =
+                        if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
+                          Color.Red
+                        } else {
+                        Color.Blue
+                        },
                         start = Offset(0f, 0f),
                         end = Offset(0f, size.height),
                         strokeWidth = 4.dp.toPx()
@@ -114,12 +127,22 @@ fun TaskItem(
                     text = task.task.name,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF006EE9)
+                    color =
+                    if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
+                     Color.Red
+                    } else {
+                        Color(0xFF006EE9)
+                    }
                 )
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = null,
-                    tint = Color(0xFFABCEF5),
+                    tint =
+                    if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
+                        Color.Red
+                    } else {
+                        Color(0xFFABCEF5)
+                    },
                     modifier = Modifier
                         .rotate(90f)
                 )
@@ -129,14 +152,21 @@ fun TaskItem(
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Normal,
             )
-            Text(
-                text = "${task.task.dueDate} - ${task.task.dueTime}",
-                fontSize = 10.sp,
-                color = Color(0xFF0668E5),
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .align(Alignment.End)
-            )
+            if (task.task.dueDate != null && task.task.dueTime != null) {
+                Text(
+                    text = "${task.task.dueDate} - ${task.task.dueTime}",
+                    fontSize = 10.sp,
+                    color =
+                    if (LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
+                        Color.Red
+                    } else {
+                        Color(0xFF0668E5)
+                    },
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .align(Alignment.End)
+                )
+            }
 
             FlowRow(
                 maxItemsInEachRow = 3,
@@ -145,7 +175,7 @@ fun TaskItem(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                task.tags?.forEach { tag ->
+                task.tags.forEach { tag ->
                     Text(
                         text = "# ${tag.title}",
                         fontSize = 10.sp,

@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.feature_task.presentation.add_edit_screen
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -152,6 +153,7 @@ class AddEditTaskViewModel @Inject constructor(
             is AddEditTaskEvent.SaveTask -> {
                 viewModelScope.launch {
                     try {
+                        Log.d("AddEditTaskViewModel", "SaveTask:§")
                         taskUseCases.addTaskUseCase(
                             TaskWithTagAndSubTask(
                                 task = Task(
