@@ -126,6 +126,7 @@ fun AddEditTaskScreen(
                     .fillMaxWidth()
                     .padding(top = 8.dp),
                 singleLine = true,
+                maxLines = 1,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color(0xFFedf4fe),
                     unfocusedBorderColor = Color(0xFFedf4fe),
@@ -470,6 +471,7 @@ fun AddEditTaskScreen(
 
             Button(
                 onClick = {
+                    Log.d("AddEditTaskScreen", "Save button clicked")
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
                 }
             ) {

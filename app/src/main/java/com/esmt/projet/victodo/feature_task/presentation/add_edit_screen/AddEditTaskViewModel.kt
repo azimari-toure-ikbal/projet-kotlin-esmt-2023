@@ -155,6 +155,7 @@ class AddEditTaskViewModel @Inject constructor(
                 viewModelScope.launch {
                     Log.d("AddEditTaskViewModel", "SaveTask launched")
                     try {
+                        Log.d("AddEditTaskViewModel", "SaveTask:§")
                         taskUseCases.addTaskUseCase(
                             TaskWithTagAndSubTask(
                                 task = Task(

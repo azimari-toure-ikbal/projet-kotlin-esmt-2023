@@ -58,7 +58,10 @@ fun ListWithTasksScreen(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp, start = 16.dp),
+                .padding(top = 32.dp, start = 16.dp)
+                .clickable {
+                    navController.popBackStack()
+                },
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -73,10 +76,6 @@ fun ListWithTasksScreen(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF006EE9),
-                modifier = Modifier
-                    .clickable {
-                        navController.popBackStack()
-                    }
             )
         }
         Row(
