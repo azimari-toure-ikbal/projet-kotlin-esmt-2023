@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 import com.esmt.projet.victodo.feature_tag.domain.use_case.TagUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,7 @@ class HomeScreenViewModel @Inject constructor(
     private val tagUseCases: TagUseCases
 ) : ViewModel() {
 
+    private var listOfTaskList: List<TaskListWithTasksAndTagsSubTasks> = emptyList()
     private val _state = mutableStateOf(HomeScreenState())
     val state : State<HomeScreenState> = _state
 
@@ -37,13 +39,15 @@ class HomeScreenViewModel @Inject constructor(
     fun onEvent(event: HomeScreenEvent){
         when(event){
             is HomeScreenEvent.onSearch -> {
-                if(event.query.isNotBlank()){
-                    getTaskListJob?.cancel()
-                    getTaskListJob = listUseCases.searchTaskList(event.query).onEach {
-                        _state.value = _state.value.copy(
-                            listOfTaskList = it
-                        )
-                    }.launchIn(viewModelScope)
+                if(event.query.isNotBlank() || event.query.isEmpty()){
+                    _searchFieldState.value = _searchFieldState.value.copy(
+                        searchQuery = event.query
+                    )
+                    _state.value = _state.value.copy(
+                        listOfTaskList = listOfTaskList.filter {
+                            it.taskList.title.contains(event.query, ignoreCase = true)
+                        }
+                    )
                 }
             }
             is HomeScreenEvent.onSupprimerClicked -> {
@@ -77,6 +81,7 @@ class HomeScreenViewModel @Inject constructor(
     private fun getTaskList(){
         getTaskListJob?.cancel()
         getTaskListJob = listUseCases.getTaskListsUseCase().onEach {
+            listOfTaskList = it
             _state.value = _state.value.copy(
                 listOfTaskList = it
             )

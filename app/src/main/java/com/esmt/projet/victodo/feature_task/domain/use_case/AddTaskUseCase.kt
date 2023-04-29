@@ -48,20 +48,26 @@ class AddTaskUseCase (
                 throw InvalidTaskException("Task due time must be in the future")
         }
         val id = repository.insertTask(taskWithTagAndSubTask)
-        val dueDateTime = LocalDateTime.of(taskWithTagAndSubTask.task.dueDate, taskWithTagAndSubTask.task.dueTime).atZone(
-            ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val inputData = workDataOf("task" to taskWithTagAndSubTask.task.name)
-        val notifierWorkerRequest = OneTimeWorkRequestBuilder<TaskNotifierWorker>()
-            .setInitialDelay(dueDateTime-System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-            .setInputData(inputData)
-            .build()
+        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && !taskWithTagAndSubTask.task.isEnded){
+            val dueDateTime = LocalDateTime.of(
+                taskWithTagAndSubTask.task.dueDate,
+                taskWithTagAndSubTask.task.dueTime
+            ).atZone(
+                ZoneId.systemDefault()
+            ).toInstant().toEpochMilli()
+            val inputData = workDataOf("task" to taskWithTagAndSubTask.task.name)
+            val notifierWorkerRequest = OneTimeWorkRequestBuilder<TaskNotifierWorker>()
+                .setInitialDelay(dueDateTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                .setInputData(inputData)
+                .build()
 
-        val workManager = WorkManager.getInstance(context)
-        workManager.beginUniqueWork(
-            taskWithTagAndSubTask.task.name+id,
-            ExistingWorkPolicy.REPLACE,
-            notifierWorkerRequest
-        ).enqueue()
+            val workManager = WorkManager.getInstance(context)
+            workManager.beginUniqueWork(
+                taskWithTagAndSubTask.task.name + id,
+                ExistingWorkPolicy.REPLACE,
+                notifierWorkerRequest
+            ).enqueue()
+        }
 
         return id
     }

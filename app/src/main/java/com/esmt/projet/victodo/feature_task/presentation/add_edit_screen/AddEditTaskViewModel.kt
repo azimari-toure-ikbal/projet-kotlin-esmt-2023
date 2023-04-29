@@ -1,14 +1,11 @@
 package com.esmt.projet.victodo.feature_task.presentation.add_edit_screen
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,6 +38,9 @@ class AddEditTaskViewModel @Inject constructor(
 
     private val _state = mutableStateOf(AddEditTaskState())
     val state : State<AddEditTaskState> = _state
+
+    private val _tagState = mutableStateOf(TagState())
+    val tagState : State<TagState> = _tagState
 
     private val _nameTextFieldState = mutableStateOf(TextFieldState())
     val nameTextFieldState : State<TextFieldState> = _nameTextFieldState
@@ -83,9 +83,11 @@ class AddEditTaskViewModel @Inject constructor(
                             dueDate = taskWithTagAndSubTask.task.dueDate,
                             dueTime = taskWithTagAndSubTask.task.dueTime,
                             listId = taskWithTagAndSubTask.task.listId,
-                            selectedTags = taskWithTagAndSubTask.tags.toMutableList(),
                             repeatFrequency = taskWithTagAndSubTask.task.redundancy,
                             showDeadlineOptions = taskWithTagAndSubTask.task.dueDate != null
+                        )
+                        _tagState.value = tagState.value.copy(
+                            selectedTags = taskWithTagAndSubTask.tags.toMutableList()
                         )
                     }
                 }
@@ -127,20 +129,20 @@ class AddEditTaskViewModel @Inject constructor(
                 )
             }
             is AddEditTaskEvent.EnteredTag -> {
-                _state.value = with(_state.value){
-                    selectedTags.add(event.value)
-                    copy(
-                        selectedTags = selectedTags
-                    )
-                }
+//                _tagState.value.selectedTags.add(event.value)
+                _tagState.value = tagState.value.copy(
+                    selectedTags = tagState.value.selectedTags.toMutableList().apply {
+                        add(event.value)
+                    }
+                )
             }
             is AddEditTaskEvent.RemovedTag -> {
-                _state.value = with(_state.value){
-                    selectedTags.remove(event.value)
-                    copy(
-                        selectedTags = selectedTags
-                    )
-                }
+//                _tagState.value.selectedTags.remove(event.value)
+                _tagState.value = tagState.value.copy(
+                    selectedTags = tagState.value.selectedTags.toMutableList().apply {
+                        remove(event.value)
+                    }
+                )
             }
             is AddEditTaskEvent.EnteredRedundancy -> {
                 _state.value = _state.value.copy(
@@ -162,7 +164,7 @@ class AddEditTaskViewModel @Inject constructor(
                                     listId = state.value.listId,
                                     redundancy = if (state.value.showDeadlineOptions) state.value.repeatFrequency else Task.Companion.RepeatFrequency.NEVER.value,
                                 ),
-                                tags = state.value.selectedTags,
+                                tags = tagState.value.selectedTags,
                             ),
                             context
                         )
@@ -179,13 +181,17 @@ class AddEditTaskViewModel @Inject constructor(
             }
             is AddEditTaskEvent.CreateTag -> {
                 viewModelScope.launch {
+                    if(_tagState.value.tags.filter { it.title.contains(_tagTextField.value.text, ignoreCase = true) }.isNotEmpty()){
+                        _eventFlow.emit(UiEvent.ShowSnackBar("Tag already exists"))
+                        return@launch
+                    }
                     try {
                         val id = tagUseCases.addTagUseCase(
                             Tag(
                                 title = _tagTextField.value.text
                             )
                         )
-                        _state.value.selectedTags.add(
+                        _tagState.value.selectedTags.add(
                             Tag(
                                 id = id,
                                 title = _tagTextField.value.text
@@ -202,6 +208,11 @@ class AddEditTaskViewModel @Inject constructor(
             is AddEditTaskEvent.EnteredTagText -> {
                 _tagTextField.value = _tagTextField.value.copy(
                     text = event.value
+                )
+                _tagState.value = _tagState.value.copy(
+                    tagList = tagState.value.tags.filter {
+                        it.title.contains(event.value, ignoreCase = true)
+                    }
                 )
             }
             is AddEditTaskEvent.TagTextFieldFocused -> {
@@ -221,8 +232,9 @@ class AddEditTaskViewModel @Inject constructor(
     private fun getTags() {
         tagJob?.cancel()
         tagJob = tagUseCases.getAllTagUseCase().onEach {
-            _state.value = state.value.copy(
-                tags = it
+            _tagState.value = tagState.value.copy(
+                tags = it,
+                tagList = it
             )
         }.launchIn(viewModelScope)
     }
