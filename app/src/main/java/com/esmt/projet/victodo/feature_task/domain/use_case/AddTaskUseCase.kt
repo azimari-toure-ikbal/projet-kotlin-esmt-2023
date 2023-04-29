@@ -3,9 +3,7 @@ package com.esmt.projet.victodo.feature_task.domain.use_case
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
+import androidx.work.*
 import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
@@ -43,25 +41,33 @@ class AddTaskUseCase (
             throw InvalidTaskException("Task must have a due time")
         if(taskWithTagAndSubTask.task.dueDate == null && taskWithTagAndSubTask.task.dueTime != null)
             throw InvalidTaskException("Task must have a due date")
-        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null) {
+        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && (taskWithTagAndSubTask.task.id == null || taskWithTagAndSubTask.task.id <= 0)) {
             if(taskWithTagAndSubTask.task.dueDate.isBefore(LocalDateTime.now().toLocalDate()))
                 throw InvalidTaskException("Task due date must be in the future")
             if(taskWithTagAndSubTask.task.dueDate.isEqual(LocalDateTime.now().toLocalDate()) && taskWithTagAndSubTask.task.dueTime.isBefore(LocalDateTime.now().toLocalTime()))
                 throw InvalidTaskException("Task due time must be in the future")
         }
         val id = repository.insertTask(taskWithTagAndSubTask)
-        val dueDateTime = LocalDateTime.of(taskWithTagAndSubTask.task.dueDate, taskWithTagAndSubTask.task.dueTime).atZone(
-            ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val notifierWorkerRequest = OneTimeWorkRequestBuilder<TaskNotifierWorker>()
-            .setInitialDelay(dueDateTime-System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-            .build()
+        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && !taskWithTagAndSubTask.task.isEnded){
+            val dueDateTime = LocalDateTime.of(
+                taskWithTagAndSubTask.task.dueDate,
+                taskWithTagAndSubTask.task.dueTime
+            ).atZone(
+                ZoneId.systemDefault()
+            ).toInstant().toEpochMilli()
+            val inputData = workDataOf("task" to taskWithTagAndSubTask.task.name)
+            val notifierWorkerRequest = OneTimeWorkRequestBuilder<TaskNotifierWorker>()
+                .setInitialDelay(dueDateTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                .setInputData(inputData)
+                .build()
 
-        val workManager = WorkManager.getInstance(context)
-        workManager.beginUniqueWork(
-            taskWithTagAndSubTask.task.name+id,
-            ExistingWorkPolicy.REPLACE,
-            notifierWorkerRequest
-        ).enqueue()
+            val workManager = WorkManager.getInstance(context)
+            workManager.beginUniqueWork(
+                taskWithTagAndSubTask.task.name + id,
+                ExistingWorkPolicy.REPLACE,
+                notifierWorkerRequest
+            ).enqueue()
+        }
 
         return id
     }

@@ -43,7 +43,6 @@ import androidx.navigation.NavController
 import com.esmt.projet.victodo.R
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
-import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -67,7 +66,6 @@ fun AddEditTaskScreen(
     val pickedTime = state.dueTime
     val repeatFrequency = state.repeatFrequency
     val priority = state.priority
-    val tags = state.tags
 
     val taskNameState = viewModel.nameTextFieldState.value
     val taskNoteState = viewModel.noteTextFieldState.value
@@ -75,13 +73,9 @@ fun AddEditTaskScreen(
 
     val showDeadlineOptions = state.showDeadlineOptions
 
-    var tagList = tags.map {
-        TagItem(tagColor = viewModel.tagColor.value, tag = it)
-    }
+    val tagList = viewModel.tagState.value.tagList
 
-    val selectedTag = state.selectedTags.map {
-        TagItem(tagColor = viewModel.tagColor.value, tag = it)
-    }
+    val selectedTag = viewModel.tagState.value.selectedTags
 
     val permissionLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -140,7 +134,7 @@ fun AddEditTaskScreen(
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "List")
             DropDownMenuCustom(
-                dropDownTitle = "Select a list",
+                dropDownTitle = state.tasklists.find { it.id == state.listId }?.title ?: "Select a list",
                 dropDownIcon = R.drawable.drop_down_menu_list_24px,
                 dropDownItems = state.tasklists.map {
                     DropDownItem(it.id!!, it.title)
@@ -307,7 +301,7 @@ fun AddEditTaskScreen(
                     },
                 ) {
                     datepicker(
-                        initialDate = LocalDate.now(),
+                        initialDate = pickedDate ?: LocalDate.now(),
                         title = "Pick a date",
                         allowedDateValidator = {
                             it.isAfter(LocalDate.now().minusDays(1))
@@ -326,7 +320,7 @@ fun AddEditTaskScreen(
                     },
                 ) {
                     timepicker(
-                        initialTime = LocalTime.now(),
+                        initialTime = pickedTime ?: LocalTime.now(),
                         title = "Pick a time",
                     ) {
                         viewModel.onEvent(AddEditTaskEvent.EnteredDueTime(it))
@@ -359,12 +353,6 @@ fun AddEditTaskScreen(
                 value = if(taskTagState.isHintVisible) taskTagState.hint else taskTagState.text ,
                 onValueChange = {
                     viewModel.onEvent(AddEditTaskEvent.EnteredTagText(it))
-                    tagList = tags.filter { tag -> tag.title.lowercase().contains(it.lowercase()) }.map { tagFinal->
-                        TagItem(
-                            tagColor = viewModel.tagColor.value,
-                            tag = tagFinal
-                        )
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -383,11 +371,7 @@ fun AddEditTaskScreen(
             )
             Button(
                 onClick = {
-                    if(tags.none { tag ->
-                            tag.title.lowercase().contains(taskTagState.text.lowercase())
-                        }) {
-                        viewModel.onEvent(AddEditTaskEvent.CreateTag)
-                    }
+                    viewModel.onEvent(AddEditTaskEvent.CreateTag)
                 }
             ) {
                 Text(text = "+")
@@ -397,13 +381,13 @@ fun AddEditTaskScreen(
             LazyRow(
                 userScrollEnabled = false,
             ) {
-                items(tagList) { tagItem ->
+                items(tagList) { tag ->
                     Box(
                         modifier = Modifier
                             .padding(8.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(
-                                if (selectedTag.contains(tagItem)) {
+                                if (selectedTag.contains(tag)) {
                                     Color(0xFF006EE9)
                                 } else {
                                     Color(0xFFedf4fe)
@@ -415,15 +399,15 @@ fun AddEditTaskScreen(
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .clickable {
-                                if (selectedTag.contains(tagItem)) {
-                                    viewModel.onEvent(AddEditTaskEvent.RemovedTag(tagItem.tag))
+                                if (selectedTag.contains(tag)) {
+                                    viewModel.onEvent(AddEditTaskEvent.RemovedTag(tag))
                                 } else {
-                                    viewModel.onEvent(AddEditTaskEvent.EnteredTag(tagItem.tag))
+                                    viewModel.onEvent(AddEditTaskEvent.EnteredTag(tag))
                                 }
                             }
                     ) {
                         Text(
-                            text = tagItem.tag.title,
+                            text = tag.title,
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .padding(4.dp)
@@ -479,23 +463,18 @@ fun AddEditTaskScreen(
 //                ),
 //                shape = RoundedCornerShape(10.dp),
 //            )
-
+            val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
             Button(
                 onClick = {
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
                 }
             ) {
-                Text(text = "Save")
+                Text(text = if(taskId!= null && taskId>0L) "Update" else "Save")
                 // TODO(handle button )
             }
         }
     }
 }
-
-data class TagItem(
-    val tagColor: Color,
-    val tag: Tag,
-)
 
 @Composable
 fun DropDownMenuCustom(

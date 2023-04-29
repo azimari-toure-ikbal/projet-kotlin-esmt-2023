@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,10 +30,10 @@ interface TaskDao {
     @Transaction
     suspend fun insertTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask): Long {
         val taskId = insertTask(taskWithTagAndSubTask.task)
-        taskWithTagAndSubTask.tags?.forEach { tag ->
+        taskWithTagAndSubTask.tags.forEach { tag ->
             insertTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskId))
         }
-        taskWithTagAndSubTask.subtasks?.forEach { subTask ->
+        taskWithTagAndSubTask.subtasks.forEach { subTask ->
             insertSubTask(subTask.copy(taskId = taskId))
         }
         return taskId
@@ -42,10 +42,10 @@ interface TaskDao {
     @Delete
     suspend fun deleteTaskWithTagsAndSubTasks(taskWithTagAndSubTask: TaskWithTagAndSubTask) {
         deleteTask(taskWithTagAndSubTask.task)
-        taskWithTagAndSubTask.tags?.forEach { tag ->
+        taskWithTagAndSubTask.tags.forEach { tag ->
             deleteTagTaskCrossRef(TagTaskCrossRef(tgId = tag.id!!, tkId = taskWithTagAndSubTask.task.id!!))
         }
-        taskWithTagAndSubTask.subtasks?.forEach { subTask ->
+        taskWithTagAndSubTask.subtasks.forEach { subTask ->
             deleteSubTask(subTask)
         }
     }
@@ -64,16 +64,16 @@ interface TaskDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate >= date() AND isEnded = 'false'"
+        "SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate >= date() AND isEnded = 0"
     )
     fun getScheduledTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction
-    @Query("SELECT * FROM task WHERE isEnded = 'true'")
+    @Query("SELECT * FROM task WHERE isEnded = 1")
     fun getCompletedTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction
-    @Query("SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate < date() AND isEnded = 'false'")
+    @Query("SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate < date() AND isEnded = 0")
     fun getLateTasksWithTagsAndSubTask(): Flow<List<TaskWithTagAndSubTask>>
 
     @Transaction

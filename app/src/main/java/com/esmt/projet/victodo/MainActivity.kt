@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as VictoDoApp).createNotificationChannel()
         installSplashScreen().setKeepOnScreenCondition {
             !splashViewModel.isLoading.value
         }
@@ -85,7 +86,7 @@ class MainActivity : ComponentActivity() {
                                     name = "listId"
                                 ) {
                                    type = NavType.LongType
-                                   defaultValue = 0L
+                                    defaultValue = -1L
                                 },
                                 navArgument(
                                     name = "listColor"

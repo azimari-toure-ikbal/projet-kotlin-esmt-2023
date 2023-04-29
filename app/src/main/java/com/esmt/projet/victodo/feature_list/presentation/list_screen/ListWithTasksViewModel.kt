@@ -32,19 +32,15 @@ class ListWithTasksViewModel @Inject constructor(
     private val _state = mutableStateOf(ListWithTasksState())
     val state : State<ListWithTasksState> = _state
     
-    private var currentListId : Long = 0
+    private var currentListId : Long = ALL_TASKS_LIST.id!!
 
     private var taskListJob: Job? = null
 
     init {
-        savedStateHandle.get<Long>("listId").let { listId ->
-            currentListId = if (listId == 0L) {
-                ALL_TASKS_LIST.id!!
-            } else {
-                listId!!
-            }
-            getTasks()
+        savedStateHandle.get<Long>("listId")?.let { listId ->
+            currentListId = listId
         }
+        getTasks()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -105,7 +101,7 @@ class ListWithTasksViewModel @Inject constructor(
                                         dueDate = task.task.dueDate?.plusYears(1),
                                         isEnded = false
                                     )
-                                ), context)
+                                ), context) // TODO: à tester
                             }
                         }
                     }
