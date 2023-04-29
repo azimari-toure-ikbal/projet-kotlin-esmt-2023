@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.feature_task.domain.use_case
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.work.*
 import com.esmt.projet.victodo.exception.task.InvalidTaskException
@@ -21,6 +22,7 @@ class AddTaskUseCase (
         taskWithTagAndSubTask: TaskWithTagAndSubTask,
         context: Context
     ): Long{
+        Log.d("AddTaskUseCase", "entrée dans invoke")
         if(taskWithTagAndSubTask.task.listId == null)
             throw InvalidTaskException("Task must be associated with a list")
         if(taskWithTagAndSubTask.task.name.isBlank())
@@ -48,6 +50,7 @@ class AddTaskUseCase (
                 throw InvalidTaskException("Task due time must be in the future")
         }
         val id = repository.insertTask(taskWithTagAndSubTask)
+        Log.d("AddTaskUseCase", "id = $id")
         if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && !taskWithTagAndSubTask.task.isEnded){
             val dueDateTime = LocalDateTime.of(
                 taskWithTagAndSubTask.task.dueDate,
@@ -68,7 +71,7 @@ class AddTaskUseCase (
                 notifierWorkerRequest
             ).enqueue()
         }
-
+        Log.d("AddTaskUseCase", "sortie de invoke")
         return id
     }
 }

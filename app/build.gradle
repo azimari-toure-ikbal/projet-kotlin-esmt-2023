@@ -125,9 +125,9 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
 
     //API google
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    implementation 'com.google.apis:google-api-services-calendar:v3-rev426-1.25.0'
-    implementation 'com.google.android.gms:play-services:12.0.1'
+//    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+//    implementation 'com.google.apis:google-api-services-calendar:v3-rev426-1.25.0'
+//    implementation 'com.google.android.gms:play-services:12.0.1'
 
 
 

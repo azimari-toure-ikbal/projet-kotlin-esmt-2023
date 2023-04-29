@@ -40,6 +40,9 @@ import com.esmt.projet.victodo.feature_task.presentation.add_edit_screen.AddEdit
 import com.esmt.projet.victodo.ui.theme.VictoDoTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -54,8 +57,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as VictoDoApp).createNotificationChannel()
-        installSplashScreen().setKeepOnScreenCondition {
-            !splashViewModel.isLoading.value
+//        installSplashScreen().setKeepOnScreenCondition {
+//            !splashViewModel.isLoading.value
+//        }
+        CoroutineScope(Dispatchers.Main).launch {
+            installSplashScreen().setKeepOnScreenCondition {
+                !splashViewModel.isLoading.value
+            }
         }
         setContent {
             VictoDoTheme {

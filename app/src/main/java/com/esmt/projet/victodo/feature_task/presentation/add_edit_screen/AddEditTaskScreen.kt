@@ -90,6 +90,8 @@ fun AddEditTaskScreen(
             }
         }
 
+    val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
+
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest {
             when(it){
@@ -97,6 +99,7 @@ fun AddEditTaskScreen(
                     navController.navigateUp()
                 }
                 is AddEditTaskViewModel.UiEvent.ShowSnackBar -> {
+                    Log.d("AddEditTaskScreen", "ShowSnackBar ${it.message}")
                     // TODO()
                 }
             }
@@ -104,7 +107,7 @@ fun AddEditTaskScreen(
     }
 
     AddEditHeader(
-        title = "New Task",
+        title = if (taskId != null && taskId>0L) "Edit Task" else "New Task",
         navController = navController
     ) {
         Column(
@@ -174,7 +177,7 @@ fun AddEditTaskScreen(
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                        if ( it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.POST_NOTIFICATIONS
@@ -205,8 +208,9 @@ fun AddEditTaskScreen(
                                     )
                                 }
                             }
+                        } else {
+                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                         }
-                        viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
 
                     },
                     colors = SwitchDefaults.colors(
@@ -463,7 +467,7 @@ fun AddEditTaskScreen(
 //                ),
 //                shape = RoundedCornerShape(10.dp),
 //            )
-            val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
+
             Button(
                 onClick = {
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
