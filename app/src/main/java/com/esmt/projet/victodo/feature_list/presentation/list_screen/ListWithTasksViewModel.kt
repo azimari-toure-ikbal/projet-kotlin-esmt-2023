@@ -38,11 +38,7 @@ class ListWithTasksViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Long>("listId").let { listId ->
-            currentListId = if (listId == 0L) {
-                ALL_TASKS_LIST.id!!
-            } else {
-                listId!!
-            }
+            currentListId = listId ?: ALL_TASKS_LIST.id!!
             getTasks()
         }
     }

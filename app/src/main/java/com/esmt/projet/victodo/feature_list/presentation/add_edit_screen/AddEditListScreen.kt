@@ -232,7 +232,7 @@ fun AddEditListScreen(
                     .height(48.dp)
             ) {
                 // Check if there's a parameter passed to the screen listId
-                if (listId != null) {
+                if ((listId != null) && (listId > 0L)) {
                     Text(text = "Edit List")
                 } else {
                     Text(text = "Create List")

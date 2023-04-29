@@ -188,6 +188,8 @@ fun confirmDeleteTask(context: Context, taskWithTagAndSubTask: TaskWithTagAndSub
             viewModel.onEvent(ListWithTasksEvent.OnDeleteClick(taskWithTagAndSubTask))
         }
         setNegativeButton("No") { _, _ -> }
+        create()
+        show()
     }
 }
 

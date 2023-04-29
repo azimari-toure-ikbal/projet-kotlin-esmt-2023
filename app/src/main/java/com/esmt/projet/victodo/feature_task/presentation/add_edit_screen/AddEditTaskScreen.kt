@@ -140,7 +140,7 @@ fun AddEditTaskScreen(
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "List")
             DropDownMenuCustom(
-                dropDownTitle = "Select a list",
+                dropDownTitle = state.tasklists.find { it.id == state.listId }?.title ?: "Select a list",
                 dropDownIcon = R.drawable.drop_down_menu_list_24px,
                 dropDownItems = state.tasklists.map {
                     DropDownItem(it.id!!, it.title)
@@ -307,7 +307,7 @@ fun AddEditTaskScreen(
                     },
                 ) {
                     datepicker(
-                        initialDate = LocalDate.now(),
+                        initialDate = pickedDate ?: LocalDate.now(),
                         title = "Pick a date",
                         allowedDateValidator = {
                             it.isAfter(LocalDate.now().minusDays(1))
@@ -326,7 +326,7 @@ fun AddEditTaskScreen(
                     },
                 ) {
                     timepicker(
-                        initialTime = LocalTime.now(),
+                        initialTime = pickedTime ?: LocalTime.now(),
                         title = "Pick a time",
                     ) {
                         viewModel.onEvent(AddEditTaskEvent.EnteredDueTime(it))
@@ -479,13 +479,13 @@ fun AddEditTaskScreen(
 //                ),
 //                shape = RoundedCornerShape(10.dp),
 //            )
-
+            val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
             Button(
                 onClick = {
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
                 }
             ) {
-                Text(text = "Save")
+                Text(text = if(taskId!= null && taskId>0L) "Update" else "Save")
                 // TODO(handle button )
             }
         }

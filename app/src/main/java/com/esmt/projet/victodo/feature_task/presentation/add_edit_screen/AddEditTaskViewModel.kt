@@ -68,7 +68,7 @@ class AddEditTaskViewModel @Inject constructor(
         getTags()
         getLists()
         savedStateHandle.get<Long>("taskId")?.let { taskId ->
-            if (taskId != -1L){
+            if (taskId > 0L){
                 currentTaskId = taskId
                 viewModelScope.launch {
                     taskUseCases.getTaskUseCase(taskId)?.let { taskWithTagAndSubTask ->
@@ -84,7 +84,8 @@ class AddEditTaskViewModel @Inject constructor(
                             dueTime = taskWithTagAndSubTask.task.dueTime,
                             listId = taskWithTagAndSubTask.task.listId,
                             selectedTags = taskWithTagAndSubTask.tags.toMutableList(),
-                            repeatFrequency = taskWithTagAndSubTask.task.redundancy
+                            repeatFrequency = taskWithTagAndSubTask.task.redundancy,
+                            showDeadlineOptions = taskWithTagAndSubTask.task.dueDate != null
                         )
                     }
                 }
@@ -152,7 +153,7 @@ class AddEditTaskViewModel @Inject constructor(
                         taskUseCases.addTaskUseCase(
                             TaskWithTagAndSubTask(
                                 task = Task(
-                                    id = if(currentTaskId != null) currentTaskId else null,
+                                    id = currentTaskId,
                                     name = nameTextFieldState.value.text,
                                     note = noteTextFieldState.value.text,
                                     priority = state.value.priority,
