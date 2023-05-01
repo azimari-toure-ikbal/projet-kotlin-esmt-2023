@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.feature_task.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -16,6 +17,7 @@ data class Task(
     val dueTime: LocalTime?=null,
     val redundancy: String=RepeatFrequency.NEVER.value,
     val listId: Long?=null,
+    val timestamp: Long?=null
 ){
     companion object {
         sealed class RepeatFrequency(val value: String) {

@@ -22,43 +22,51 @@ class AddTaskUseCase (
         taskWithTagAndSubTask: TaskWithTagAndSubTask,
         context: Context
     ): Long{
+
+        val taskWithTagAndSubTaskToAdd = taskWithTagAndSubTask.copy(
+            task = taskWithTagAndSubTask.task.copy(
+                timestamp = System.currentTimeMillis(),
+            )
+        )
+
         Log.d("AddTaskUseCase", "entrée dans invoke")
-        if(taskWithTagAndSubTask.task.listId == null)
+        if(taskWithTagAndSubTaskToAdd.task.listId == null)
             throw InvalidTaskException("Task must be associated with a list")
-        if(taskWithTagAndSubTask.task.name.isBlank())
+        if(taskWithTagAndSubTaskToAdd.task.name.isBlank())
             throw InvalidTaskException("Task must have a title")
-        taskWithTagAndSubTask.tags.let {tags->
+        taskWithTagAndSubTaskToAdd.tags.let {tags->
             for(tag in tags) {
                 if(tag.id == null)
                     throw InvalidTaskException("Tag must have an id")
             }
         }
-        taskWithTagAndSubTask.subtasks.let{subtasks->
+        taskWithTagAndSubTaskToAdd.subtasks.let{subtasks->
             for(subTask in subtasks) {
                 if(subTask.name.isBlank())
                     throw InvalidTaskException("SubTask must have a title")
             }
         }
-        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime == null)
+
+        if(taskWithTagAndSubTaskToAdd.task.dueDate != null && taskWithTagAndSubTaskToAdd.task.dueTime == null)
             throw InvalidTaskException("Task must have a due time")
-        if(taskWithTagAndSubTask.task.dueDate == null && taskWithTagAndSubTask.task.dueTime != null)
+        if(taskWithTagAndSubTaskToAdd.task.dueDate == null && taskWithTagAndSubTaskToAdd.task.dueTime != null)
             throw InvalidTaskException("Task must have a due date")
-        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && (taskWithTagAndSubTask.task.id == null || taskWithTagAndSubTask.task.id <= 0)) {
-            if(taskWithTagAndSubTask.task.dueDate.isBefore(LocalDateTime.now().toLocalDate()))
+        if(taskWithTagAndSubTaskToAdd.task.dueDate != null && taskWithTagAndSubTaskToAdd.task.dueTime != null ) {
+            if(taskWithTagAndSubTaskToAdd.task.dueDate.isBefore(LocalDateTime.now().toLocalDate()))
                 throw InvalidTaskException("Task due date must be in the future")
-            if(taskWithTagAndSubTask.task.dueDate.isEqual(LocalDateTime.now().toLocalDate()) && taskWithTagAndSubTask.task.dueTime.isBefore(LocalDateTime.now().toLocalTime()))
+            if(taskWithTagAndSubTaskToAdd.task.dueDate.isEqual(LocalDateTime.now().toLocalDate()) && taskWithTagAndSubTaskToAdd.task.dueTime.isBefore(LocalDateTime.now().toLocalTime()))
                 throw InvalidTaskException("Task due time must be in the future")
         }
-        val id = repository.insertTask(taskWithTagAndSubTask)
+        val id = repository.insertTask(taskWithTagAndSubTaskToAdd)
         Log.d("AddTaskUseCase", "id = $id")
-        if(taskWithTagAndSubTask.task.dueDate != null && taskWithTagAndSubTask.task.dueTime != null && !taskWithTagAndSubTask.task.isEnded){
+        if(taskWithTagAndSubTaskToAdd.task.dueDate != null && taskWithTagAndSubTaskToAdd.task.dueTime != null && !taskWithTagAndSubTaskToAdd.task.isEnded){
             val dueDateTime = LocalDateTime.of(
-                taskWithTagAndSubTask.task.dueDate,
-                taskWithTagAndSubTask.task.dueTime
+                taskWithTagAndSubTaskToAdd.task.dueDate,
+                taskWithTagAndSubTaskToAdd.task.dueTime
             ).atZone(
                 ZoneId.systemDefault()
             ).toInstant().toEpochMilli()
-            val inputData = workDataOf("task" to taskWithTagAndSubTask.task.name)
+            val inputData = workDataOf("task" to taskWithTagAndSubTaskToAdd.task.name)
             val notifierWorkerRequest = OneTimeWorkRequestBuilder<TaskNotifierWorker>()
                 .setInitialDelay(dueDateTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .setInputData(inputData)
@@ -66,7 +74,7 @@ class AddTaskUseCase (
 
             val workManager = WorkManager.getInstance(context)
             workManager.beginUniqueWork(
-                taskWithTagAndSubTask.task.name + id,
+                taskWithTagAndSubTaskToAdd.task.name + id,
                 ExistingWorkPolicy.REPLACE,
                 notifierWorkerRequest
             ).enqueue()

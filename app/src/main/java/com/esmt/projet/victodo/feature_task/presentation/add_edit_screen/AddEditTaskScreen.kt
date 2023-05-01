@@ -91,6 +91,10 @@ fun AddEditTaskScreen(
         }
 
     val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
+    val listId = navController.previousBackStackEntry?.arguments?.getLong("listId")
+    if(listId != null){
+        viewModel.onEvent(AddEditTaskEvent.EnteredListId(listId))
+    }
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest {
@@ -178,7 +182,7 @@ fun AddEditTaskScreen(
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
-                        if ( it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.POST_NOTIFICATIONS
@@ -200,7 +204,6 @@ fun AddEditTaskScreen(
                                         }
                                         .setNegativeButton("cancel") { dialog, _ ->
                                             dialog.dismiss()
-                                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                                         }
                                         .create().show()
                                 } else {
@@ -209,9 +212,8 @@ fun AddEditTaskScreen(
                                     )
                                 }
                             }
-                        } else {
-                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                         }
+                        viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
 
                     },
                     colors = SwitchDefaults.colors(
