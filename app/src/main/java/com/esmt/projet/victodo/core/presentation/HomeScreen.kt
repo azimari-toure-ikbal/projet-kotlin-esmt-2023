@@ -77,11 +77,14 @@ fun HomeScreen(
         }
         Spacer(modifier = Modifier.height(32.dp))
         Row(
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .padding(start = 12.dp)
         ) {
             Text(
                 text = "Sync With Calendar",
                 color = Color(0xFF006EE9),
+                fontSize = 12.sp,
                 modifier = Modifier
                     .clickable {
                         //TODO()
@@ -90,19 +93,19 @@ fun HomeScreen(
         }
         Spacer(modifier = Modifier.height(32.dp))
         FlowRow(
-            maxItemsInEachRow = 3,
+            maxItemsInEachRow = 2,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 12.dp)
+                .padding(start = 26.dp)
         ) {
             for (taskList in state.listOfPinnedList) {
                 Box(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp, bottom = 12.dp)
-                        .height(100.dp)
-                        .width(100.dp)
+                        .height(150.dp)
+                        .width(150.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.Blue)
                         .clickable {
                             navController.navigate(
                                 route = Screen.ListWithTasksScreen.route
@@ -116,7 +119,7 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Red)
+                            .background(Color(0xFFAAE6FC))
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.End,
@@ -271,6 +274,7 @@ fun HomeScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 12.dp)
         ) {
             Box(
                 modifier = Modifier

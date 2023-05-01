@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
@@ -46,7 +47,9 @@ import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import kotlinx.coroutines.flow.collectLatest
@@ -306,13 +309,28 @@ fun AddEditTaskScreen(
                 MaterialDialog(
                     dialogState = dateDialogState,
                     buttons = {
-                        positiveButton("OK")
-                        negativeButton("Cancel")
+                        positiveButton(
+                            "OK",
+                            textStyle = TextStyle(
+                                color = Color(0xFF006EE9),
+                            )
+                        )
+                        negativeButton(
+                            "Cancel",
+                            textStyle = TextStyle(
+                                color = Color(0xFF006EE9),
+                            )
+                        )
                     },
                 ) {
                     datepicker(
                         initialDate = pickedDate ?: LocalDate.now(),
                         title = "Pick a date",
+                        colors = DatePickerDefaults.colors(
+                            headerBackgroundColor = Color(0xFF006EE9),
+                            headerTextColor = Color.White,
+                            dateActiveBackgroundColor = Color(0xFF006EE9),
+                        ),
                         allowedDateValidator = {
                             it.isAfter(LocalDate.now().minusDays(1))
                         }
@@ -325,13 +343,28 @@ fun AddEditTaskScreen(
                 MaterialDialog(
                     dialogState = timeDialogState,
                     buttons = {
-                        positiveButton("OK")
-                        negativeButton("Cancel")
+                        positiveButton(
+                            "OK",
+                            textStyle = TextStyle(
+                                color = Color(0xFF006EE9),
+                            )
+                        )
+                        negativeButton(
+                            "Cancel",
+                            textStyle = TextStyle(
+                                color = Color(0xFF006EE9),
+                            )
+                        )
                     },
                 ) {
                     timepicker(
                         initialTime = pickedTime ?: LocalTime.now(),
                         title = "Pick a time",
+                        colors = TimePickerDefaults.colors(
+                            headerTextColor = Color.White,
+                            activeBackgroundColor = Color(0xFF006EE9),
+                            selectorColor = Color(0xFF006EE9),
+                        ),
                         is24HourClock = true
                     ) {
                         viewModel.onEvent(AddEditTaskEvent.EnteredDueTime(it))
@@ -381,12 +414,20 @@ fun AddEditTaskScreen(
                 shape = RoundedCornerShape(10.dp),
             )
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF006EE9),
+                    contentColor = Color(0xFFedf4fe)
+                ),
                 onClick = {
                     viewModel.onEvent(AddEditTaskEvent.CreateTag)
                 }
             ) {
-                Text(text = "+")
-                // TODO(handle button )
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "add task",
+                    modifier = Modifier
+                        .size(16.dp)
+                )
             }
 
             LazyRow(
@@ -458,6 +499,7 @@ fun AddEditTaskScreen(
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
 //            Title(title = "Subtasks")
 //            OutlinedTextField(
 //                value = "0",
@@ -476,13 +518,16 @@ fun AddEditTaskScreen(
 //            )
 
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF006EE9),
+                    contentColor = Color(0xFFedf4fe)
+                ),
                 onClick = {
                     Log.d("AddEditTaskScreen", "Save button clicked")
                     viewModel.onEvent(AddEditTaskEvent.SaveTask)
                 }
             ) {
                 Text(text = if(taskId!= null && taskId>0L) "Update" else "Save")
-                // TODO(handle button )
             }
         }
     }

@@ -87,22 +87,34 @@ fun TaskItem(
             }
             .clip(RoundedCornerShape(10.dp))
             .background(Color.Transparent)
-            .border(1.5.dp,
-                if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
-                Color.Red
-            } else {
-                Color(0xFFedf4fe)
-            },
-            RoundedCornerShape(10.dp))
+            .border(
+                1.5.dp,
+                if (task.task.dueTime != null && task.task.dueDate != null && LocalTime
+                        .now()
+                        .isAfter(task.task.dueTime) && LocalDate
+                        .now()
+                        .isAfter(task.task.dueDate)
+                ) {
+                    Color.Red
+                } else {
+                    Color(0xFFedf4fe)
+                },
+                RoundedCornerShape(10.dp)
+            )
             .padding(16.dp)
             .drawBehind {
                 clipRect {
                     drawLine(
                         color =
-                        if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
-                          Color.Red
+                        if (task.task.dueTime != null && task.task.dueDate != null && LocalTime
+                                .now()
+                                .isAfter(task.task.dueTime) && LocalDate
+                                .now()
+                                .isAfter(task.task.dueDate)
+                        ) {
+                            Color.Red
                         } else {
-                        Color.Blue
+                            Color.Blue
                         },
                         start = Offset(0f, 0f),
                         end = Offset(0f, size.height),
@@ -124,7 +136,7 @@ fun TaskItem(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = task.task.name,
+                    text = "${task.task.name} - ${task.task.priority}",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color =
@@ -148,10 +160,11 @@ fun TaskItem(
                 )
             }
             Text(
-                text = task.task.note?:"",
+                text = task.task.note,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Normal,
             )
+
             if (task.task.dueDate != null && task.task.dueTime != null) {
                 Text(
                     text = "${task.task.dueDate} - ${task.task.dueTime}",
@@ -166,6 +179,15 @@ fun TaskItem(
                         .padding(top = 8.dp)
                         .align(Alignment.End)
                 )
+
+                if (task.task.redundancy != "" ) {
+                    Text(
+                        text = task.task.redundancy,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color(0xFF0668E5)
+                    )
+                }
             }
 
             FlowRow(

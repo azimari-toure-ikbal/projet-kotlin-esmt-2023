@@ -87,15 +87,17 @@ fun ListWithTasksScreen(
             Icon(
                 imageVector = ImageVector.vectorResource(id = taskList.icon),
                 contentDescription = null,
-                tint = Color.Blue
+                tint = Color.Blue,
+                modifier = Modifier
+                    .size(26.dp)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp)
-            ) {
+                    .padding(top = 32.dp, start = 16.dp),
+                ) {
                 Text(
                     text = taskList.title,
                     fontSize = 24.sp,
