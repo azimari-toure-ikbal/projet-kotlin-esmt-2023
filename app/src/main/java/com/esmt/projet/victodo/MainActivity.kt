@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
                     Log.d("MainActivity", "onCreate: $screen")
                     val loading by splashViewModel.isLoading
                     val navController = rememberNavController()
-                    
+
                     NavHost(
                         navController = navController,
                         startDestination = screen

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
@@ -106,15 +107,10 @@ fun TaskItem(
                 clipRect {
                     drawLine(
                         color =
-                        if (task.task.dueTime != null && task.task.dueDate != null && LocalTime
-                                .now()
-                                .isAfter(task.task.dueTime) && LocalDate
-                                .now()
-                                .isAfter(task.task.dueDate)
-                        ) {
-                            Color.Red
+                        if (task.task.isEnded) {
+                            Color(0XFF4A934A)
                         } else {
-                            Color.Blue
+                            Color(0xFF006EE9)
                         },
                         start = Offset(0f, 0f),
                         end = Offset(0f, size.height),
@@ -140,24 +136,34 @@ fun TaskItem(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     color =
-                    if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
-                     Color.Red
+                    if (task.task.isEnded) {
+                        Color(0XFF4A934A)
                     } else {
                         Color(0xFF006EE9)
                     }
                 )
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = null,
-                    tint =
-                    if (task.task.dueTime != null && task.task.dueDate != null && LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isAfter(task.task.dueDate)) {
-                        Color.Red
-                    } else {
-                        Color(0xFFABCEF5)
-                    },
-                    modifier = Modifier
-                        .rotate(90f)
-                )
+
+                if (task.task.isEnded) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = Color(0XFF4A934A),
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clickable {
+                                isContextMenuVisible = true
+                                pressOffset = DpOffset(120.dp, (-60).dp)
+                            }
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null,
+                        tint = Color(0xFFABCEF5),
+                        modifier = Modifier
+                            .rotate(90f)
+                    )
+                }
             }
             Text(
                 text = task.task.note,

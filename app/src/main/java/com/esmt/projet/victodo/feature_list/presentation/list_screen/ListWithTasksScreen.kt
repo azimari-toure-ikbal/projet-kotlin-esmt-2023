@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,8 +14,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,6 +47,7 @@ fun ListWithTasksScreen(
 //    val taskList = viewModel.state.value.taskList
     val tasksWithTagAndSubTaskList = viewModel.state.value.listOfTasks
     val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +86,7 @@ fun ListWithTasksScreen(
             Icon(
                 imageVector = ImageVector.vectorResource(id = taskList.icon),
                 contentDescription = null,
-                tint = Color.Blue,
+                tint = Color(0xFF006EE9),
                 modifier = Modifier
                     .size(26.dp)
             )
@@ -96,7 +95,7 @@ fun ListWithTasksScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, start = 16.dp),
+                    .padding(start = 16.dp),
                 ) {
                 Text(
                     text = taskList.title,
@@ -108,7 +107,7 @@ fun ListWithTasksScreen(
                     modifier = Modifier
                         .padding(end = 16.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.Blue)
+                        .background(Color(0xFF006EE9))
                         .padding(8.dp)
                         .clickable {
                             navController.navigate(Screen.AddEditTaskScreen.route)
@@ -142,7 +141,11 @@ fun ListWithTasksScreen(
                             dropDownItems = listOf(
                                 DropDownItem(1, "Edit"),
                                 DropDownItem(2, "Delete"),
-                                DropDownItem(3, "Mark as Completed")
+                                if (!taskWithTagAndSubTask.task.isEnded) {
+                                    DropDownItem(3, "Mark as Completed")
+                                } else {
+                                    DropDownItem(4, "Mark as Uncompleted")
+                                }
                             ),
                             onItemClick = {
                                 when (it.id) {
@@ -157,6 +160,10 @@ fun ListWithTasksScreen(
                                     }
                                     3L -> {
                                         viewModel.onEvent(ListWithTasksEvent.OnCompletedClick(taskWithTagAndSubTask))
+                                    }
+                                    4L -> {
+                                        // TODO()
+                                        // viewModel.onEvent(ListWithTasksEvent.OnUncompletedClick(taskWithTagAndSubTask))
                                     }
                                 }
                             },
