@@ -92,6 +92,10 @@ fun AddEditTaskScreen(
         }
 
     val taskId = navController.currentBackStackEntry?.arguments?.getLong("taskId")
+    val listId = navController.previousBackStackEntry?.arguments?.getLong("listId")
+    if(listId != null){
+        viewModel.onEvent(AddEditTaskEvent.EnteredListId(listId))
+    }
 
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest {

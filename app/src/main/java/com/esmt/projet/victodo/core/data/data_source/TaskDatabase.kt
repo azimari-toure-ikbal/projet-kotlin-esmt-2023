@@ -16,6 +16,7 @@ import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.TagTaskCrossRef
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.format.DateTimeFormatter
 
 @Database(
     entities = [Tag::class, Task::class, TaskList::class, SubTask::class, TagTaskCrossRef::class],
@@ -37,6 +38,7 @@ abstract class TaskDatabase: RoomDatabase() {
 
         fun getInstance(app: Application): TaskDatabase {
             Log.i("infoDataR", "getinstance")
+            Log.i("infoDataR", DateTimeFormatter.ISO_TIME.toString())
             return instance ?: synchronized(this) {
                 instance ?: buildDatabase(app).also { instance = it }
             }
