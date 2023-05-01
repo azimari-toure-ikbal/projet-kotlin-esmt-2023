@@ -73,18 +73,19 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val screen by splashViewModel.startDestination
+                    Log.d("MainActivity", "onCreate: $screen")
                     val loading by splashViewModel.isLoading
                     val navController = rememberNavController()
-
+                    
                     NavHost(
                         navController = navController,
                         startDestination = screen
                     ) {
-                        composable(route = Screen.OnBoardingScreen.route) {
-                            WelcomeScreen(navController = navController)
-                        }
                         composable(route = Screen.HomeScreen.route) {
                             HomeScreen(navController = navController)
+                        }
+                        composable(route = Screen.OnBoardingScreen.route) {
+                            WelcomeScreen(navController = navController)
                         }
                         composable(
                             route = Screen.AddEditListScreen.route +
@@ -169,25 +170,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(
-        text = "Hello $name!",
-        modifier = Modifier
-            .fillMaxSize(),
-        textAlign = TextAlign.Center,
-        fontSize = MaterialTheme.typography.h1.fontSize,
-        fontWeight = FontWeight.Bold,
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    VictoDoTheme {
-        Greeting("Android")
     }
 }

@@ -110,27 +110,29 @@ fun TaskListItem(
                 modifier = Modifier
                     .padding(end = 15.dp)
             )
-            DropdownMenu(
-                expanded = isContextMenuVisible,
-                onDismissRequest = { isContextMenuVisible = false },
-                offset = pressOffset.copy(
-                    y = pressOffset.y - itemHeight
-                )
-            ) {
-                dropDownItems.forEach { item ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onItemClick(item)
-                            isContextMenuVisible = false
-                        }
-                    ) {
-                        Text(
-                            text = item.text
-                        )
-                    }
+
+        }
+
+    DropdownMenu(
+        expanded = isContextMenuVisible,
+        onDismissRequest = { isContextMenuVisible = false },
+        offset = pressOffset.copy(
+            y = pressOffset.y - itemHeight
+        )
+    ) {
+        dropDownItems.forEach { item ->
+            DropdownMenuItem(
+                onClick = {
+                    onItemClick(item)
+                    isContextMenuVisible = false
                 }
+            ) {
+                Text(
+                    text = item.text
+                )
             }
         }
+    }
 
 //        Box(
 //            modifier = Modifier
