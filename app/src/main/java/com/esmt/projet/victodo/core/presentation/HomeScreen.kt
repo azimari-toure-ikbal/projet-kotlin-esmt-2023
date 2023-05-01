@@ -76,6 +76,19 @@ fun HomeScreen(
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
+        Row(
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Sync With Calendar",
+                color = Color(0xFF006EE9),
+                modifier = Modifier
+                    .clickable {
+                        //TODO()
+                    }
+            )
+        }
+        Spacer(modifier = Modifier.height(32.dp))
         FlowRow(
             maxItemsInEachRow = 3,
             modifier = Modifier
@@ -93,9 +106,9 @@ fun HomeScreen(
                         .clickable {
                             navController.navigate(
                                 route = Screen.ListWithTasksScreen.route
-                                        +"/${taskList.taskList.id}"
-                                        +"/${taskList.taskList.title}"
-                                        +"/${taskList.taskList.icon}"
+                                        + "/${taskList.taskList.id}"
+                                        + "/${taskList.taskList.title}"
+                                        + "/${taskList.taskList.icon}"
                             )
                         }
                 ) {

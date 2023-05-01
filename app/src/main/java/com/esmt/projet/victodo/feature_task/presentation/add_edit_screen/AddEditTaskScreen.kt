@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -104,7 +105,10 @@ fun AddEditTaskScreen(
                 }
                 is AddEditTaskViewModel.UiEvent.ShowSnackBar -> {
                     Log.d("AddEditTaskScreen", "ShowSnackBar ${it.message}")
-                    // TODO()
+                    // TODO(
+                    //  1. Add a snackbar to show the error message
+                    //  2. Add an icon to the snackbar)
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -214,7 +218,6 @@ fun AddEditTaskScreen(
                             }
                         }
                         viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
-
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
