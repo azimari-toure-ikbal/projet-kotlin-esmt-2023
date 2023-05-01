@@ -332,6 +332,7 @@ fun AddEditTaskScreen(
                     timepicker(
                         initialTime = pickedTime ?: LocalTime.now(),
                         title = "Pick a time",
+                        is24HourClock = true
                     ) {
                         viewModel.onEvent(AddEditTaskEvent.EnteredDueTime(it))
                         Log.d("AddEditTaskScreen", "Time: $it")
