@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -100,7 +101,10 @@ fun AddEditTaskScreen(
                 }
                 is AddEditTaskViewModel.UiEvent.ShowSnackBar -> {
                     Log.d("AddEditTaskScreen", "ShowSnackBar ${it.message}")
-                    // TODO()
+                    // TODO(
+                    //  1. Add a snackbar to show the error message
+                    //  2. Add an icon to the snackbar)
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -178,7 +182,7 @@ fun AddEditTaskScreen(
                 Switch(
                     checked = showDeadlineOptions,
                     onCheckedChange = {
-                        if ( it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.POST_NOTIFICATIONS
@@ -200,7 +204,6 @@ fun AddEditTaskScreen(
                                         }
                                         .setNegativeButton("cancel") { dialog, _ ->
                                             dialog.dismiss()
-                                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                                         }
                                         .create().show()
                                 } else {
@@ -209,10 +212,8 @@ fun AddEditTaskScreen(
                                     )
                                 }
                             }
-                        } else {
-                            viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                         }
-
+                        viewModel.onEvent(AddEditTaskEvent.ToggleDeadlineOptions)
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
