@@ -1,6 +1,5 @@
 package com.esmt.projet.victodo.feature_list.domain.use_case
 
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 import com.esmt.projet.victodo.feature_list.domain.repository.TaskListRepository
 import com.esmt.projet.victodo.feature_list.util.ALL_TASKS_LIST
@@ -8,7 +7,10 @@ import com.esmt.projet.victodo.feature_list.util.COMPLETED_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.LATE_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.SCHEDULED_TASKS_LIST
 import com.esmt.projet.victodo.feature_task.domain.repository.TaskRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 
 class GetUtilTaskListsUseCase(
     val repository: TaskListRepository,
@@ -46,7 +48,7 @@ class GetUtilTaskListsUseCase(
 //                emit(it)
 //            }
 //        }
-        val lists = channelFlow<List<TaskListWithTasksAndTagsSubTasks>> {
+        val lists = channelFlow {
             combine(
                 taskRepository.getTasks(),
                 taskRepository.getScheduledTasks(),

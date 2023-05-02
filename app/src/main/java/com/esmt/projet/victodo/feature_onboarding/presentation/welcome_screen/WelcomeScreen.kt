@@ -1,7 +1,5 @@
 package com.esmt.projet.victodo.feature_onboarding.presentation.welcome_screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -22,7 +19,7 @@ import com.esmt.projet.victodo.feature_onboarding.util.OnBoardingPage
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.*
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WelcomeScreen(
     welcomeViewModel: WelcomeViewModel = hiltViewModel(),
@@ -51,7 +48,7 @@ fun WelcomeScreen(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, DelicateCoroutinesApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PagerScreen(
     onBoardingPage: OnBoardingPage,

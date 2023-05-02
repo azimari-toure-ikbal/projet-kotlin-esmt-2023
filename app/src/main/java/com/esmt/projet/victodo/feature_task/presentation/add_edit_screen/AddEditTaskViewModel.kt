@@ -189,7 +189,12 @@ class AddEditTaskViewModel @Inject constructor(
             }
             is AddEditTaskEvent.CreateTag -> {
                 viewModelScope.launch {
-                    if(_tagState.value.tags.filter { it.title.contains(_tagTextField.value.text, ignoreCase = true) }.isNotEmpty()){
+                    if(_tagState.value.tags.any {
+                            it.title.contains(
+                                _tagTextField.value.text,
+                                ignoreCase = true
+                            )
+                        }){
                         _eventFlow.emit(UiEvent.ShowSnackBar("Tag already exists"))
                         return@launch
                     }

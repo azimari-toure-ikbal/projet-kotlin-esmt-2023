@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,14 +18,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.esmt.projet.victodo.core.presentation.components.AddEditHeader
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
-import com.esmt.projet.victodo.feature_list.presentation.components.CircleColorPicker
-import com.esmt.projet.victodo.feature_list.presentation.components.CircleEmoticonPicker
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
@@ -142,7 +137,7 @@ fun AddEditListScreen(
                     .clip(RoundedCornerShape(10.dp))
                     .background(color = Color(0xFFEEF5FD))
             ) {
-                Column() {
+                Column {
                     FlowRow(
                         modifier = Modifier
                             .fillMaxWidth()

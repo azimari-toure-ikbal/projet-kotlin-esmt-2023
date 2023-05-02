@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.esmt.projet.victodo.feature_task.util.TASK_NOTIFICATION_CHANNEL_ID
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDateTime

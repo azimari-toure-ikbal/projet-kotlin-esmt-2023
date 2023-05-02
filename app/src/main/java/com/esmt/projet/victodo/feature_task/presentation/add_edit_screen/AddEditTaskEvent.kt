@@ -5,7 +5,7 @@ import com.esmt.projet.victodo.feature_tag.domain.model.Tag
 import java.time.LocalDate
 import java.time.LocalTime
 
-sealed class AddEditTaskEvent(){
+sealed class AddEditTaskEvent {
     data class EnteredName(val value: String): AddEditTaskEvent()
     data class EnteredNote (val value: String): AddEditTaskEvent()
     data class EnteredPriority(val value: String): AddEditTaskEvent()

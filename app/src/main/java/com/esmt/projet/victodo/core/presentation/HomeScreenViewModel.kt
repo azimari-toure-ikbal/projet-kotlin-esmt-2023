@@ -38,7 +38,7 @@ class HomeScreenViewModel @Inject constructor(
     }
     fun onEvent(event: HomeScreenEvent){
         when(event){
-            is HomeScreenEvent.onSearch -> {
+            is HomeScreenEvent.OnSearch -> {
                 if(event.query.isNotBlank() || event.query.isEmpty()){
                     _searchFieldState.value = _searchFieldState.value.copy(
                         searchQuery = event.query
@@ -50,17 +50,17 @@ class HomeScreenViewModel @Inject constructor(
                     )
                 }
             }
-            is HomeScreenEvent.onSupprimerClicked -> {
+            is HomeScreenEvent.OnSupprimerClicked -> {
                 viewModelScope.launch {
                     listUseCases.deleteTaskListUseCase(event.taskList)
                 }
             }
-            is HomeScreenEvent.onTagRevealClicked ->{
+            is HomeScreenEvent.OnTagRevealClicked ->{
                 _state.value = _state.value.copy(
                     isTagRevealed = !_state.value.isTagRevealed
                 )
             }
-            is HomeScreenEvent.onSearchFocusChanged -> {
+            is HomeScreenEvent.OnSearchFocusChanged -> {
                 _searchFieldState.value = _searchFieldState.value.copy(
                     isHintVisible = !event.focusState.isFocused &&
                             _searchFieldState.value.searchQuery.isBlank()

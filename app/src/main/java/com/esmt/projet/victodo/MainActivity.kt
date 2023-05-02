@@ -1,8 +1,5 @@
 package com.esmt.projet.victodo
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,15 +10,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,7 +19,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.esmt.projet.victodo.core.presentation.HomeScreen
 import com.esmt.projet.victodo.core.presentation.util.Screen
-import com.esmt.projet.victodo.di.VictoAppModule
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.presentation.add_edit_screen.AddEditListScreen
 import com.esmt.projet.victodo.feature_list.presentation.list_screen.ListWithTasksScreen
@@ -40,9 +29,6 @@ import com.esmt.projet.victodo.feature_task.presentation.add_edit_screen.AddEdit
 import com.esmt.projet.victodo.ui.theme.VictoDoTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalAnimationApi
@@ -60,11 +46,23 @@ class MainActivity : ComponentActivity() {
 //        installSplashScreen().setKeepOnScreenCondition {
 //            !splashViewModel.isLoading.value
 //        }
-        CoroutineScope(Dispatchers.Main).launch {
-            installSplashScreen().setKeepOnScreenCondition {
-                !splashViewModel.isLoading.value
+
+        val preferences = getSharedPreferences("onBoarding", MODE_PRIVATE)
+        val isFirstTime = preferences.getBoolean("isFirstTime", true)
+
+        if (isFirstTime) {
+            with(preferences.edit()) {
+                putBoolean("isFirstTime", false)
+                apply()
             }
+            splashViewModel.setStartDestination(Screen.OnBoardingScreen.route)
+        } else {
+            splashViewModel.setStartDestination(Screen.HomeScreen.route)
         }
+
+//        CoroutineScope(Dispatchers.Main).launch {
+//            installSplashScreen()
+//        }
         setContent {
             VictoDoTheme {
                 // A surface container using the 'background' color from the theme

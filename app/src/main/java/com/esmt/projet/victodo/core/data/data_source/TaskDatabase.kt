@@ -15,7 +15,6 @@ import com.esmt.projet.victodo.feature_task.data.data_source.TaskDao
 import com.esmt.projet.victodo.feature_task.domain.model.SubTask
 import com.esmt.projet.victodo.feature_task.domain.model.TagTaskCrossRef
 import com.esmt.projet.victodo.feature_task.domain.model.Task
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.format.DateTimeFormatter
 
 @Database(
@@ -31,7 +30,7 @@ abstract class TaskDatabase: RoomDatabase() {
     abstract val taskDao: TaskDao
 
     companion object {
-        const val DATABASE_NAME = "task_database"
+        private const val DATABASE_NAME = "task_database"
 
         @Volatile
         private var instance: TaskDatabase? = null

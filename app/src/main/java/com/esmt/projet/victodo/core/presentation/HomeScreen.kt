@@ -23,19 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
-import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
-import com.esmt.projet.victodo.feature_task.domain.model.Task
+
 //import syncTasksWithCalendar
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -62,12 +58,12 @@ fun HomeScreen(
                 value = if (searchFieldState.isHintVisible) searchFieldState.hint
                 else searchFieldState.searchQuery,
                 onValueChange = {
-                    viewModel.onEvent(HomeScreenEvent.onSearch(it))
+                    viewModel.onEvent(HomeScreenEvent.OnSearch(it))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged {
-                        viewModel.onEvent(HomeScreenEvent.onSearchFocusChanged(it))
+                        viewModel.onEvent(HomeScreenEvent.OnSearchFocusChanged(it))
                     },
                 singleLine = true,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -235,7 +231,7 @@ fun HomeScreen(
                 )
                 IconButton(
                     onClick = {
-                        viewModel.onEvent(HomeScreenEvent.onTagRevealClicked)
+                        viewModel.onEvent(HomeScreenEvent.OnTagRevealClicked)
                     },
                 ) {
                     Icon(
@@ -341,7 +337,7 @@ fun confirmDeleteList(context: Context, taskList: TaskListWithTasksAndTagsSubTas
         setTitle("Supprimer la liste")
         setMessage("Voulez-vous vraiment supprimer la liste ${taskList.taskList.title} ?")
         setPositiveButton("Oui"){ _, _ ->
-            viewModel.onEvent(HomeScreenEvent.onSupprimerClicked(taskList))
+            viewModel.onEvent(HomeScreenEvent.OnSupprimerClicked(taskList))
         }
         setNegativeButton("Non"){ dialog, _ ->
             dialog.dismiss()

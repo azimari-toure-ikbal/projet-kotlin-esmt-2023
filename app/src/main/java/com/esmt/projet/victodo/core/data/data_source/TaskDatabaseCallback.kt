@@ -1,15 +1,11 @@
 package com.esmt.projet.victodo.core.data.data_source
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.esmt.projet.victodo.feature_list.data.data_source.TaskListDao
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.*
-import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 
 class TaskDatabaseCallback(
