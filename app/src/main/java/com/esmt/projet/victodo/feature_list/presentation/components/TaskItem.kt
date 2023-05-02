@@ -86,11 +86,7 @@ fun TaskItem(
             .background(Color.Transparent)
             .border(
                 1.5.dp,
-                if (task.task.dueTime != null && task.task.dueDate != null && LocalTime
-                        .now()
-                        .isAfter(task.task.dueTime) && LocalDate
-                        .now()
-                        .isAfter(task.task.dueDate)
+                if (task.task.dueTime != null && task.task.dueDate != null && (LocalTime.now().isAfter(task.task.dueTime) && LocalDate.now().isEqual(task.task.dueDate) || LocalDate.now().isAfter(task.task.dueDate) && !task.task.isEnded)
                 ) {
                     Color.Red
                 } else {

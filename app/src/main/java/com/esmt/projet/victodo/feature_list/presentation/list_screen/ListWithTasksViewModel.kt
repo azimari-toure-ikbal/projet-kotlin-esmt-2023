@@ -2,12 +2,14 @@ package com.esmt.projet.victodo.feature_list.presentation.list_screen
 
 import android.content.Context
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esmt.projet.victodo.exception.task.InvalidTaskException
 import com.esmt.projet.victodo.feature_list.util.ALL_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.COMPLETED_TASKS_LIST
 import com.esmt.projet.victodo.feature_list.util.LATE_TASKS_LIST
@@ -64,7 +66,11 @@ class ListWithTasksViewModel @Inject constructor(
                             isEnded = !event.taskWithTagAndSubTask.task.isEnded
                         )
                     )
-                    taskuseCases.addTaskUseCase(task, context)
+                    try{
+                        taskuseCases.addTaskUseCase(task, context)
+                    } catch (e: InvalidTaskException){
+                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    }
                     if(task.task.redundancy != Task.Companion.RepeatFrequency.NEVER.value){
                         when(task.task.redundancy){
                             Task.Companion.RepeatFrequency.DAILY.value -> {

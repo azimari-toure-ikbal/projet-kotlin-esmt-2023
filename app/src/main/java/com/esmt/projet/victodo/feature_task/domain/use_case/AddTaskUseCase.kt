@@ -51,7 +51,7 @@ class AddTaskUseCase (
             throw InvalidTaskException("Task must have a due time")
         if(taskWithTagAndSubTaskToAdd.task.dueDate == null && taskWithTagAndSubTaskToAdd.task.dueTime != null)
             throw InvalidTaskException("Task must have a due date")
-        if(taskWithTagAndSubTaskToAdd.task.dueDate != null && taskWithTagAndSubTaskToAdd.task.dueTime != null ) {
+        if(taskWithTagAndSubTaskToAdd.task.dueDate != null && taskWithTagAndSubTaskToAdd.task.dueTime != null && !taskWithTagAndSubTaskToAdd.task.isEnded ) {
             if(taskWithTagAndSubTaskToAdd.task.dueDate.isBefore(LocalDateTime.now().toLocalDate()))
                 throw InvalidTaskException("Task due date must be in the future")
             if(taskWithTagAndSubTaskToAdd.task.dueDate.isEqual(LocalDateTime.now().toLocalDate()) && taskWithTagAndSubTaskToAdd.task.dueTime.isBefore(LocalDateTime.now().toLocalTime()))

@@ -143,11 +143,12 @@ fun ListWithTasksScreen(
                             dropDownItems = listOf(
                                 DropDownItem(1, "Edit"),
                                 DropDownItem(2, "Delete"),
-                                if (!taskWithTagAndSubTask.task.isEnded) {
-                                    DropDownItem(3, "Mark as Completed")
-                                } else {
-                                    DropDownItem(4, "Mark as Uncompleted")
-                                }
+//                                if (!taskWithTagAndSubTask.task.isEnded) {
+//                                    DropDownItem(3, "Mark as Completed")
+//                                } else {
+//                                    DropDownItem(4, "Mark as Uncompleted")
+//                                }
+                                DropDownItem(3, "Mark as Completed")
                             ),
                             onItemClick = {
                                 when (it.id) {

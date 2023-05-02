@@ -2,6 +2,8 @@ package com.esmt.projet.victodo.core.presentation
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -31,8 +33,7 @@ import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
-
-//import syncTasksWithCalendar
+import com.esmt.projet.victodo.feature_synchronisation.data.syncTasksWithCalendar
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -88,7 +89,15 @@ fun HomeScreen(
                 fontSize = 12.sp,
                 modifier = Modifier
                     .clickable {
-                        //syncTasksWithCalendar()
+                        try{
+                            syncTasksWithCalendar(
+                                context = context,
+                                taskList = state.listOfPinnedList[1].tasks
+                            )
+                        } catch (e: Exception) {
+                            Log.e("HomeScreen", "Error: ${e.message}")
+                            Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show()
+                        }
                     }
             )
         }

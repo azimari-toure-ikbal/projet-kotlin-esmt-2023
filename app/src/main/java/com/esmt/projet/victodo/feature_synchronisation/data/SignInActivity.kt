@@ -2,6 +2,7 @@ package com.esmt.projet.victodo.feature_synchronisation.data
 
 import android.content.Context
 import com.esmt.projet.victodo.feature_task.domain.model.Task
+import com.esmt.projet.victodo.feature_task.domain.model.TaskWithTagAndSubTask
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
@@ -27,7 +28,7 @@ fun getCredentials(context: Context): GoogleAccountCredential {
     )
 }
 
-fun syncTasksWithCalendar(context: Context, taskList: List<Task>) {
+fun syncTasksWithCalendar(context: Context, taskList: List<TaskWithTagAndSubTask>) {
     val transport: HttpTransport = AndroidHttp.newCompatibleTransport()
     val jsonFactory: JsonFactory = GsonFactory.getDefaultInstance()
 
@@ -41,8 +42,8 @@ fun syncTasksWithCalendar(context: Context, taskList: List<Task>) {
 
     for (task in taskList) {
         val event = Event().apply {
-            summary = task.name
-            description = task.note
+            summary = task.task.name
+            description = task.task.note
 //            start = DateTime(task.dueTime.time)
 //            end = DateTime(task.endDate.time)
         }
