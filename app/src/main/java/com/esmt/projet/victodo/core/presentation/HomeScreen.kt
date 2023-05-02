@@ -36,7 +36,7 @@ import com.esmt.projet.victodo.core.presentation.util.Screen
 import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 import com.esmt.projet.victodo.feature_task.domain.model.Task
-import syncTasksWithCalendar
+//import syncTasksWithCalendar
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

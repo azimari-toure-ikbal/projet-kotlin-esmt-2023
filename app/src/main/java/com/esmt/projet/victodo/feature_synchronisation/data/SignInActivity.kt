@@ -1,4 +1,5 @@
-// Import necessary libraries for Google Calendar API
+package com.esmt.projet.victodo.feature_synchronisation.data
+
 import android.content.Context
 import com.esmt.projet.victodo.feature_task.domain.model.Task
 import com.google.api.client.auth.oauth2.Credential
