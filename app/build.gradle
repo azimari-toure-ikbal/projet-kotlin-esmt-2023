@@ -2,13 +2,11 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 
-    // kapt
-    id 'kotlin-kapt'
-    
     // Hilt
     id("com.google.dagger.hilt.android")
 
-
+    // kapt
+    id 'kotlin-kapt'
 }
 
 android {
@@ -128,44 +126,28 @@ dependencies {
     implementation "io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
 
-    //API google
-    implementation 'com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0'
-    implementation 'com.google.api-client:google-api-client-android:1.32.1'
-    implementation 'com.google.http-client:google-http-client-android:1.39.2'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.32.1'
 
-
-    //Play Service
-    implementation 'com.google.android.gms:play-services:12.0.1'
-    implementation 'com.google.android.gms:play-services-auth:20.5.0'
-
-    //AppCompat
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-
-    // Importing the latest Google Calendar API library
+    // Importing the Google Calendar API library
     implementation 'com.google.apis:google-api-services-calendar:v3-rev20230406-2.0.0'
-// Adding the latest Google API Client library for Android
+
+    // Adding the Google API Client library for Android
     implementation 'com.google.api-client:google-api-client-android:1.33.1'
-//
-//// Adding the latest Google HTTP Client library for Android
+
+    // Adding the Google HTTP Client library for Android
     implementation 'com.google.http-client:google-http-client-android:1.40.0'
-//
-//// Adding the latest Google OAuth Client library for Jetty
+
+    // Adding the Google OAuth Client library for Jetty
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.33.1'
 
-// Adding the latest Google Play Services library
-    implementation 'com.google.android.gms:play-services:12.0.1'
-//
+    // Adding the Google Play Services library
+    implementation "com.google.android.gms:play-services-gcm:17.0.0"
 
-// Adding the latest Google Play Services Auth library
+    // Adding the Google Play Services Auth library
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
-//
-//// Adding the latest AndroidX AppCompat library
+
+
+    // Adding the AndroidX AppCompat library
     implementation 'androidx.appcompat:appcompat:1.6.1'
-
-
-
-
 
 }
 
