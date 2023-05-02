@@ -148,16 +148,19 @@ fun AddEditTaskScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "List")
-            DropDownMenuCustom(
-                dropDownTitle = state.tasklists.find { it.id == state.listId }?.title ?: "Select a list",
-                dropDownIcon = R.drawable.drop_down_menu_list_24px,
-                dropDownItems = state.tasklists.map {
-                    DropDownItem(it.id!!, it.title)
-                },
-                onItemClick = {
-                    viewModel.onEvent(AddEditTaskEvent.EnteredListId(it.id))
-                }
-            )
+            Row {
+                DropDownMenuCustom(
+                    dropDownTitle = state.tasklists.find { it.id == state.listId }?.title
+                        ?: "Select a list",
+                    dropDownIcon = R.drawable.drop_down_menu_list_24px,
+                    dropDownItems = state.tasklists.map {
+                        DropDownItem(it.id!!, it.title)
+                    },
+                    onItemClick = {
+                        viewModel.onEvent(AddEditTaskEvent.EnteredListId(it.id))
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Description")
@@ -485,18 +488,20 @@ fun AddEditTaskScreen(
             Spacer(modifier = Modifier.height(24.dp))
             Title(title = "Priority")
             Spacer(modifier = Modifier.height(8.dp))
-            DropDownMenuCustom(
-                dropDownTitle = priority,
-                dropDownIcon = R.drawable.drop_down_menu_priority_24px,
-                dropDownItems = listOf(
-                    DropDownItem(0, Task.Companion.Priority.LOW.value),
-                    DropDownItem(1, Task.Companion.Priority.MEDIUM.value),
-                    DropDownItem(2, Task.Companion.Priority.HIGH.value),
-                ),
-                onItemClick = {
-                    viewModel.onEvent(AddEditTaskEvent.EnteredPriority(it.text))
-                }
-            )
+            Row {
+                DropDownMenuCustom(
+                    dropDownTitle = priority,
+                    dropDownIcon = R.drawable.drop_down_menu_priority_24px,
+                    dropDownItems = listOf(
+                        DropDownItem(0, Task.Companion.Priority.LOW.value),
+                        DropDownItem(1, Task.Companion.Priority.MEDIUM.value),
+                        DropDownItem(2, Task.Companion.Priority.HIGH.value),
+                    ),
+                    onItemClick = {
+                        viewModel.onEvent(AddEditTaskEvent.EnteredPriority(it.text))
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -552,6 +557,10 @@ fun DropDownMenuCustom(
         mutableStateOf(0.dp)
     }
 
+    var itemWidth by remember {
+        mutableStateOf(0.dp)
+    }
+
     val density = LocalDensity.current
 
     val triangleIcon: ImageVector = if (isContextMenuVisible) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown
@@ -565,11 +574,14 @@ fun DropDownMenuCustom(
             .padding(8.dp)
             .onSizeChanged {
                 itemHeight = with(density) { it.height.toDp() }
+                itemWidth = with(density) { it.width.toDp() }
             }
             .pointerInput(key1 = true) {
                 detectTapGestures {
                     isContextMenuVisible = true
                     pressOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                    Log.d("DropDownMenuCustom", "pressOffset: $pressOffset")
+                    Log.d("DropDownMenuCustom", "it : $it")
                 }
             },
         verticalAlignment = Alignment.CenterVertically
@@ -599,9 +611,7 @@ fun DropDownMenuCustom(
     DropdownMenu(
         expanded = isContextMenuVisible,
         onDismissRequest = { isContextMenuVisible = false },
-        offset = pressOffset.copy(
-            y = pressOffset.y - itemHeight
-        )
+        offset = pressOffset.copy(y = pressOffset.y - itemHeight, x=itemWidth*0.65f)
     ) {
         dropDownItems.forEach { item ->
             DropdownMenuItem(

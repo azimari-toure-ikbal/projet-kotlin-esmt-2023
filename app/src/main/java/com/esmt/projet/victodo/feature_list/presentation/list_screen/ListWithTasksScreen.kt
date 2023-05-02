@@ -102,26 +102,28 @@ fun ListWithTasksScreen(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(end = 16.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF006EE9))
-                        .padding(8.dp)
-                        .clickable {
-                            navController.navigate(Screen.AddEditTaskScreen.route)
-                        }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = Color.White,
-                    )
-                    Text(
-                        text = "Add Task",
-                        color = Color.White,
-                    )
+                if(taskList.id!! > 0) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFF006EE9))
+                            .padding(8.dp)
+                            .clickable {
+                                navController.navigate(Screen.AddEditTaskScreen.route)
+                            }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = Color.White,
+                        )
+                        Text(
+                            text = "Add Task",
+                            color = Color.White,
+                        )
+                    }
                 }
             }
         }
