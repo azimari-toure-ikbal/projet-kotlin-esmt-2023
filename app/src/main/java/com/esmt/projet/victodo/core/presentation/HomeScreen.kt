@@ -26,13 +26,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.esmt.projet.victodo.core.presentation.components.DropDownItem
 import com.esmt.projet.victodo.core.presentation.components.TaskListItem
 import com.esmt.projet.victodo.core.presentation.util.Screen
+import com.esmt.projet.victodo.feature_list.domain.model.TaskList
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
+import com.esmt.projet.victodo.feature_task.domain.model.Task
+import syncTasksWithCalendar
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -88,7 +92,7 @@ fun HomeScreen(
                 fontSize = 12.sp,
                 modifier = Modifier
                     .clickable {
-                        //TODO()
+                        //syncTasksWithCalendar()
                     }
             )
         }
