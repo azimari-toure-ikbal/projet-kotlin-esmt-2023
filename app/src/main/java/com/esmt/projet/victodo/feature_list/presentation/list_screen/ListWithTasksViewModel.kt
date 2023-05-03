@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListWithTasksViewModel @Inject constructor(
-    private val taskuseCases: TaskUseCases,
+    private val taskUseCases: TaskUseCases,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ): ViewModel() {
@@ -56,7 +56,7 @@ class ListWithTasksViewModel @Inject constructor(
                             listOfTasks = listOfTasks.filter { it.task.id != task.id }
                         )
                     }
-                    taskuseCases.deleteTaskUseCase(event.taskWithTagAndSubTask)
+                    taskUseCases.deleteTaskUseCase(event.taskWithTagAndSubTask)
                 }
             }
             is ListWithTasksEvent.OnCompletedClick -> {
@@ -67,14 +67,14 @@ class ListWithTasksViewModel @Inject constructor(
                         )
                     )
                     try{
-                        taskuseCases.addTaskUseCase(task, context)
+                        taskUseCases.addTaskUseCase(task, context)
                     } catch (e: InvalidTaskException){
                         Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
                     }
                     if(task.task.redundancy != Task.Companion.RepeatFrequency.NEVER.value){
                         when(task.task.redundancy){
                             Task.Companion.RepeatFrequency.DAILY.value -> {
-                                taskuseCases.addTaskUseCase(task.copy(
+                                taskUseCases.addTaskUseCase(task.copy(
                                     task = task.task.copy(
                                         id=null,
                                         dueDate = task.task.dueDate?.plusDays(1),
@@ -83,7 +83,7 @@ class ListWithTasksViewModel @Inject constructor(
                                 ), context)
                             }
                             Task.Companion.RepeatFrequency.WEEKLY.value -> {
-                                taskuseCases.addTaskUseCase(task.copy(
+                                taskUseCases.addTaskUseCase(task.copy(
                                     task = task.task.copy(
                                         id=null,
                                         dueDate = task.task.dueDate?.plusWeeks(1),
@@ -92,7 +92,7 @@ class ListWithTasksViewModel @Inject constructor(
                                 ), context)
                             }
                             Task.Companion.RepeatFrequency.MONTHLY.value -> {
-                                taskuseCases.addTaskUseCase(task.copy(
+                                taskUseCases.addTaskUseCase(task.copy(
                                     task = task.task.copy(
                                         id=null,
                                         dueDate = task.task.dueDate?.plusMonths(1),
@@ -101,13 +101,16 @@ class ListWithTasksViewModel @Inject constructor(
                                 ), context)
                             }
                             Task.Companion.RepeatFrequency.YEARLY.value -> {
-                                taskuseCases.addTaskUseCase(task.copy(
+                                taskUseCases.addTaskUseCase(task.copy(
                                     task = task.task.copy(
                                         id=null,
                                         dueDate = task.task.dueDate?.plusYears(1),
                                         isEnded = false
                                     )
                                 ), context)
+
+                            }
+                            else -> {
                             }
                         }
                     }
@@ -120,7 +123,7 @@ class ListWithTasksViewModel @Inject constructor(
         taskListJob?.cancel()
         when(currentListId){
             ALL_TASKS_LIST.id -> {
-                taskListJob = taskuseCases.getTasksUseCase().onEach {
+                taskListJob = taskUseCases.getTasksUseCase().onEach {
                     _state.value = ListWithTasksState(
                         listOfTasks = it,
                         listOfCompletedTask = it.filter { task -> task.task.isEnded },
@@ -130,7 +133,7 @@ class ListWithTasksViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
             SCHEDULED_TASKS_LIST.id -> {
-                taskListJob = taskuseCases.getScheduledTasksUseCase().onEach {
+                taskListJob = taskUseCases.getScheduledTasksUseCase().onEach {
                     _state.value = ListWithTasksState(
                         listOfTasks = it,
                         listOfCompletedTask = it.filter { task -> task.task.isEnded },
@@ -140,7 +143,7 @@ class ListWithTasksViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
             LATE_TASKS_LIST.id -> {
-                taskListJob = taskuseCases.getLateTasksUseCase().onEach {
+                taskListJob = taskUseCases.getLateTasksUseCase().onEach {
                     _state.value = ListWithTasksState(
                         listOfTasks = it,
                         listOfCompletedTask = it.filter { task -> task.task.isEnded },
@@ -150,7 +153,7 @@ class ListWithTasksViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
             COMPLETED_TASKS_LIST.id -> {
-                taskListJob = taskuseCases.getCompletedTasksUseCase().onEach {
+                taskListJob = taskUseCases.getCompletedTasksUseCase().onEach {
                     _state.value = ListWithTasksState(
                         listOfTasks = it,
                         listOfCompletedTask = it.filter { task -> task.task.isEnded },
@@ -160,7 +163,7 @@ class ListWithTasksViewModel @Inject constructor(
                 }.launchIn(viewModelScope)
             }
             else -> {
-                taskListJob = taskuseCases.getTasksByListIdUseCase(currentListId).onEach {
+                taskListJob = taskUseCases.getTasksByListIdUseCase(currentListId).onEach {
                     _state.value = ListWithTasksState(
                         listOfTasks = it,
                         listOfCompletedTask = it.filter { task -> task.task.isEnded },

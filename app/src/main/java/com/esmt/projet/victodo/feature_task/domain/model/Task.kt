@@ -20,7 +20,7 @@ data class Task(
 ){
     companion object {
         sealed class RepeatFrequency(val value: String) {
-            object NEVER : RepeatFrequency("")
+            object NEVER : RepeatFrequency("Never")
             object DAILY : RepeatFrequency("Every day")
             object WEEKLY : RepeatFrequency("Every week")
             object MONTHLY : RepeatFrequency("Every month")

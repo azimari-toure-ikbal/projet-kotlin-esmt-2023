@@ -378,9 +378,10 @@ fun AddEditTaskScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 DropDownMenuCustom(
-                    dropDownTitle = if(repeatFrequency == Task.Companion.RepeatFrequency.NEVER.value) "Repeat" else repeatFrequency,
+                    dropDownTitle = repeatFrequency,
                     dropDownIcon = R.drawable.drop_down_menu_repeat_24px,
                     dropDownItems = listOf(
+                        DropDownItem(4, Task.Companion.RepeatFrequency.NEVER.value),
                         DropDownItem(0, Task.Companion.RepeatFrequency.DAILY.value),
                         DropDownItem(1, Task.Companion.RepeatFrequency.WEEKLY.value),
                         DropDownItem(2, Task.Companion.RepeatFrequency.MONTHLY.value),
