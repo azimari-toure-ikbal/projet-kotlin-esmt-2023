@@ -1,5 +1,6 @@
 package com.esmt.projet.victodo.core.presentation
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
@@ -91,7 +92,7 @@ fun HomeScreen(
                     .clickable {
                         try{
                             syncTasksWithCalendar(
-                                context = context,
+                                activity = context as Activity,
                                 taskList = state.listOfPinnedList[1].tasks
                             )
                         } catch (e: Exception) {
