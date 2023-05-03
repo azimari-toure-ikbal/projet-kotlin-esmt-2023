@@ -64,8 +64,7 @@ interface TaskDao {
 
     @Transaction
     @Query(
-        "SELECT * FROM task WHERE dueDate IS NOT NULL AND dueDate >= strftime('%m-%d-%Y', date('now')) AND dueTime > strftime('%H:%M', time('now')) AND isEnded = 0 " +
-                "ORDER BY dueDate ASC, dueTime ASC"
+        "SELECT * FROM task WHERE dueDate IS NOT NULL AND ((dueDate > strftime('%m-%d-%Y', date('now')) ) OR (dueDate = strftime('%m-%d-%Y', date('now')) AND dueTime > strftime('%H:%M', time('now')))) AND isEnded = 0 ORDER BY dueDate ASC, dueTime ASC"
     )
     fun getScheduledTasksWithTagsAndSubTasks(): Flow<List<TaskWithTagAndSubTask>>
 
