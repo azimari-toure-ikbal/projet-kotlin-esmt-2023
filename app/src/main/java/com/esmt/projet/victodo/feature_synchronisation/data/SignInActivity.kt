@@ -25,7 +25,8 @@ import java.time.ZoneOffset
 import java.util.*
 
 private val SCOPES = listOf(CalendarScopes.CALENDAR)
-const val REQUEST_ACCOUNT_PICKER = 1001
+const val REQUEST_AUTHORIZATION = 1001
+
 
 fun getCredentials(context: Context): GoogleAccountCredential {
     return GoogleAccountCredential.usingOAuth2(
@@ -70,7 +71,7 @@ fun syncTasksWithCalendar(activity: Activity, taskList: List<TaskWithTagAndSubTa
         // Prompt the user to select an account.
         activity.startActivityForResult(
             credential.newChooseAccountIntent(),
-            REQUEST_ACCOUNT_PICKER
+            REQUEST_AUTHORIZATION
         )
     }
 }
