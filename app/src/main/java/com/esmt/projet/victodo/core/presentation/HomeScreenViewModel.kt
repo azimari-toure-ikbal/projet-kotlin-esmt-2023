@@ -1,5 +1,6 @@
 package com.esmt.projet.victodo.core.presentation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.esmt.projet.victodo.feature_list.domain.model.TaskListWithTasksAndTagsSubTasks
 import com.esmt.projet.victodo.feature_list.domain.use_case.TaskListUseCases
 import com.esmt.projet.victodo.feature_tag.domain.use_case.TagUseCases
+import com.esmt.projet.victodo.feature_task.domain.use_case.TaskUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val listUseCases: TaskListUseCases,
-    private val tagUseCases: TagUseCases
+    private val tagUseCases: TagUseCases,
+    private val taskUseCases: TaskUseCases
 ) : ViewModel() {
 
     private var listOfTaskList: List<TaskListWithTasksAndTagsSubTasks> = emptyList()
@@ -86,6 +89,10 @@ class HomeScreenViewModel @Inject constructor(
                 listOfTaskList = it
             )
         }.launchIn(viewModelScope)
+
+//        taskUseCases.getLateTasksUseCase().onEach {
+//            Log.d("HomeScreenViewModel", "getTaskList: ${it.size}")
+//        }.launchIn(viewModelScope)
     }
 
     private fun getTagList(){

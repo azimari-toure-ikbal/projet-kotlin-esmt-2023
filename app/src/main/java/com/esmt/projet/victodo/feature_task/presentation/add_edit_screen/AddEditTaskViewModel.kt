@@ -158,6 +158,7 @@ class AddEditTaskViewModel @Inject constructor(
                     Log.d("AddEditTaskViewModel", "SaveTask launched")
                     try {
                         Log.d("AddEditTaskViewModel", "SaveTask:§")
+                        Log.i("AddEditTaskViewModel", "listId: ${state.value.listId}")
                         taskUseCases.addTaskUseCase(
                             TaskWithTagAndSubTask(
                                 task = Task(

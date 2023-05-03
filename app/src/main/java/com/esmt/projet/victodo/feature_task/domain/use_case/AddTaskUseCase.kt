@@ -28,9 +28,11 @@ class AddTaskUseCase (
                 timestamp = System.currentTimeMillis(),
             )
         )
+        Log.i("AddTaskUseCase", "taskWithTagAndSubTaskToAdd = $taskWithTagAndSubTaskToAdd")
+        Log.i("AddTaskUseCase", "taskWithTagAndSubTask = $taskWithTagAndSubTask")
 
         Log.d("AddTaskUseCase", "entrée dans invoke")
-        if(taskWithTagAndSubTaskToAdd.task.listId == null)
+        if(taskWithTagAndSubTaskToAdd.task.listId == null || taskWithTagAndSubTaskToAdd.task.listId <= 0L)
             throw InvalidTaskException("Task must be associated with a list")
         if(taskWithTagAndSubTaskToAdd.task.name.isBlank())
             throw InvalidTaskException("Task must have a title")

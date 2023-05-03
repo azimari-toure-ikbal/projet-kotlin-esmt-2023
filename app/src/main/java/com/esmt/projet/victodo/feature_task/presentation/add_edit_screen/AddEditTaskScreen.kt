@@ -157,6 +157,7 @@ fun AddEditTaskScreen(
                         DropDownItem(it.id!!, it.title)
                     },
                     onItemClick = {
+                        Log.d("AddEditTaskScreen", "onItemClick: $it")
                         viewModel.onEvent(AddEditTaskEvent.EnteredListId(it.id))
                     }
                 )

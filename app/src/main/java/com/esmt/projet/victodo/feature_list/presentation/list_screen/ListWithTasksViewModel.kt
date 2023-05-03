@@ -107,7 +107,7 @@ class ListWithTasksViewModel @Inject constructor(
                                         dueDate = task.task.dueDate?.plusYears(1),
                                         isEnded = false
                                     )
-                                ), context) // TODO: à tester
+                                ), context)
                             }
                         }
                     }

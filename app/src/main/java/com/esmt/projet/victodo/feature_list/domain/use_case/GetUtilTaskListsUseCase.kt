@@ -74,7 +74,7 @@ class GetUtilTaskListsUseCase(
                         tasks = completedTasks
                     )
                 )
-            }.collectLatest {
+            }.collect{
                 send(it)
             }
         }
